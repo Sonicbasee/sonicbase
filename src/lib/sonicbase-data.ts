@@ -111,3 +111,26 @@ export const products = [
   { name: "Amara Vale Photo Zine", price: "$18.00", tag: "ZINE", image: amara },
   { name: "Kairo North Tour Poster", price: "$24.00", tag: "POSTER", image: kairo },
 ];
+export type HeroSlide = {
+  title: string;
+  subtitle: string;
+  image: string;
+  alt: string;
+  primaryTo: string;
+  secondaryTo: string;
+};
+
+export const heroSlides: HeroSlide[] = [
+  { title: "Amara Vale", subtitle: "'AFTERLIGHT' OUT NOW", image: hero, alt: "Amara Vale on a Lagos street", primaryTo: "/music", secondaryTo: "/artists" },
+  { title: "Kairo North", subtitle: "'OPEN WATER' OUT NOW", image: kairo, alt: "Kairo North portrait", primaryTo: "/music", secondaryTo: "/artists" },
+  { title: "Nova Eze", subtitle: "'STATIC BLOOM' OUT NOW", image: nova, alt: "Nova Eze portrait", primaryTo: "/music", secondaryTo: "/artists" },
+];
+
+export const socials = [
+  { image: amara, alt: "Amara Vale backstage" },
+  { image: studio, alt: "Inside Sonicbase Studios" },
+  { image: kairo, alt: "Kairo North on tour" },
+  { image: staticBloom, alt: "Static Bloom artwork" },
+  { image: nova, alt: "Nova Eze live set" },
+  { image: openWater, alt: "Open Water artwork" },
+];
