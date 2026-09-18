@@ -10,6 +10,6 @@ export const supabase = createClient(supabaseUrl, supabasePublishableKey, {
     detectSessionInUrl: false,
     storage: typeof window !== "undefined" ? window.localStorage : undefined,
   },
-);
+  });
 
 export const isSupabaseConfigured = !!supabaseUrl && !!supabasePublishableKey;
