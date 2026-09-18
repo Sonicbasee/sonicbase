@@ -1,0 +1,1 @@
+import{t as e}from"./jsx-runtime-D3jfb0Ew.js";import{_ as t,g as n,h as r,x as i}from"./index-B6gyVuST.js";var a=e();function o(){return(0,a.jsxs)(a.Fragment,{children:[(0,a.jsx)(n,{action:(0,a.jsx)(t,{to:`/news`,children:`All News`}),children:`News`}),(0,a.jsx)(`section`,{className:`page-shell pb-8`,children:(0,a.jsx)(r,{})}),(0,a.jsx)(i,{})]})}export{o as component};
