@@ -1,4 +1,4 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query";
 import {
   Outlet,
   Link,
@@ -13,6 +13,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 
 import { Footer, Header } from "@/components/sonicbase";
+import { fetchPublicArtists, fetchPublicReleases } from "@/lib/public-data";
 
 function NotFoundComponent() {
   return (
@@ -123,9 +124,15 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {!isDashboardRoute && <Header />}
+      {!isDashboardRoute && <HeaderWithData />}
       <main>{isDashboardRoute ? <Outlet /> : <Outlet />}</main>
       {!isDashboardRoute && <Footer />}
     </QueryClientProvider>
   );
+}
+
+function HeaderWithData() {
+  const { data: headerArtists = [] } = useQuery({ queryKey: ["public-artists"], queryFn: fetchPublicArtists, staleTime: 60_000 });
+  const { data: headerReleases = [] } = useQuery({ queryKey: ["public-releases"], queryFn: fetchPublicReleases, staleTime: 60_000 });
+  return <Header artists={headerArtists} releases={headerReleases} />;
 }

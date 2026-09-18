@@ -27,6 +27,8 @@ export async function fetchArtists(): Promise<DashboardArtist[]> {
     city: a.city,
     genre: a.genre,
     image: a.image,
+    bio: a.bio || "",
+    statement: a.statement || "",
     status: a.status as StatusType,
   }));
 }
@@ -45,6 +47,8 @@ export async function fetchArtist(id: string): Promise<DashboardArtist | null> {
     city: data.city,
     genre: data.genre,
     image: data.image,
+    bio: data.bio || "",
+    statement: data.statement || "",
     status: data.status as StatusType,
   };
 }
@@ -58,6 +62,8 @@ export async function createArtist(artist: Omit<DashboardArtist, "id">): Promise
       city: artist.city,
       genre: artist.genre,
       image: artist.image,
+      bio: artist.bio || "",
+      statement: artist.statement || "",
       status: artist.status,
     })
     .select()
@@ -70,6 +76,8 @@ export async function createArtist(artist: Omit<DashboardArtist, "id">): Promise
     city: data.city,
     genre: data.genre,
     image: data.image,
+    bio: data.bio || "",
+    statement: data.statement || "",
     status: data.status,
   };
 }
@@ -83,6 +91,8 @@ export async function updateArtist(id: string, updates: Partial<DashboardArtist>
       city: updates.city,
       genre: updates.genre,
       image: updates.image,
+      bio: updates.bio,
+      statement: updates.statement,
       status: updates.status,
       updated_at: new Date().toISOString(),
     })
@@ -155,10 +165,21 @@ export async function createRelease(release: {
   status: string;
   release_date: string;
   cover: string;
+  description?: string;
+  tracks?: string[];
 }): Promise<DashboardRelease> {
   const { data, error } = await supabase
     .from("releases")
-    .insert(release)
+    .insert({
+      title: release.title,
+      artist_id: release.artist_id,
+      type: release.type,
+      status: release.status,
+      release_date: release.release_date,
+      cover: release.cover,
+      description: release.description || "",
+      tracks: release.tracks || [],
+    })
     .select("*, artists(name, id)")
     .single();
   if (error) throw error;

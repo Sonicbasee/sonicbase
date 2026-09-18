@@ -22,9 +22,14 @@ function AdminNewReleasePage() {
   const [status, setStatus] = useState("Draft");
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [cover, setCover] = useState("");
+  const [description, setDescription] = useState("");
+  const [tracksInput, setTracksInput] = useState("");
 
   const createMutation = useMutation({
-    mutationFn: () => createRelease({ title, artist_id: artistId, type, status, release_date: date, cover }),
+    mutationFn: () => createRelease({
+      title, artist_id: artistId, type, status, release_date: date, cover,
+      description, tracks: tracksInput.split(",").map((t) => t.trim()).filter(Boolean),
+    }),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["releases"] }); navigate({ to: "/admin/releases" }); },
   });
 
@@ -62,6 +67,14 @@ function AdminNewReleasePage() {
           <div className="space-y-2 md:col-span-2">
             <label className="text-sm font-medium">Cover URL</label>
             <Input placeholder="https://..." value={cover} onChange={(e) => setCover(e.target.value)} />
+          </div>
+          <div className="space-y-2 md:col-span-2">
+            <label className="text-sm font-medium">Description</label>
+            <textarea className="min-h-24 w-full rounded-xl border border-border bg-background px-3 py-2 text-sm" placeholder="Describe this release..." value={description} onChange={(e) => setDescription(e.target.value)} />
+          </div>
+          <div className="space-y-2 md:col-span-2">
+            <label className="text-sm font-medium">Track list (comma-separated)</label>
+            <Input placeholder="Track 1, Track 2, Track 3" value={tracksInput} onChange={(e) => setTracksInput(e.target.value)} />
           </div>
           <div className="space-y-2 md:col-span-2 flex justify-end gap-3 pt-4">
             <Link to="/admin/releases"><Button variant="secondary">Cancel</Button></Link>

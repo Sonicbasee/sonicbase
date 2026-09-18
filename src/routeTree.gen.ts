@@ -41,6 +41,7 @@ import { Route as ArtistStreamsRouteImport } from './routes/artist/streams'
 import { Route as ArtistsArtistRouteImport } from './routes/artists.$artist'
 import { Route as MusicReleaseRouteImport } from './routes/music.$release'
 import { Route as AdminArtistsArtistRouteImport } from './routes/admin/artists/$artist'
+import { Route as AdminArtistsNewRouteImport } from './routes/admin/artists/new'
 import { Route as AdminContractsChar91idChar93RouteImport } from './routes/admin/contracts/[id]'
 import { Route as AdminDistributionChar91idChar93RouteImport } from './routes/admin/distribution/[id]'
 import { Route as AdminLegalChar91idChar93RouteImport } from './routes/admin/legal/[id]'
@@ -213,6 +214,11 @@ const AdminArtistsArtistRoute = AdminArtistsArtistRouteImport.update({
   path: '/$artist',
   getParentRoute: () => AdminArtistsRoute,
 } as any)
+const AdminArtistsNewRoute = AdminArtistsNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => AdminArtistsRoute,
+} as any)
 const AdminContractsChar91idChar93Route =
   AdminContractsChar91idChar93RouteImport.update({
     id: '/id',
@@ -309,6 +315,7 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AdminIndexRoute
   '/artist/': typeof ArtistIndexRoute
   '/admin/artists/$artist': typeof AdminArtistsArtistRoute
+  '/admin/artists/new': typeof AdminArtistsNewRoute
   '/admin/contracts/id': typeof AdminContractsChar91idChar93Route
   '/admin/distribution/id': typeof AdminDistributionChar91idChar93Route
   '/admin/legal/id': typeof AdminLegalChar91idChar93Route
@@ -352,6 +359,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminIndexRoute
   '/artist': typeof ArtistIndexRoute
   '/admin/artists/$artist': typeof AdminArtistsArtistRoute
+  '/admin/artists/new': typeof AdminArtistsNewRoute
   '/admin/contracts/id': typeof AdminContractsChar91idChar93Route
   '/admin/distribution/id': typeof AdminDistributionChar91idChar93Route
   '/admin/legal/id': typeof AdminLegalChar91idChar93Route
@@ -398,6 +406,7 @@ export interface FileRoutesById {
   '/admin/': typeof AdminIndexRoute
   '/artist/': typeof ArtistIndexRoute
   '/admin/artists/$artist': typeof AdminArtistsArtistRoute
+  '/admin/artists/new': typeof AdminArtistsNewRoute
   '/admin/contracts/id': typeof AdminContractsChar91idChar93Route
   '/admin/distribution/id': typeof AdminDistributionChar91idChar93Route
   '/admin/legal/id': typeof AdminLegalChar91idChar93Route
@@ -445,6 +454,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/artist/'
     | '/admin/artists/$artist'
+    | '/admin/artists/new'
     | '/admin/contracts/id'
     | '/admin/distribution/id'
     | '/admin/legal/id'
@@ -488,6 +498,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/artist'
     | '/admin/artists/$artist'
+    | '/admin/artists/new'
     | '/admin/contracts/id'
     | '/admin/distribution/id'
     | '/admin/legal/id'
@@ -533,6 +544,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/artist/'
     | '/admin/artists/$artist'
+    | '/admin/artists/new'
     | '/admin/contracts/id'
     | '/admin/distribution/id'
     | '/admin/legal/id'
@@ -787,6 +799,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminArtistsArtistRouteImport
       parentRoute: typeof AdminArtistsRoute
     }
+    '/admin/artists/new': {
+      id: '/admin/artists/new'
+      path: '/new'
+      fullPath: '/admin/artists/new'
+      preLoaderRoute: typeof AdminArtistsNewRouteImport
+      parentRoute: typeof AdminArtistsRoute
+    }
     '/admin/contracts/id': {
       id: '/admin/contracts/id'
       path: '/id'
@@ -869,10 +888,12 @@ declare module '@tanstack/react-router' {
 
 interface AdminArtistsRouteChildren {
   AdminArtistsArtistRoute: typeof AdminArtistsArtistRoute
+  AdminArtistsNewRoute: typeof AdminArtistsNewRoute
 }
 
 const AdminArtistsRouteChildren: AdminArtistsRouteChildren = {
   AdminArtistsArtistRoute: AdminArtistsArtistRoute,
+  AdminArtistsNewRoute: AdminArtistsNewRoute,
 }
 
 const AdminArtistsRouteWithChildren = AdminArtistsRoute._addFileChildren(

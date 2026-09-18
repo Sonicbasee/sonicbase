@@ -4,7 +4,7 @@ import { Menu, Search, ShoppingBag, X, ArrowRight, Instagram, Youtube } from "lu
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { artists, heroSlides, news, products, releases, socials, type Artist, type Release } from "@/lib/sonicbase-data";
+import type { PublicArtist, PublicRelease, PublicNews, PublicMerch } from "@/lib/public-data";
 
 export function Logo({ className = "h-11 w-11" }: { className?: string }) {
   return (
@@ -63,7 +63,7 @@ export function SectionHeading({ children, action }: { children: ReactNode; acti
 
 /* ---------------------------------------------- header */
 
-export function Header() {
+export function Header({ artists = [], releases = [] }: { artists?: PublicArtist[]; releases?: PublicRelease[] }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const overlay = pathname === "/";
   const [searchOpen, setSearchOpen] = useState(false);
@@ -75,7 +75,7 @@ export function Header() {
       ...artists.filter((x) => x.name.toLowerCase().includes(q)).map((x) => ({ title: x.name, label: "Artist", to: "/artists/$artist" as const, params: { artist: x.slug } })),
       ...releases.filter((x) => `${x.title} ${x.artist}`.toLowerCase().includes(q)).map((x) => ({ title: x.title, label: x.artist, to: "/music/$release" as const, params: { release: x.slug } })),
     ];
-  }, [query]);
+  }, [query, artists, releases]);
 
   return (
     <>
@@ -121,8 +121,6 @@ export function Header() {
 }
 
 function CartPanel() {
-  const popular = products.slice(0, 4);
-
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -138,32 +136,12 @@ function CartPanel() {
             <Button variant="ghost" size="icon" aria-label="Close shopping bag"><X className="h-5 w-5" /></Button>
           </SheetClose>
         </div>
-
-        <div className="flex min-h-0 flex-1 flex-col px-5 pb-5">
-          <div className="flex items-center justify-between py-6 text-sm">
-            <span className="text-muted-foreground">Popular items</span>
-            <SheetClose asChild>
-              <Link to="/shop" className="inline-flex items-center gap-2 font-medium">Go to Shop <ArrowRight className="h-4 w-4" /></Link>
-            </SheetClose>
-          </div>
-
-          <div className="grid gap-4 overflow-y-auto">
-            {popular.map((product) => (
-              <article key={product.name} className="grid grid-cols-[90px_1fr] items-start gap-4">
-                <div className="aspect-square overflow-hidden rounded-[8px] bg-muted">
-                  <img src={product.image} alt="" width={180} height={180} className="h-full w-full object-cover" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium leading-snug">{product.name}</p>
-                  <p className="mt-1 text-xs text-muted-foreground">{product.price}</p>
-                </div>
-              </article>
-            ))}
-          </div>
-
-          <div className="mt-auto flex justify-center gap-3 pt-8" aria-label="Accepted payment methods">
-            {["VISA", "●●", "DISCOVER", "AMEX"].map((label) => <span key={label} className="inline-flex h-6 min-w-10 items-center justify-center rounded-[3px] border px-1.5 text-[9px] font-bold text-foreground">{label}</span>)}
-          </div>
+        <div className="flex min-h-0 flex-1 flex-col items-center justify-center px-5 pb-5">
+          <ShoppingBag className="h-12 w-12 text-muted-foreground/40" />
+          <p className="mt-4 text-sm text-muted-foreground">Browse the shop to find something you love.</p>
+          <SheetClose asChild>
+            <Link to="/shop" className="mt-4 inline-flex items-center gap-2 font-medium">Go to Shop <ArrowRight className="h-4 w-4" /></Link>
+          </SheetClose>
         </div>
       </SheetContent>
     </Sheet>
@@ -172,20 +150,32 @@ function CartPanel() {
 
 /* ---------------------------------------------- hero carousel */
 
-export function HeroCarousel() {
+export function HeroCarousel({ slides = [] }: { slides?: { title: string; subtitle: string; image: string; alt: string; primaryTo: string; secondaryTo: string }[] }) {
   const [index, setIndex] = useState(0);
-  const count = heroSlides.length;
+  const count = slides.length;
 
   useEffect(() => {
+    if (count === 0) return;
     const id = setInterval(() => setIndex((i) => (i + 1) % count), 12000);
     return () => clearInterval(id);
   }, [count]);
 
-  const active = heroSlides[index] ?? heroSlides[0]!;
+  const active = slides[index] ?? slides[0];
+
+  if (count === 0) {
+    return (
+      <section className="relative h-[92vh] min-h-[620px] overflow-hidden bg-primary text-primary-foreground flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="display-title text-[11vw] leading-[0.85] sm:text-[9vw] lg:text-[7rem]">Sonicbase</h1>
+          <p className="mt-3 text-lg font-medium uppercase md:text-2xl">Independent Music, Artist-Led</p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="relative h-[92vh] min-h-[620px] overflow-hidden bg-primary text-primary-foreground">
-      {heroSlides.map((slide, i) => (
+      {slides.map((slide, i) => (
         <img
           key={slide.title}
           src={slide.image}
@@ -197,8 +187,6 @@ export function HeroCarousel() {
       ))}
       <div className="absolute inset-0 bg-foreground/20" />
       <div className="absolute inset-x-0 bottom-0 h-3/4 bg-gradient-to-t from-foreground/95 via-foreground/40 to-transparent" />
-
-
       <div className="page-shell absolute inset-x-0 bottom-10 z-10 text-center">
         <h1 className="display-title text-[11vw] leading-[0.85] sm:text-[9vw] lg:text-[7rem]">{active.title}</h1>
         <p className="mt-3 text-lg font-medium uppercase md:text-2xl">{active.subtitle}</p>
@@ -207,7 +195,7 @@ export function HeroCarousel() {
           <Link to={active.secondaryTo} className="inline-flex items-center rounded-full bg-background px-8 py-2.5 text-base font-medium text-foreground transition-opacity hover:opacity-85">Watch</Link>
         </div>
         <div className="mt-7 flex justify-center gap-2.5" role="tablist" aria-label="Hero slides">
-          {heroSlides.map((slide, i) => (
+          {slides.map((slide, i) => (
             <button
               key={slide.title}
               type="button"
@@ -231,7 +219,11 @@ function MediaCard({ to, params, image, alt, tag, title, meta, ratio = "aspect-s
     <>
       <div className={`relative ${ratio} overflow-hidden rounded-[10px] bg-muted`}>
         {tag && <span className="absolute left-4 top-4 z-10"><Tag>{tag}</Tag></span>}
-        <img src={image} alt={alt} loading="lazy" width={1536} height={1536} className="image-reveal h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]" />
+        {image ? (
+          <img src={image} alt={alt} loading="lazy" width={1536} height={1536} className="image-reveal h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]" />
+        ) : (
+          <div className="h-full w-full bg-muted flex items-center justify-center text-muted-foreground text-sm">No image</div>
+        )}
       </div>
       <h3 className="mt-3 text-[15px] font-medium leading-snug">{title}</h3>
       {meta && <p className="mt-1 text-sm text-muted-foreground">{meta}</p>}
@@ -240,37 +232,45 @@ function MediaCard({ to, params, image, alt, tag, title, meta, ratio = "aspect-s
   return <Link to={to} params={params as never} className="group block">{inner}</Link>;
 }
 
-export function ArtistCard({ artist }: { artist: Artist }) {
-  return <MediaCard to="/artists/$artist" params={{ artist: artist.slug }} image={artist.image} alt={artist.name} tag={artist.genre.split(" · ")[0] ?? "ARTIST"} title={artist.name} meta={artist.city} ratio="aspect-square" />;
+export function ArtistCard({ artist }: { artist: PublicArtist }) {
+  return <MediaCard to="/artists/$artist" params={{ artist: artist.slug }} image={artist.image} alt={artist.name} tag={artist.genre.split(" · ")[0] || "ARTIST"} title={artist.name} meta={artist.city} ratio="aspect-square" />;
 }
 
-export function ReleaseCard({ release }: { release: Release }) {
+export function ReleaseCard({ release }: { release: PublicRelease }) {
   return <MediaCard to="/music/$release" params={{ release: release.slug }} image={release.image} alt={`${release.title} artwork`} tag={release.type} title={`${release.artist} — ${release.title}`} meta={release.date} />;
 }
 
-export function ProductCard({ product }: { product: { name: string; price: string; tag: string; image: string } }) {
+export function ProductCard({ product }: { product: PublicMerch }) {
   return (
     <article className="group">
       <div className="relative aspect-square overflow-hidden rounded-[10px] bg-muted">
         <span className="absolute left-4 top-4 z-10"><Tag>{product.tag}</Tag></span>
-        <img src={product.image} alt={product.name} loading="lazy" width={1536} height={1536} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]" />
+        {product.image ? (
+          <img src={product.image} alt={product.title} loading="lazy" width={1536} height={1536} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]" />
+        ) : (
+          <div className="h-full w-full bg-muted flex items-center justify-center text-muted-foreground text-sm">No image</div>
+        )}
       </div>
-      <h2 className="mt-3 text-[15px] font-medium leading-snug">{product.name}</h2>
-      <p className="mt-1 text-sm text-muted-foreground">{product.price}</p>
+      <h2 className="mt-3 text-[15px] font-medium leading-snug">{product.title}</h2>
+      <p className="mt-1 text-sm text-muted-foreground">₦{product.price.toLocaleString()}</p>
     </article>
   );
 }
 
 /* ---------------------------------------------- news */
 
-export function NewsFeature({ item }: { item: (typeof news)[number] }) {
+export function NewsFeature({ item }: { item: PublicNews }) {
   return (
     <article className="grid gap-4 rounded-[10px] bg-muted p-3 sm:grid-cols-[1.15fr_1fr] sm:items-center sm:gap-6">
       <div className="aspect-[16/10] overflow-hidden rounded-[8px]">
-        <img src={item.image} alt="" loading="lazy" width={1536} height={1536} className="h-full w-full object-cover" />
+        {item.image ? (
+          <img src={item.image} alt="" loading="lazy" width={1536} height={1536} className="h-full w-full object-cover" />
+        ) : (
+          <div className="h-full w-full bg-muted-foreground/10 flex items-center justify-center text-muted-foreground text-sm">No image</div>
+        )}
       </div>
       <div className="pb-2 pr-2">
-        <Tag>{item.tag}</Tag>
+        <Tag>{item.category}</Tag>
         <h3 className="mt-8 text-xl font-bold leading-tight sm:mt-10">{item.title}</h3>
         <p className="mt-2 text-sm leading-snug text-muted-foreground">{item.excerpt}</p>
       </div>
@@ -278,14 +278,25 @@ export function NewsFeature({ item }: { item: (typeof news)[number] }) {
   );
 }
 
-export function NewsGrid() {
+export function NewsGrid({ items = [] }: { items?: PublicNews[] }) {
+  if (items.length === 0) {
+    return (
+      <div className="text-center py-16">
+        <p className="text-muted-foreground">No news articles yet.</p>
+      </div>
+    );
+  }
   return (
     <div className="grid gap-3 lg:grid-cols-[1.55fr_1fr]">
-      <div className="grid gap-3">{news.slice(0, 2).map((item) => <NewsFeature key={item.title} item={item} />)}</div>
+      <div className="grid gap-3">{items.slice(0, 2).map((item) => <NewsFeature key={item.id} item={item} />)}</div>
       <div className="grid grid-cols-2 gap-3">
-        {news.slice(2).concat(news.slice(0, 2)).slice(0, 4).map((item, i) => (
-          <div key={`${item.title}-${i}`} className="aspect-square overflow-hidden rounded-[10px] bg-muted">
-            <img src={item.image} alt="" loading="lazy" width={1536} height={1536} className="h-full w-full object-cover" />
+        {items.slice(2).concat(items.slice(0, 2)).slice(0, 4).map((item, i) => (
+          <div key={`${item.id}-${i}`} className="aspect-square overflow-hidden rounded-[10px] bg-muted">
+            {item.image ? (
+              <img src={item.image} alt="" loading="lazy" width={1536} height={1536} className="h-full w-full object-cover" />
+            ) : (
+              <div className="h-full w-full bg-muted-foreground/10 flex items-center justify-center text-muted-foreground text-sm">No image</div>
+            )}
           </div>
         ))}
       </div>
@@ -295,8 +306,9 @@ export function NewsGrid() {
 
 /* ---------------------------------------------- socials */
 
-export function Socials() {
-  const loop = [...socials, ...socials];
+export function Socials({ images = [] }: { images?: { image: string; alt: string }[] }) {
+  if (images.length === 0) return null;
+  const loop = [...images, ...images];
   return (
     <section className="overflow-hidden py-16 md:py-20">
       <div className="page-shell">
@@ -306,7 +318,11 @@ export function Socials() {
         <div className="flex gap-5 pr-5">
         {loop.map((item, i) => (
           <div key={`${item.alt}-${i}`} className={`shrink-0 overflow-hidden rounded-[10px] bg-muted ${i % 3 === 1 ? "h-[230px] w-[230px]" : "h-[230px] w-[170px]"}`}>
-            <img src={item.image} alt={item.alt} loading="lazy" width={1536} height={1536} className="h-full w-full object-cover" />
+            {item.image ? (
+              <img src={item.image} alt={item.alt} loading="lazy" width={1536} height={1536} className="h-full w-full object-cover" />
+            ) : (
+              <div className="h-full w-full bg-muted-foreground/10" />
+            )}
           </div>
         ))}
         </div>

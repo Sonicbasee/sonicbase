@@ -11,6 +11,8 @@ CREATE TABLE IF NOT EXISTS artists (
   city TEXT DEFAULT '',
   genre TEXT DEFAULT '',
   image TEXT DEFAULT '',
+  bio TEXT DEFAULT '',
+  statement TEXT DEFAULT '',
   status TEXT DEFAULT 'Pending' CHECK (status IN ('Active','Pending','Draft','Archived')),
   created_at TIMESTAMPTZ DEFAULT now(),
   updated_at TIMESTAMPTZ DEFAULT now()
@@ -27,6 +29,8 @@ CREATE TABLE IF NOT EXISTS releases (
   revenue INT DEFAULT 0,
   release_date DATE DEFAULT CURRENT_DATE,
   cover TEXT DEFAULT '',
+  description TEXT DEFAULT '',
+  tracks TEXT[] DEFAULT '{}',
   platform_breakdown JSONB DEFAULT '[]',
   created_at TIMESTAMPTZ DEFAULT now(),
   updated_at TIMESTAMPTZ DEFAULT now()

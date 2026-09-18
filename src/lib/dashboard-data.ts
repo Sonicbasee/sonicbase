@@ -23,6 +23,8 @@ export type DashboardArtist = {
   city: string;
   genre: string;
   image: string;
+  bio: string;
+  statement: string;
   status: StatusType;
 };
 

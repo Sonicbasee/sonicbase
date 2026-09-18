@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { PageTitle, ProductCard } from "@/components/sonicbase";
-import { products } from "@/lib/sonicbase-data";
+import { fetchPublishedMerch } from "@/lib/public-data";
 
 export const Route = createFileRoute("/shop")({ head: () => ({ meta: [
   { title: "Shop — Sonicbase" }, { name: "description", content: "Limited music, prints and artist merchandise from Sonicbase." },
@@ -9,20 +10,15 @@ export const Route = createFileRoute("/shop")({ head: () => ({ meta: [
   { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" },
 ] }), component: ShopPage });
 
-const filters = ["Trending", "Bestsellers", "Box Sets", "Merch"] as const;
-const filterTags: Record<string, string[]> = {
-  Trending: [],
-  Bestsellers: ["VINYL"],
-  "Box Sets": ["VINYL", "PRINT"],
-  Merch: ["T-SHIRT", "POSTER", "ZINE"],
-};
+const filters = ["All", "Vinyl", "Prints", "Merch"] as const;
 
 function ShopPage() {
-  const [filter, setFilter] = useState<string>("Trending");
+  const { data: products = [], isLoading } = useQuery({ queryKey: ["public-merch"], queryFn: fetchPublishedMerch, staleTime: 60_000 });
+  const [filter, setFilter] = useState<string>("All");
   const shown = useMemo(() => {
-    const tags = filterTags[filter] ?? [];
-    return tags.length === 0 ? products : products.filter((p) => tags.includes(p.tag));
-  }, [filter]);
+    if (filter === "All") return products;
+    return products.filter((p) => p.tag.toUpperCase() === filter.toUpperCase() || p.description?.toLowerCase().includes(filter.toLowerCase()));
+  }, [filter, products]);
 
   return (
     <>
@@ -45,9 +41,11 @@ function ShopPage() {
         Shop
       </PageTitle>
       <section className="page-shell pb-28">
-        <div className="grid grid-cols-2 gap-x-3 gap-y-10 lg:grid-cols-4 xl:grid-cols-5">
-          {shown.map((p) => <ProductCard key={p.name} product={p} />)}
-        </div>
+        {isLoading ? <p className="text-muted-foreground py-8 text-center">Loading shop...</p> : (
+          <div className="grid grid-cols-2 gap-x-3 gap-y-10 lg:grid-cols-4 xl:grid-cols-5">
+            {shown.map((p) => <ProductCard key={p.id} product={p} />)}
+          </div>
+        )}
       </section>
     </>
   );

@@ -28,6 +28,11 @@ const users = [
     user_metadata: { full_name: "Amina Okafor", role: "admin" },
   },
   {
+    email: "sonicbasee@gmail.com",
+    password: "sonicbase123",
+    user_metadata: { full_name: "Sonicbase Admin", role: "admin" },
+  },
+  {
     email: "artist@sonicbase.com",
     password: "sonicbase123",
     user_metadata: { full_name: "Amara Vale", role: "artist" },

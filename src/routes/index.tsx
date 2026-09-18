@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { HeroCarousel, NewsGrid, PillLink, ProductCard, ReleaseCard, SectionHeading, Socials } from "@/components/sonicbase";
-import { products, releases } from "@/lib/sonicbase-data";
+import { fetchPublicArtists, fetchPublicReleases, fetchPublishedNews, fetchPublishedMerch } from "@/lib/public-data";
 
 export const Route = createFileRoute("/")({
   head: () => ({ meta: [
@@ -17,36 +18,53 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  const { data: artists = [] } = useQuery({ queryKey: ["public-artists"], queryFn: fetchPublicArtists, staleTime: 60_000 });
+  const { data: releases = [] } = useQuery({ queryKey: ["public-releases"], queryFn: fetchPublicReleases, staleTime: 60_000 });
+  const { data: newsItems = [] } = useQuery({ queryKey: ["public-news"], queryFn: fetchPublishedNews, staleTime: 60_000 });
+  const { data: merchItems = [] } = useQuery({ queryKey: ["public-merch"], queryFn: fetchPublishedMerch, staleTime: 60_000 });
+
   const [shopCategory, setShopCategory] = useState("Trending");
   const shopCategories = ["Trending", "Bestsellers", "Box Sets", "Merch"];
   const shopProducts = useMemo(() => {
-    if (shopCategory === "Bestsellers") return products.filter((product) => product.tag === "VINYL");
-    if (shopCategory === "Box Sets") return products.filter((product) => ["VINYL", "PRINT"].includes(product.tag));
-    if (shopCategory === "Merch") return products.filter((product) => ["T-SHIRT", "POSTER", "ZINE"].includes(product.tag));
-    return products.slice(0, 5);
-  }, [shopCategory]);
+    if (shopCategory === "Bestsellers") return merchItems.filter((p) => p.tag === "VINYL");
+    if (shopCategory === "Box Sets") return merchItems.filter((p) => ["VINYL", "PRINT"].includes(p.tag));
+    if (shopCategory === "Merch") return merchItems.filter((p) => ["T-SHIRT", "POSTER", "ZINE"].includes(p.tag));
+    return merchItems.slice(0, 5);
+  }, [shopCategory, merchItems]);
+
+  const heroSlides = artists.slice(0, 3).map((a) => ({
+    title: a.name,
+    subtitle: `${a.genre} · ${a.city}`,
+    image: a.image || "",
+    alt: a.name,
+    primaryTo: "/music",
+    secondaryTo: "/artists/$artist",
+    secondaryParams: { artist: a.slug },
+  }));
+
+  const socialImages = artists.filter((a) => a.image).map((a) => ({ image: a.image, alt: a.name }));
 
   return (
     <>
-      <HeroCarousel />
+      <HeroCarousel slides={heroSlides} />
 
       <section className="page-shell py-16 md:py-20">
         <SectionHeading action={<div className="flex max-w-full gap-2 overflow-x-auto pb-1">{shopCategories.map((category) => <Button key={category} variant={shopCategory === category ? "default" : "outline"} onClick={() => setShopCategory(category)}>{category}</Button>)}</div>}>Shop</SectionHeading>
         <div className="mt-12 grid grid-cols-2 gap-x-3 gap-y-10 lg:grid-cols-4 xl:grid-cols-5">
-          {shopProducts.map((p) => <ProductCard key={p.name} product={p} />)}
+          {shopProducts.map((p) => <ProductCard key={p.id} product={p} />)}
         </div>
       </section>
 
       <section className="page-shell pb-20 md:pb-28">
         <SectionHeading action={<PillLink to="/music">All Music</PillLink>}>Music</SectionHeading>
         <div className="mt-12 grid grid-cols-2 gap-x-3 gap-y-10 lg:grid-cols-3">
-          {releases.map((release) => <ReleaseCard key={release.slug} release={release} />)}
+          {releases.slice(0, 6).map((release) => <ReleaseCard key={release.id} release={release} />)}
         </div>
       </section>
 
       <section className="page-shell pb-20 md:pb-28">
         <SectionHeading action={<PillLink to="/news">All News</PillLink>}>News</SectionHeading>
-        <div className="mt-12"><NewsGrid /></div>
+        <div className="mt-12"><NewsGrid items={newsItems} /></div>
       </section>
 
       <section className="bg-primary py-20 text-primary-foreground md:py-28">
@@ -59,7 +77,7 @@ function Index() {
         </div>
       </section>
 
-      <Socials />
+      <Socials images={socialImages} />
     </>
   );
 }
