@@ -43,36 +43,6 @@ export type DashboardRelease = {
   platformBreakdown: { platform: string; value: number }[];
 };
 
-export type DashboardDistribution = {
-  id: string;
-  artist: string;
-  release: string;
-  status: StatusType;
-  platforms: string[];
-  submitted: string;
-  released: string;
-};
-
-export type DashboardContract = {
-  id: string;
-  artist: string;
-  type: string;
-  status: StatusType;
-  startDate: string;
-  endDate: string;
-  lastUpdated: string;
-  admin: string;
-};
-
-export type DashboardLegalMatter = {
-  id: string;
-  matter: string;
-  artist: string;
-  status: StatusType;
-  deadline: string;
-  assigned: string;
-};
-
 export type DashboardMerch = {
   id: string;
   title: string;
@@ -223,88 +193,6 @@ export const adminOverviewStats = {
   legal: { open: 3, pending: 5, attention: 2 },
   merchandise: { total: 26, published: 19, draft: 7 },
 };
-
-export const distributionRecords: DashboardDistribution[] = [
-  {
-    id: "D-1042",
-    artist: "Amara Vale",
-    release: "Afterlight",
-    status: "Distributed",
-    platforms: ["Spotify", "Apple Music", "YouTube Music"],
-    submitted: "2026-09-10",
-    released: "2026-09-18",
-  },
-  {
-    id: "D-1047",
-    artist: "Kairo North",
-    release: "Open Water",
-    status: "Processing",
-    platforms: ["Spotify", "Boomplay", "Audiomack"],
-    submitted: "2026-09-02",
-    released: "2026-09-08",
-  },
-  {
-    id: "D-1053",
-    artist: "Nova Eze",
-    release: "Static Bloom",
-    status: "Requires action",
-    platforms: ["Apple Music", "YouTube Music"],
-    submitted: "2026-08-28",
-    released: "2026-08-30",
-  },
-];
-
-export const contracts: DashboardContract[] = [
-  {
-    id: "C-401",
-    artist: "Amara Vale",
-    type: "Distribution",
-    status: "Active",
-    startDate: "2026-01-04",
-    endDate: "2027-01-04",
-    lastUpdated: "2026-08-12",
-    admin: "Chinwe Adebayo",
-  },
-  {
-    id: "C-423",
-    artist: "Kairo North",
-    type: "Publishing",
-    status: "Pending signature",
-    startDate: "2026-09-01",
-    endDate: "2028-09-01",
-    lastUpdated: "2026-09-11",
-    admin: "Tunde Ojo",
-  },
-  {
-    id: "C-438",
-    artist: "Nova Eze",
-    type: "Merchandising",
-    status: "Expiring",
-    startDate: "2025-06-15",
-    endDate: "2026-10-15",
-    lastUpdated: "2026-09-07",
-    admin: "Lola Femi",
-  },
-];
-
-export const legalMatters: DashboardLegalMatter[] = [
-  {
-    id: "L-120",
-    matter: "Clearance review for sample usage",
-    artist: "Kairo North",
-    status: "In review",
-    deadline: "2026-09-22",
-    assigned: "Dami Cole",
-  },
-  {
-    id: "L-145",
-    matter: "Distribution metadata dispute",
-    artist: "Nova Eze",
-    status: "Awaiting document",
-    deadline: "2026-09-20",
-    assigned: "Maya Eze",
-  },
-];
 
 export const merchandise: DashboardMerch[] = [
   {

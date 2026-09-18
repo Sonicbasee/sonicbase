@@ -5,11 +5,9 @@ import {
   PanelGrid,
   SectionCard,
   StatCard,
-  StatusBadge,
-  TableCard,
   formatMoney,
 } from "@/components/dashboard";
-import { fetchArtists, fetchReleases, fetchDistributions } from "@/lib/api";
+import { fetchArtists, fetchReleases } from "@/lib/api";
 
 export const Route = createFileRoute("/admin/")({
   component: AdminOverviewPage,
@@ -43,10 +41,6 @@ function AdminOverviewPage() {
   const { data: releases = [] } = useQuery({
     queryKey: ["releases"],
     queryFn: fetchReleases,
-  });
-  const { data: distributions = [] } = useQuery({
-    queryKey: ["distributions"],
-    queryFn: fetchDistributions,
   });
 
   const totalStreams = releases.reduce((sum, r) => sum + r.streams, 0);
@@ -128,24 +122,6 @@ function AdminOverviewPage() {
         </SectionCard>
       </div>
 
-      <div className="mt-6">
-        <SectionCard title="Recent distribution activity" eyebrow="Operations">
-          <TableCard
-            columns={[
-              { key: "artist", label: "Artist" },
-              { key: "release", label: "Release" },
-              { key: "status", label: "Status" },
-              { key: "platforms", label: "Platforms" },
-            ]}
-            rows={distributions.slice(0, 5).map((d) => ({
-              artist: d.artist,
-              release: d.release,
-              status: <StatusBadge status={d.status} />,
-              platforms: d.platforms.join(", "),
-            }))}
-          />
-        </SectionCard>
-      </div>
     </DashboardPage>
   );
 }
