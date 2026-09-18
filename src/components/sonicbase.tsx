@@ -195,7 +195,7 @@ function MediaCard({ to, params, image, alt, tag, title, meta, ratio = "aspect-s
 }
 
 export function ArtistCard({ artist }: { artist: Artist }) {
-  return <MediaCard to="/artists/$artist" params={{ artist: artist.slug }} image={artist.image} alt={artist.name} tag={artist.genre.split(" · ")[0]} title={artist.name} meta={artist.city} ratio="aspect-square" />;
+  return <MediaCard to="/artists/$artist" params={{ artist: artist.slug }} image={artist.image} alt={artist.name} tag={artist.genre.split(" · ")[0] ?? "ARTIST"} title={artist.name} meta={artist.city} ratio="aspect-square" />;
 }
 
 export function ReleaseCard({ release }: { release: Release }) {
