@@ -1,4 +1,20 @@
-export type StatusType = "Draft" | "Pending" | "Published" | "Processing" | "Distributed" | "Failed" | "Active" | "Scheduled" | "Archived" | "Requires action" | "Open" | "Resolved";
+export type StatusType = 
+  | "Draft"
+  | "Pending"
+  | "Published"
+  | "Processing"
+  | "Distributed"
+  | "Failed"
+  | "Active"
+  | "Scheduled"
+  | "Archived"
+  | "Requires action"
+  | "Open"
+  | "Resolved"
+  | "Pending signature"
+  | "Expiring"
+  | "In review"
+  | "Awaiting document";
 
 export type DashboardArtist = {
   id: string;
@@ -14,7 +30,8 @@ export type DashboardRelease = {
   id: string;
   title: string;
   artist: string;
-  artistId: string;
+  artistId?: string;
+  artistSlug?: string;
   type: "Album" | "EP" | "Single";
   status: StatusType;
   streams: number;

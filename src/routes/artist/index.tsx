@@ -1,15 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { DashboardPage, PanelGrid, SectionCard, StatCard, StatusBadge, TableCard, formatMoney } from "@/components/dashboard";
-import { artistRevenueSeries, artistStreamSeries, dashboardReleases } from "@/lib/dashboard-data";
+import { artistRevenueSeries, artistStreamSeries, dashboardReleases, type DashboardRelease } from "@/lib/dashboard-data";
+import { dashboardArtists, type DashboardArtist } from "@/lib/dashboard-data";
 
 export const Route = createFileRoute("/artist/")({
   component: ArtistOverviewPage,
 });
 
 function ArtistOverviewPage() {
-  const release = dashboardReleases[0];
+  const release: DashboardRelease = dashboardReleases[0] || { id: "afterlight", title: "Afterlight", artist: "Amara Vale", artistSlug: "amara-vale", image: "", type: "EP", status: "Published", date: "2026-09-18", description: "", streams: 0, revenue: 0, cover: "", platformBreakdown: [] } as DashboardRelease;
   const totalRevenue = artistRevenueSeries.reduce((sum, item) => sum + item.revenue, 0);
   const totalStreams = artistStreamSeries.reduce((sum, item) => sum + item.value, 0);
+
+  const artist: DashboardArtist = dashboardArtists.find((a) => a.name === "Amara Vale") || { id: "amara", name: "Amara Vale", email: "amara@sonicbase.com", city: "Lagos", genre: "Alt-R&B", image: "", status: "Active" } as DashboardArtist;
 
   return (
     <DashboardPage title="Artist overview" subtitle="Track performance, streams and revenue in one place." actions={<div className="rounded-full bg-muted px-3 py-1.5 text-xs font-medium text-muted-foreground">Live snapshot</div>}>

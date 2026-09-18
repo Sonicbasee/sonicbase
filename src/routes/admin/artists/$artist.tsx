@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { DashboardPage, SectionCard, StatusBadge } from "@/components/dashboard";
-import { dashboardArtists } from "@/lib/dashboard-data";
+import { dashboardArtists, type DashboardArtist } from "@/lib/dashboard-data";
 import { requireAuth } from "@/lib/route-access";
 
 export const Route = createFileRoute("/admin/artists/$artist")({
@@ -10,7 +10,8 @@ export const Route = createFileRoute("/admin/artists/$artist")({
 
 function AdminArtistDetailPage() {
   const { artist } = Route.useParams();
-  const item = dashboardArtists.find((entry) => entry.id === artist) ?? dashboardArtists[0];
+  const entry = dashboardArtists.find((entry) => entry.id === artist);
+  const item: DashboardArtist = entry || { id: "amara", name: "Amara Vale", email: "amara@sonicbase.com", city: "Lagos", genre: "Alt-R&B", image: "", status: "Active" };
 
   return (
     <DashboardPage title={item.name} subtitle="Artist management overview and profile details.">

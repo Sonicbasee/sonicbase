@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { DashboardPage, SectionCard, StatusBadge } from "@/components/dashboard";
-import { dashboardReleases } from "@/lib/dashboard-data";
+import { dashboardReleases, type DashboardRelease } from "@/lib/dashboard-data";
 import { requireAuth } from "@/lib/route-access";
 
 export const Route = createFileRoute("/admin/releases/release")({
@@ -10,7 +10,7 @@ export const Route = createFileRoute("/admin/releases/release")({
 
 function AdminReleaseDetailPage() {
   const { release } = Route.useParams();
-  const item = dashboardReleases.find((entry) => entry.id === release) ?? dashboardReleases[0];
+  const item: DashboardRelease = dashboardReleases.find((entry) => entry.id === release) || dashboardReleases[0] || { id: "afterlight", title: "Afterlight", artist: "Amara Vale", artistSlug: "amara-vale", image: "", type: "EP", status: "Published", date: "2026-09-18", description: "", streams: 0, revenue: 0, cover: "", platformBreakdown: [] };
 
   return (
     <DashboardPage title={item.title} subtitle="Release management and metadata overview.">

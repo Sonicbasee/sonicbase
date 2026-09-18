@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { DashboardPage, SectionCard, StatusBadge } from "@/components/dashboard";
-import { legalMatters } from "@/lib/dashboard-data";
+import { legalMatters, type DashboardLegalMatter } from "@/lib/dashboard-data";
 import { requireAuth } from "@/lib/route-access";
 
 export const Route = createFileRoute("/admin/legal/id")({
@@ -10,7 +10,7 @@ export const Route = createFileRoute("/admin/legal/id")({
 
 function LegalDetailPage() {
   const { id } = Route.useParams();
-  const item = legalMatters.find((matter) => matter.id === id) ?? legalMatters[0];
+  const item: DashboardLegalMatter = legalMatters.find((matter) => matter.id === id) || legalMatters[0] || { id: "L-120", matter: "Clearance review for sample usage", artist: "Kairo North", status: "In review", deadline: "2026-09-22", assigned: "Dami Cole" };
 
   return (
     <DashboardPage title={item.matter} subtitle="Legal matter review and deadline tracking.">

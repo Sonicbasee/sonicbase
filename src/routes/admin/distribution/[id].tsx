@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { DashboardPage, SectionCard, StatusBadge } from "@/components/dashboard";
-import { distributionRecords } from "@/lib/dashboard-data";
+import { distributionRecords, type DashboardDistribution } from "@/lib/dashboard-data";
 import { requireAuth } from "@/lib/route-access";
 
 export const Route = createFileRoute("/admin/distribution/id")({
@@ -10,10 +10,10 @@ export const Route = createFileRoute("/admin/distribution/id")({
 
 function DistributionDetailPage() {
   const { id } = Route.useParams();
-  const item = distributionRecords.find((entry) => entry.id === id) ?? distributionRecords[0];
+  const item: DashboardDistribution = distributionRecords.find((entry) => entry.id === id) || distributionRecords[0] || { id: "D-1042", artist: "Amara Vale", release: "Afterlight", status: "Distributed", platforms: ["Spotify", "Apple Music", "YouTube Music"], submitted: "2026-09-10", released: "2026-09-18" };
 
   return (
-    <DashboardPage title={item.id} subtitle="Distribution status and platform details.">
+    <DashboardPage title={item.release} subtitle="Distribution status and platform details.">
       <div className="grid gap-6 xl:grid-cols-[0.8fr_1.2fr]">
         <SectionCard title="Release" eyebrow="Overview">
           <div className="space-y-3">

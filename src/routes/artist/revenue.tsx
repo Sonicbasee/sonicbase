@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { DashboardPage, PanelGrid, SectionCard, StatCard, TableCard, formatMoney } from "@/components/dashboard";
-import { artistRevenueSeries, dashboardReleases } from "@/lib/dashboard-data";
+import { artistRevenueSeries, dashboardReleases, type DashboardRelease } from "@/lib/dashboard-data";
 import { requireAuth } from "@/lib/route-access";
 
 export const Route = createFileRoute("/artist/revenue")({
@@ -10,6 +10,8 @@ export const Route = createFileRoute("/artist/revenue")({
 
 function ArtistRevenuePage() {
   const totalEarnings = artistRevenueSeries.reduce((sum, item) => sum + item.revenue, 0);
+
+  const releaseForPlatforms: DashboardRelease = dashboardReleases[0] || { id: "afterlight", title: "Afterlight", artist: "Amara Vale", artistSlug: "amara-vale", image: "", type: "EP", status: "Published", date: "2026-09-18", description: "", streams: 0, revenue: 0, cover: "", platformBreakdown: [] } as DashboardRelease;
 
   return (
     <DashboardPage title="Revenue" subtitle="Track earnings, payments and trendlines across platforms." actions={<div className="flex gap-2"><button className="rounded-full border border-border bg-background px-3 py-1.5 text-xs font-medium">Last 30 days</button></div>}>
@@ -34,7 +36,7 @@ function ArtistRevenuePage() {
 
         <SectionCard title="Platform revenue" eyebrow="Breakdown">
           <div className="space-y-4">
-            {dashboardReleases[0].platformBreakdown.map((item) => (
+            {releaseForPlatforms.platformBreakdown.map((item) => (
               <div key={item.platform}>
                 <div className="mb-1 flex justify-between text-sm">
                   <span>{item.platform}</span>

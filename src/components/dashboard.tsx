@@ -168,7 +168,7 @@ export function DashboardPage({
   actions,
 }: {
   title: string;
-  subtitle?: string;
+  subtitle: string;
   children: ReactNode;
   actions?: ReactNode;
 }) {
@@ -223,10 +223,10 @@ function DashboardShell({
 
         <nav className="flex-1 space-y-1 p-4">
           {nav.map(({ label, path, icon: Icon }) => (
-            <Link
+<Link
               key={path}
               to={path}
-              className={({ isActive }) =>`flex items-center justify-between rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${isActive ? "bg-foreground text-background" : "text-muted-foreground hover:bg-muted hover:text-foreground"}`}
+              className="flex items-center justify-between rounded-xl px-3 py-2.5 text-sm font-medium transition-colors hover:bg-muted hover:text-foreground"
             >
               <span className="flex items-center gap-3">
                 <Icon className="h-4 w-4" />
@@ -265,11 +265,11 @@ function DashboardShell({
                   </div>
                   <nav className="space-y-1 p-4">
                     {nav.map(({ label, path, icon: Icon }) => (
-                      <Link
+<Link
                         key={path}
                         to={path}
                         onClick={() => setSidebarOpen(false)}
-                        className={({ isActive }) =>`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${isActive ? "bg-foreground text-background" : "text-muted-foreground hover:bg-muted hover:text-foreground"}`}
+                        className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors hover:bg-muted hover:text-foreground"
                       >
                         <Icon className="h-4 w-4" />
                         {label}

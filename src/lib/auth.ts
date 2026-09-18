@@ -1,29 +1,6 @@
+import { createClient } from "@supabase/supabase-js";
+
 export type UserRole = "admin" | "artist";
-
-export type AuthUser = {
-  id: string;
-  name: string;
-  email: string;
-  password: string;
-  role: UserRole;
-};
-
-export const appUsers: AuthUser[] = [
-  {
-    id: "admin-1",
-    name: "Amina Okafor",
-    email: "admin@sonicbase.com",
-    password: "sonicbase123",
-    role: "admin",
-  },
-  {
-    id: "artist-1",
-    name: "Amara Vale",
-    email: "artist@sonicbase.com",
-    password: "sonicbase123",
-    role: "artist",
-  },
-];
 
 export type SessionUser = {
   id: string;
@@ -31,6 +8,14 @@ export type SessionUser = {
   email: string;
   role: UserRole;
 };
+
+const supabaseUrl = import.meta.env["VITE_SUPABASE_URL"];
+const supabasePublishableKey = import.meta.env["VITE_SUPABASE_PUBLISHABLE_KEY"];
+
+const supabase = createClient(
+  supabaseUrl || "https://placeholder.supabase.co",
+  supabasePublishableKey || "placeholder-key"
+);
 
 const SESSION_KEY = "sonicbase-session";
 
@@ -57,24 +42,98 @@ export function clearStoredSession() {
   window.localStorage.removeItem(SESSION_KEY);
 }
 
-export function loginUser(email: string, password: string): SessionUser | null {
-  const match = appUsers.find(
-    (user) => user.email.toLowerCase() === email.trim().toLowerCase() && user.password === password,
-  );
+export async function loginUser(email: string, password: string): Promise<SessionUser | null> {
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
 
-  if (!match) return null;
+  if (error || !data.user) return null;
 
-  const session = {
-    id: match.id,
-    name: match.name,
-    email: match.email,
-    role: match.role,
+  const { user } = data;
+  const rawRole: string | undefined = user.user_metadata?.["role"];
+  const role: UserRole = (rawRole as string) === "admin" ? "admin" : "artist";
+  const fullName: string | undefined = user.user_metadata?.["full_name"] as string;
+  const userEmail = user.email || "user@sonicbase.com";
+
+  const session: SessionUser = {
+    id: user.id,
+    name: fullName || "User",
+    email: userEmail,
+    role,
   };
 
   setStoredSession(session);
   return session;
 }
 
-export function logoutUser() {
+export async function signupUser(name: string, email: string, password: string, role: UserRole): Promise<SessionUser | null> {
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: {
+        full_name: name,
+        role,
+      },
+    },
+  });
+
+  if (error || !data.user) return null;
+
+  const session: SessionUser = {
+    id: data.user.id,
+    name: name,
+    email: email,
+    role,
+  };
+
+  setStoredSession(session);
+  return session;
+}
+
+export async function logoutUser() {
+  await supabase.auth.signOut();
   clearStoredSession();
+}
+
+export async function getCurrentSession(): Promise<SessionUser | null> {
+  const stored = getStoredSession();
+  if (stored) {
+    try {
+      const { data, error } = await supabase.auth.getSession();
+      if (error || !data.session) {
+        clearStoredSession();
+        return null;
+      }
+      return stored;
+    } catch {
+      clearStoredSession();
+      return null;
+    }
+  }
+
+  try {
+    const { data, error } = await supabase.auth.getSession();
+    if (error || !data.session) {
+      return null;
+    }
+
+    const { user } = data.session;
+    const rawRole: string | undefined = user.user_metadata?.["role"];
+    const role: UserRole = (rawRole as string) === "admin" ? "admin" : "artist";
+    const rawFullName: string | undefined = user.user_metadata?.["full_name"];
+    const userEmail = user.email || "user@sonicbase.com";
+    const session: SessionUser = {
+      id: user.id,
+      name: rawFullName || "User",
+      email: userEmail,
+      role,
+    };
+
+    setStoredSession(session);
+    return session;
+  } catch (e) {
+    return getStoredSession();
+  }
 }

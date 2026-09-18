@@ -1,6 +1,6 @@
 import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Eye, EyeOff, LockKeyhole } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Logo } from "@/components/sonicbase";
@@ -18,8 +18,8 @@ export const Route = createFileRoute("/login")({
 
 function LoginPage() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("admin@sonicbase.com");
-  const [password, setPassword] = useState("sonicbase123");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -34,11 +34,11 @@ function LoginPage() {
     }
 
     setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 600));
 
-    const session = loginUser(email, password);
+    const session = await loginUser(email, password);
+
     if (!session) {
-      setError("We couldn't find a matching account. Try the demo credentials below.");
+      setError("Invalid email or password. Please check your credentials.");
       setIsLoading(false);
       return;
     }
@@ -85,17 +85,6 @@ function LoginPage() {
             {isLoading ? "Signing in..." : "Sign in"}
           </Button>
         </form>
-
-        <div className="mt-6 rounded-2xl border border-border bg-muted/40 p-4 text-sm text-muted-foreground">
-          <div className="flex items-center gap-2 font-medium text-foreground">
-            <LockKeyhole className="h-4 w-4" />
-            Demo credentials
-          </div>
-          <ul className="mt-3 space-y-2">
-            <li>Admin: admin@sonicbase.com / sonicbase123</li>
-            <li>Artist: artist@sonicbase.com / sonicbase123</li>
-          </ul>
-        </div>
       </div>
     </div>
   );
