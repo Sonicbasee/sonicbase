@@ -21,6 +21,7 @@ import { Route as MusicRouteImport } from './routes/music'
 import { Route as NewsRouteImport } from './routes/news'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ShopRouteImport } from './routes/shop'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AdminArtistsRouteImport } from './routes/admin/artists'
 import { Route as AdminContractsRouteImport } from './routes/admin/contracts'
 import { Route as AdminDistributionRouteImport } from './routes/admin/distribution'
@@ -32,6 +33,7 @@ import { Route as AdminReleasesRouteImport } from './routes/admin/releases'
 import { Route as AdminReportsRouteImport } from './routes/admin/reports'
 import { Route as AdminRevenueRouteImport } from './routes/admin/revenue'
 import { Route as AdminStreamsRouteImport } from './routes/admin/streams'
+import { Route as ArtistIndexRouteImport } from './routes/artist/index'
 import { Route as ArtistProfileRouteImport } from './routes/artist/profile'
 import { Route as ArtistReleasesRouteImport } from './routes/artist/releases'
 import { Route as ArtistRevenueRouteImport } from './routes/artist/revenue'
@@ -111,6 +113,11 @@ const ShopRoute = ShopRouteImport.update({
   path: '/shop',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminArtistsRoute = AdminArtistsRouteImport.update({
   id: '/artists',
   path: '/artists',
@@ -165,6 +172,11 @@ const AdminStreamsRoute = AdminStreamsRouteImport.update({
   id: '/streams',
   path: '/streams',
   getParentRoute: () => AdminRoute,
+} as any)
+const ArtistIndexRoute = ArtistIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ArtistRoute,
 } as any)
 const ArtistProfileRoute = ArtistProfileRouteImport.update({
   id: '/profile',
@@ -294,6 +306,8 @@ export interface FileRoutesByFullPath {
   '/artist/streams': typeof ArtistStreamsRoute
   '/artists/$artist': typeof ArtistsArtistRoute
   '/music/$release': typeof MusicReleaseRoute
+  '/admin/': typeof AdminIndexRoute
+  '/artist/': typeof ArtistIndexRoute
   '/admin/artists/$artist': typeof AdminArtistsArtistRoute
   '/admin/contracts/id': typeof AdminContractsChar91idChar93Route
   '/admin/distribution/id': typeof AdminDistributionChar91idChar93Route
@@ -310,8 +324,6 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/admin': typeof AdminRouteWithChildren
-  '/artist': typeof ArtistRouteWithChildren
   '/artists': typeof ArtistsRouteWithChildren
   '/contact': typeof ContactRoute
   '/forgot-password': typeof ForgotPasswordRoute
@@ -337,6 +349,8 @@ export interface FileRoutesByTo {
   '/artist/streams': typeof ArtistStreamsRoute
   '/artists/$artist': typeof ArtistsArtistRoute
   '/music/$release': typeof MusicReleaseRoute
+  '/admin': typeof AdminIndexRoute
+  '/artist': typeof ArtistIndexRoute
   '/admin/artists/$artist': typeof AdminArtistsArtistRoute
   '/admin/contracts/id': typeof AdminContractsChar91idChar93Route
   '/admin/distribution/id': typeof AdminDistributionChar91idChar93Route
@@ -381,6 +395,8 @@ export interface FileRoutesById {
   '/artist/streams': typeof ArtistStreamsRoute
   '/artists/$artist': typeof ArtistsArtistRoute
   '/music/$release': typeof MusicReleaseRoute
+  '/admin/': typeof AdminIndexRoute
+  '/artist/': typeof ArtistIndexRoute
   '/admin/artists/$artist': typeof AdminArtistsArtistRoute
   '/admin/contracts/id': typeof AdminContractsChar91idChar93Route
   '/admin/distribution/id': typeof AdminDistributionChar91idChar93Route
@@ -426,6 +442,8 @@ export interface FileRouteTypes {
     | '/artist/streams'
     | '/artists/$artist'
     | '/music/$release'
+    | '/admin/'
+    | '/artist/'
     | '/admin/artists/$artist'
     | '/admin/contracts/id'
     | '/admin/distribution/id'
@@ -442,8 +460,6 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
-    | '/admin'
-    | '/artist'
     | '/artists'
     | '/contact'
     | '/forgot-password'
@@ -469,6 +485,8 @@ export interface FileRouteTypes {
     | '/artist/streams'
     | '/artists/$artist'
     | '/music/$release'
+    | '/admin'
+    | '/artist'
     | '/admin/artists/$artist'
     | '/admin/contracts/id'
     | '/admin/distribution/id'
@@ -512,6 +530,8 @@ export interface FileRouteTypes {
     | '/artist/streams'
     | '/artists/$artist'
     | '/music/$release'
+    | '/admin/'
+    | '/artist/'
     | '/admin/artists/$artist'
     | '/admin/contracts/id'
     | '/admin/distribution/id'
@@ -627,6 +647,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ShopRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/artists': {
       id: '/admin/artists'
       path: '/artists'
@@ -703,6 +730,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/streams'
       preLoaderRoute: typeof AdminStreamsRouteImport
       parentRoute: typeof AdminRoute
+    }
+    '/artist/': {
+      id: '/artist/'
+      path: '/'
+      fullPath: '/artist/'
+      preLoaderRoute: typeof ArtistIndexRouteImport
+      parentRoute: typeof ArtistRoute
     }
     '/artist/profile': {
       id: '/artist/profile'
@@ -950,6 +984,7 @@ interface AdminRouteChildren {
   AdminReportsRoute: typeof AdminReportsRoute
   AdminRevenueRoute: typeof AdminRevenueRoute
   AdminStreamsRoute: typeof AdminStreamsRoute
+  AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
@@ -964,6 +999,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminReportsRoute: AdminReportsRoute,
   AdminRevenueRoute: AdminRevenueRoute,
   AdminStreamsRoute: AdminStreamsRoute,
+  AdminIndexRoute: AdminIndexRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
@@ -985,6 +1021,7 @@ interface ArtistRouteChildren {
   ArtistReleasesRoute: typeof ArtistReleasesRouteWithChildren
   ArtistRevenueRoute: typeof ArtistRevenueRoute
   ArtistStreamsRoute: typeof ArtistStreamsRoute
+  ArtistIndexRoute: typeof ArtistIndexRoute
 }
 
 const ArtistRouteChildren: ArtistRouteChildren = {
@@ -992,6 +1029,7 @@ const ArtistRouteChildren: ArtistRouteChildren = {
   ArtistReleasesRoute: ArtistReleasesRouteWithChildren,
   ArtistRevenueRoute: ArtistRevenueRoute,
   ArtistStreamsRoute: ArtistStreamsRoute,
+  ArtistIndexRoute: ArtistIndexRoute,
 }
 
 const ArtistRouteWithChildren =
