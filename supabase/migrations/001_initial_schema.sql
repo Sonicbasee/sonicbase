@@ -112,25 +112,25 @@ ALTER TABLE merchandise ENABLE ROW LEVEL SECURITY;
 ALTER TABLE news ENABLE ROW LEVEL SECURITY;
 
 -- Admin full access, artists read-only on their own data
-CREATE POLICY "Admin full access" ON artists FOR ALL USING (auth.jwt()->'app_metadata'->>'role' = 'admin');
+CREATE POLICY "Admin full access" ON artists FOR ALL USING (auth.jwt()->'user_metadata'->>'role' = 'admin');
 CREATE POLICY "Artist read own" ON artists FOR SELECT USING (auth.uid()::text = id::text);
 
-CREATE POLICY "Admin full access" ON releases FOR ALL USING (auth.jwt()->'app_metadata'->>'role' = 'admin');
+CREATE POLICY "Admin full access" ON releases FOR ALL USING (auth.jwt()->'user_metadata'->>'role' = 'admin');
 CREATE POLICY "Artist read own" ON releases FOR SELECT USING (artist_id IN (SELECT id FROM artists WHERE email = auth.email()));
 
-CREATE POLICY "Admin full access" ON distributions FOR ALL USING (auth.jwt()->'app_metadata'->>'role' = 'admin');
+CREATE POLICY "Admin full access" ON distributions FOR ALL USING (auth.jwt()->'user_metadata'->>'role' = 'admin');
 CREATE POLICY "Artist read own" ON distributions FOR SELECT USING (artist_id IN (SELECT id FROM artists WHERE email = auth.email()));
 
-CREATE POLICY "Admin full access" ON contracts FOR ALL USING (auth.jwt()->'app_metadata'->>'role' = 'admin');
+CREATE POLICY "Admin full access" ON contracts FOR ALL USING (auth.jwt()->'user_metadata'->>'role' = 'admin');
 CREATE POLICY "Artist read own" ON contracts FOR SELECT USING (artist_id IN (SELECT id FROM artists WHERE email = auth.email()));
 
-CREATE POLICY "Admin full access" ON legal_matters FOR ALL USING (auth.jwt()->'app_metadata'->>'role' = 'admin');
+CREATE POLICY "Admin full access" ON legal_matters FOR ALL USING (auth.jwt()->'user_metadata'->>'role' = 'admin');
 CREATE POLICY "Artist read own" ON legal_matters FOR SELECT USING (artist_id IN (SELECT id FROM artists WHERE email = auth.email()));
 
-CREATE POLICY "Admin full access" ON merchandise FOR ALL USING (auth.jwt()->'app_metadata'->>'role' = 'admin');
+CREATE POLICY "Admin full access" ON merchandise FOR ALL USING (auth.jwt()->'user_metadata'->>'role' = 'admin');
 CREATE POLICY "Public read published" ON merchandise FOR SELECT USING (status = 'Published');
 
-CREATE POLICY "Admin full access" ON news FOR ALL USING (auth.jwt()->'app_metadata'->>'role' = 'admin');
+CREATE POLICY "Admin full access" ON news FOR ALL USING (auth.jwt()->'user_metadata'->>'role' = 'admin');
 CREATE POLICY "Public read published" ON news FOR SELECT USING (status = 'Published');
 
 -- Storage buckets
@@ -138,6 +138,6 @@ INSERT INTO storage.buckets (id, name, public) VALUES ('images', 'images', true)
 ON CONFLICT (id) DO NOTHING;
 
 CREATE POLICY "Public read images" ON storage.objects FOR SELECT USING (bucket_id = 'images');
-CREATE POLICY "Admin upload images" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'images' AND auth.jwt()->'app_metadata'->>'role' = 'admin');
-CREATE POLICY "Admin update images" ON storage.objects FOR UPDATE USING (bucket_id = 'images' AND auth.jwt()->'app_metadata'->>'role' = 'admin');
-CREATE POLICY "Admin delete images" ON storage.objects FOR DELETE USING (bucket_id = 'images' AND auth.jwt()->'app_metadata'->>'role' = 'admin');
+CREATE POLICY "Admin upload images" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'images' AND auth.jwt()->'user_metadata'->>'role' = 'admin');
+CREATE POLICY "Admin update images" ON storage.objects FOR UPDATE USING (bucket_id = 'images' AND auth.jwt()->'user_metadata'->>'role' = 'admin');
+CREATE POLICY "Admin delete images" ON storage.objects FOR DELETE USING (bucket_id = 'images' AND auth.jwt()->'user_metadata'->>'role' = 'admin');
