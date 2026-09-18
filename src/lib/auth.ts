@@ -41,16 +41,14 @@ export async function loginUser(email: string, password: string): Promise<Sessio
       password,
     });
 
-    if (error) { console.error("Login error:", error.message); return null; }
-    if (!data.user) { console.error("No user returned"); return null; }
+    if (error) return null;
+    if (!data.user) return null;
 
     const { user } = data;
     const rawRole: string | undefined = user.user_metadata?.["role"];
     const role: UserRole = (rawRole as string) === "admin" ? "admin" : "artist";
     const fullName: string | undefined = user.user_metadata?.["full_name"] as string;
     const userEmail = user.email || "user@sonicbase.com";
-
-    console.log("Login success, role:", role, "user_metadata:", user.user_metadata);
 
     const session: SessionUser = {
       id: user.id,
@@ -61,8 +59,7 @@ export async function loginUser(email: string, password: string): Promise<Sessio
 
     setStoredSession(session);
     return session;
-  } catch (e) {
-    console.error("Login exception:", e);
+  } catch {
     return null;
   }
 }
