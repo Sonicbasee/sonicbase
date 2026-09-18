@@ -1,0 +1,26 @@
+import { n as __exportAll$1 } from "../_runtime.mjs";
+import { t as getStoredSession } from "./auth-DiGeC_3j.mjs";
+import { A as redirect } from "../_libs/@tanstack/react-router+[...].mjs";
+//#region node_modules/.nitro/vite/services/ssr/assets/route-access-BhXKI0Kn.js
+var route_access_BhXKI0Kn_exports = /* @__PURE__ */ __exportAll$1({
+	n: () => route_access_exports,
+	t: () => requireAuth
+});
+var __defProp = Object.defineProperty;
+var __exportAll = (all, no_symbols) => {
+	let target = {};
+	for (var name in all) __defProp(target, name, {
+		get: all[name],
+		enumerable: true
+	});
+	if (!no_symbols) __defProp(target, Symbol.toStringTag, { value: "Module" });
+	return target;
+};
+var route_access_exports = /* @__PURE__ */ __exportAll({ requireAuth: () => requireAuth });
+async function requireAuth(requiredRole) {
+	const session = typeof window === "undefined" ? null : getStoredSession();
+	if (!session) throw redirect({ to: "/login" });
+	if (requiredRole && session.role !== requiredRole) throw redirect({ to: session.role === "admin" ? "/admin" : "/artist" });
+}
+//#endregion
+export { route_access_BhXKI0Kn_exports as n, requireAuth as t };
