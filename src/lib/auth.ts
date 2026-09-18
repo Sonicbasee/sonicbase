@@ -1,4 +1,4 @@
-import { createClient } from "@supabase/supabase-js";
+import { supabase } from "@/lib/supabase";
 
 export type UserRole = "admin" | "artist";
 
@@ -8,14 +8,6 @@ export type SessionUser = {
   email: string;
   role: UserRole;
 };
-
-const supabaseUrl = import.meta.env["VITE_SUPABASE_URL"];
-const supabasePublishableKey = import.meta.env["VITE_SUPABASE_PUBLISHABLE_KEY"];
-
-const supabase = createClient(
-  supabaseUrl || "https://placeholder.supabase.co",
-  supabasePublishableKey || "placeholder-key"
-);
 
 const SESSION_KEY = "sonicbase-session";
 
