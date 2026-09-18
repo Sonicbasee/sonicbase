@@ -162,12 +162,7 @@ function CartPanel() {
           </div>
 
           <div className="mt-auto flex justify-center gap-3 pt-8" aria-label="Accepted payment methods">
-            {[
-              ["VISA", "text-blue-700"],
-              ["●●", "text-orange-500"],
-              ["DISCOVER", "text-foreground"],
-              ["AMEX", "bg-blue-600 text-primary-foreground"],
-            ].map(([label, style]) => <span key={label} className={`inline-flex h-6 min-w-10 items-center justify-center rounded-[3px] border px-1.5 text-[9px] font-bold ${style}`}>{label}</span>)}
+            {["VISA", "●●", "DISCOVER", "AMEX"].map((label) => <span key={label} className="inline-flex h-6 min-w-10 items-center justify-center rounded-[3px] border px-1.5 text-[9px] font-bold text-foreground">{label}</span>)}
           </div>
         </div>
       </SheetContent>
