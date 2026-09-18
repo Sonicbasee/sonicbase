@@ -25,6 +25,9 @@ export type DashboardArtist = {
   image: string;
   bio: string;
   statement: string;
+  spotifyUrl?: string;
+  appleMusicUrl?: string;
+  instagramUrl?: string;
   status: StatusType;
 };
 
@@ -40,6 +43,8 @@ export type DashboardRelease = {
   revenue: number;
   date: string;
   cover: string;
+  listenUrl?: string;
+  watchUrl?: string;
   platformBreakdown: { platform: string; value: number }[];
 };
 

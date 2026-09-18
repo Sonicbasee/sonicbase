@@ -39,8 +39,12 @@ function ReleasePage() {
           <p className="mt-6 max-w-lg text-base text-muted-foreground">{release.description}</p>
           <p className="mt-5 text-xs">{release.date}</p>
           <div className="mt-7 flex flex-wrap gap-2">
-            <Button onClick={() => alert("Streaming links coming soon!")}>Listen now</Button>
-            <Button variant="outline" onClick={() => alert("Purchase options coming soon!")}>Buy</Button>
+            {release.listenUrl ? (
+              <Button asChild><a href={release.listenUrl} target="_blank" rel="noreferrer">Listen now</a></Button>
+            ) : <Button disabled>Listen now</Button>}
+            {release.watchUrl ? (
+              <Button variant="outline" asChild><a href={release.watchUrl} target="_blank" rel="noreferrer">Watch</a></Button>
+            ) : <Button variant="outline" disabled>Watch</Button>}
           </div>
         </div>
       </section>

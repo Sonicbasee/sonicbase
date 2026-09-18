@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DashboardPage, SectionCard } from "@/components/dashboard";
-import { createMerch, fetchArtists } from "@/lib/api";
+import { createMerch, fetchArtists, uploadContentImage } from "@/lib/api";
 import { requireAuth } from "@/lib/route-access";
 
 export const Route = createFileRoute("/admin/merchandise/new")({
@@ -28,18 +28,14 @@ function NewMerchPage() {
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState("Draft");
-  const [image, setImage] = useState("");
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   const createMutation = useMutation({
-    mutationFn: () =>
-      createMerch({
-        title,
-        artist_id: artistId,
-        price: parseInt(price) || 0,
-        description,
-        status,
-        image,
-      }),
+    mutationFn: async () => {
+      if (!imageFile) throw new Error("Choose a product image before saving.");
+      const image = await uploadContentImage("merchandise", imageFile);
+      return createMerch({ title, artist_id: artistId, price: parseInt(price) || 0, description, status, image });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["merch"] });
       navigate({ to: "/admin/merchandise" });
@@ -97,12 +93,8 @@ function NewMerchPage() {
             </select>
           </div>
           <div className="space-y-2">
-            <label className="text-sm font-medium">Image URL</label>
-            <Input
-              placeholder="https://..."
-              value={image}
-              onChange={(e) => setImage(e.target.value)}
-            />
+            <label className="text-sm font-medium">Product image</label>
+            <Input type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files?.[0] ?? null)} />
           </div>
           <div className="space-y-2 md:col-span-2">
             <label className="text-sm font-medium">Description</label>
@@ -119,7 +111,7 @@ function NewMerchPage() {
             </Link>
             <Button
               onClick={() => createMutation.mutate()}
-              disabled={!title || !artistId || createMutation.isPending}
+              disabled={!title || !artistId || !imageFile || createMutation.isPending}
             >
               {createMutation.isPending ? "Creating..." : "Publish item"}
             </Button>

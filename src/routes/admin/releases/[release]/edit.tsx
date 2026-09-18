@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DashboardPage, SectionCard } from "@/components/dashboard";
-import { fetchRelease, updateRelease, fetchArtists } from "@/lib/api";
+import { fetchRelease, updateRelease, fetchArtists, uploadContentImage } from "@/lib/api";
 import { requireAuth } from "@/lib/route-access";
 
 export const Route = createFileRoute("/admin/releases/release/edit")({
@@ -25,6 +25,9 @@ function EditReleasePage() {
   const [status, setStatus] = useState("");
   const [date, setDate] = useState("");
   const [cover, setCover] = useState("");
+  const [coverFile, setCoverFile] = useState<File | null>(null);
+  const [listenUrl, setListenUrl] = useState("");
+  const [watchUrl, setWatchUrl] = useState("");
   const [initialized, setInitialized] = useState(false);
 
   if (item && !initialized) {
@@ -34,11 +37,16 @@ function EditReleasePage() {
     setStatus(item.status);
     setDate(item.date);
     setCover(item.cover);
+    setListenUrl(item.listenUrl || "");
+    setWatchUrl(item.watchUrl || "");
     setInitialized(true);
   }
 
   const saveMutation = useMutation({
-    mutationFn: () => updateRelease(releaseId, { title, artist_id: artistId, type, status, release_date: date, cover }),
+    mutationFn: async () => {
+      const nextCover = coverFile ? await uploadContentImage("releases", coverFile) : cover;
+      return updateRelease(releaseId, { title, artist_id: artistId, type, status, release_date: date, cover: nextCover, listen_url: listenUrl, watch_url: watchUrl });
+    },
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["releases"] }); navigate({ to: "/admin/releases/$release", params: { release: releaseId } }); },
   });
 
@@ -76,8 +84,17 @@ function EditReleasePage() {
             <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
           </div>
           <div className="space-y-2 md:col-span-2">
-            <label className="text-sm font-medium">Cover URL</label>
-            <Input value={cover} onChange={(e) => setCover(e.target.value)} placeholder="https://..." />
+            <label className="text-sm font-medium">Release artwork</label>
+            <Input type="file" accept="image/*" onChange={(e) => setCoverFile(e.target.files?.[0] ?? null)} />
+            {cover && <p className="text-xs text-muted-foreground">Current artwork is saved. Choose a file to replace it.</p>}
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Listen URL</label>
+            <Input type="url" value={listenUrl} onChange={(e) => setListenUrl(e.target.value)} placeholder="https://open.spotify.com/..." />
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Watch URL</label>
+            <Input type="url" value={watchUrl} onChange={(e) => setWatchUrl(e.target.value)} placeholder="https://youtube.com/watch?..." />
           </div>
           <div className="space-y-2 md:col-span-2 flex justify-end gap-3 pt-4">
             <Link to="/admin/releases/$release" params={{ release: releaseId }}><Button variant="secondary">Cancel</Button></Link>

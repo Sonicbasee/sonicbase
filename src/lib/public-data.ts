@@ -9,6 +9,9 @@ export type PublicArtist = {
   image: string;
   bio: string;
   statement: string;
+  spotifyUrl: string;
+  appleMusicUrl: string;
+  instagramUrl: string;
 };
 
 export type PublicRelease = {
@@ -23,6 +26,8 @@ export type PublicRelease = {
   date: string;
   description: string;
   tracks: string[];
+  listenUrl: string;
+  watchUrl: string;
 };
 
 export type PublicNews = {
@@ -60,6 +65,9 @@ export async function fetchPublicArtists(): Promise<PublicArtist[]> {
     image: a.image || "",
     bio: a.bio || "",
     statement: a.statement || "",
+    spotifyUrl: a.spotify_url || "",
+    appleMusicUrl: a.apple_music_url || "",
+    instagramUrl: a.instagram_url || "",
   }));
 }
 
@@ -89,6 +97,8 @@ export async function fetchPublicReleases(): Promise<PublicRelease[]> {
       date: r.release_date || "",
       description: r.description || "",
       tracks: Array.isArray(r.tracks) ? r.tracks : [],
+      listenUrl: r.listen_url || "",
+      watchUrl: r.watch_url || "",
     };
   });
 }

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DashboardPage, SectionCard } from "@/components/dashboard";
-import { fetchMerchItem, updateMerch, fetchArtists } from "@/lib/api";
+import { fetchMerchItem, updateMerch, fetchArtists, uploadContentImage } from "@/lib/api";
 import { requireAuth } from "@/lib/route-access";
 
 export const Route = createFileRoute("/admin/merchandise/id/edit")({
@@ -34,6 +34,7 @@ function MerchEditPage() {
   const [price, setPrice] = useState("");
   const [status, setStatus] = useState("");
   const [image, setImage] = useState("");
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [initialized, setInitialized] = useState(false);
 
   if (item && !initialized) {
@@ -45,14 +46,10 @@ function MerchEditPage() {
   }
 
   const saveMutation = useMutation({
-    mutationFn: () =>
-      updateMerch(id, {
-        title,
-        artist_id: artistId || undefined,
-        price: parseInt(price) || 0,
-        status,
-        image,
-      }),
+    mutationFn: async () => {
+      const nextImage = imageFile ? await uploadContentImage("merchandise", imageFile) : image;
+      return updateMerch(id, { title, artist_id: artistId || undefined, price: parseInt(price) || 0, status, image: nextImage });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["merch"] });
       navigate({ to: "/admin/merchandise" });
@@ -117,11 +114,9 @@ function MerchEditPage() {
             </select>
           </div>
           <div className="space-y-2">
-            <label className="text-sm font-medium">Image URL</label>
-            <Input
-              value={image}
-              onChange={(e) => setImage(e.target.value)}
-            />
+            <label className="text-sm font-medium">Product image</label>
+            <Input type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files?.[0] ?? null)} />
+            {image && <p className="text-xs text-muted-foreground">Current image is saved. Choose a file to replace it.</p>}
           </div>
           <div className="space-y-2 md:col-span-2 flex justify-end gap-3 pt-4">
             <Link to="/admin/merchandise">

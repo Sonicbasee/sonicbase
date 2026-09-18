@@ -26,6 +26,9 @@ export async function fetchArtists(): Promise<DashboardArtist[]> {
     image: a.image,
     bio: a.bio || "",
     statement: a.statement || "",
+    spotifyUrl: a.spotify_url || "",
+    appleMusicUrl: a.apple_music_url || "",
+    instagramUrl: a.instagram_url || "",
     status: a.status as StatusType,
   }));
 }
@@ -46,6 +49,9 @@ export async function fetchArtist(id: string): Promise<DashboardArtist | null> {
     image: data.image,
     bio: data.bio || "",
     statement: data.statement || "",
+    spotifyUrl: data.spotify_url || "",
+    appleMusicUrl: data.apple_music_url || "",
+    instagramUrl: data.instagram_url || "",
     status: data.status as StatusType,
   };
 }
@@ -61,6 +67,9 @@ export async function createArtist(artist: Omit<DashboardArtist, "id">): Promise
       image: artist.image,
       bio: artist.bio || "",
       statement: artist.statement || "",
+      spotify_url: artist.spotifyUrl || "",
+      apple_music_url: artist.appleMusicUrl || "",
+      instagram_url: artist.instagramUrl || "",
       status: artist.status,
     })
     .select()
@@ -90,6 +99,9 @@ export async function updateArtist(id: string, updates: Partial<DashboardArtist>
       image: updates.image,
       bio: updates.bio,
       statement: updates.statement,
+      spotify_url: updates.spotifyUrl,
+      apple_music_url: updates.appleMusicUrl,
+      instagram_url: updates.instagramUrl,
       status: updates.status,
       updated_at: new Date().toISOString(),
     })
@@ -124,6 +136,8 @@ export async function fetchReleases(): Promise<DashboardRelease[]> {
     revenue: r.revenue,
     date: r.release_date,
     cover: r.cover,
+    listenUrl: r.listen_url || "",
+    watchUrl: r.watch_url || "",
     platformBreakdown: Array.isArray(r.platform_breakdown)
       ? r.platform_breakdown
       : JSON.parse(r.platform_breakdown || "[]"),
@@ -149,6 +163,8 @@ export async function fetchRelease(id: string): Promise<DashboardRelease | null>
     revenue: data.revenue,
     date: data.release_date,
     cover: data.cover,
+    listenUrl: data.listen_url || "",
+    watchUrl: data.watch_url || "",
     platformBreakdown: Array.isArray(data.platform_breakdown)
       ? data.platform_breakdown
       : JSON.parse(data.platform_breakdown || "[]"),
@@ -162,6 +178,8 @@ export async function createRelease(release: {
   status: string;
   release_date: string;
   cover: string;
+  listen_url?: string;
+  watch_url?: string;
   description?: string;
   tracks?: string[];
 }): Promise<DashboardRelease> {
@@ -174,6 +192,8 @@ export async function createRelease(release: {
       status: release.status,
       release_date: release.release_date,
       cover: release.cover,
+      listen_url: release.listen_url || "",
+      watch_url: release.watch_url || "",
       description: release.description || "",
       tracks: release.tracks || [],
     })
@@ -192,6 +212,8 @@ export async function createRelease(release: {
     revenue: 0,
     date: data.release_date,
     cover: data.cover,
+    listenUrl: data.listen_url || "",
+    watchUrl: data.watch_url || "",
     platformBreakdown: [],
   };
 }
@@ -203,6 +225,8 @@ export async function updateRelease(id: string, updates: {
   status?: string;
   release_date?: string;
   cover?: string;
+  listen_url?: string;
+  watch_url?: string;
 }): Promise<void> {
   const { error } = await supabase
     .from("releases")
@@ -374,4 +398,9 @@ export async function uploadImage(
   if (error) throw error;
   const { data: urlData } = supabase.storage.from(bucket).getPublicUrl(path);
   return urlData.publicUrl;
+}
+
+export async function uploadContentImage(folder: string, file: File): Promise<string> {
+  const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "-");
+  return uploadImage("images", `${folder}/${crypto.randomUUID()}-${safeName}`, file);
 }

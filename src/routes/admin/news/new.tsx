@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DashboardPage, SectionCard } from "@/components/dashboard";
-import { createNews } from "@/lib/api";
+import { createNews, uploadContentImage } from "@/lib/api";
 import { requireAuth } from "@/lib/route-access";
 
 export const Route = createFileRoute("/admin/news/new")({
@@ -20,10 +20,14 @@ function AdminNewNewsPage() {
   const [status, setStatus] = useState("Draft");
   const [author, setAuthor] = useState("");
   const [excerpt, setExcerpt] = useState("");
-  const [image, setImage] = useState("");
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   const createMutation = useMutation({
-    mutationFn: () => createNews({ title, category, status, author, excerpt, content: "", image }),
+    mutationFn: async () => {
+      if (!imageFile) throw new Error("Choose an article image before saving.");
+      const image = await uploadContentImage("news", imageFile);
+      return createNews({ title, category, status, author, excerpt, content: "", image });
+    },
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["news"] }); navigate({ to: "/admin/news" }); },
   });
 
@@ -52,8 +56,8 @@ function AdminNewNewsPage() {
             <Input placeholder="Author name" value={author} onChange={(e) => setAuthor(e.target.value)} />
           </div>
           <div className="space-y-2">
-            <label className="text-sm font-medium">Image URL</label>
-            <Input placeholder="https://..." value={image} onChange={(e) => setImage(e.target.value)} />
+            <label className="text-sm font-medium">Article image</label>
+            <Input type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files?.[0] ?? null)} />
           </div>
           <div className="space-y-2 md:col-span-2">
             <label className="text-sm font-medium">Excerpt</label>
@@ -61,7 +65,7 @@ function AdminNewNewsPage() {
           </div>
           <div className="space-y-2 md:col-span-2 flex justify-end gap-3 pt-4">
             <Link to="/admin/news"><Button variant="secondary">Cancel</Button></Link>
-            <Button onClick={() => createMutation.mutate()} disabled={!title || createMutation.isPending}>{createMutation.isPending ? "Saving..." : "Save draft"}</Button>
+            <Button onClick={() => createMutation.mutate()} disabled={!title || !imageFile || createMutation.isPending}>{createMutation.isPending ? "Saving..." : "Save draft"}</Button>
           </div>
         </div>
       </SectionCard>

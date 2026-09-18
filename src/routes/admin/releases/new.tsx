@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DashboardPage, SectionCard } from "@/components/dashboard";
-import { createRelease, fetchArtists } from "@/lib/api";
+import { createRelease, fetchArtists, uploadContentImage } from "@/lib/api";
 import { requireAuth } from "@/lib/route-access";
 
 export const Route = createFileRoute("/admin/releases/new")({
@@ -21,15 +21,21 @@ function AdminNewReleasePage() {
   const [type, setType] = useState("Single");
   const [status, setStatus] = useState("Draft");
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
-  const [cover, setCover] = useState("");
+  const [coverFile, setCoverFile] = useState<File | null>(null);
   const [description, setDescription] = useState("");
   const [tracksInput, setTracksInput] = useState("");
+  const [listenUrl, setListenUrl] = useState("");
+  const [watchUrl, setWatchUrl] = useState("");
 
   const createMutation = useMutation({
-    mutationFn: () => createRelease({
-      title, artist_id: artistId, type, status, release_date: date, cover,
-      description, tracks: tracksInput.split(",").map((t) => t.trim()).filter(Boolean),
-    }),
+    mutationFn: async () => {
+      if (!coverFile) throw new Error("Choose release artwork before saving.");
+      const cover = await uploadContentImage("releases", coverFile);
+      return createRelease({
+        title, artist_id: artistId, type, status, release_date: date, cover, listen_url: listenUrl, watch_url: watchUrl,
+        description, tracks: tracksInput.split(",").map((t) => t.trim()).filter(Boolean),
+      });
+    },
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["releases"] }); navigate({ to: "/admin/releases" }); },
   });
 
@@ -65,8 +71,16 @@ function AdminNewReleasePage() {
             </select>
           </div>
           <div className="space-y-2 md:col-span-2">
-            <label className="text-sm font-medium">Cover URL</label>
-            <Input placeholder="https://..." value={cover} onChange={(e) => setCover(e.target.value)} />
+            <label className="text-sm font-medium">Release artwork</label>
+            <Input type="file" accept="image/*" onChange={(e) => setCoverFile(e.target.files?.[0] ?? null)} />
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Listen URL</label>
+            <Input type="url" placeholder="https://open.spotify.com/..." value={listenUrl} onChange={(e) => setListenUrl(e.target.value)} />
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Watch URL</label>
+            <Input type="url" placeholder="https://youtube.com/watch?..." value={watchUrl} onChange={(e) => setWatchUrl(e.target.value)} />
           </div>
           <div className="space-y-2 md:col-span-2">
             <label className="text-sm font-medium">Description</label>
@@ -78,7 +92,7 @@ function AdminNewReleasePage() {
           </div>
           <div className="space-y-2 md:col-span-2 flex justify-end gap-3 pt-4">
             <Link to="/admin/releases"><Button variant="secondary">Cancel</Button></Link>
-            <Button onClick={() => createMutation.mutate()} disabled={!title || !artistId || createMutation.isPending}>{createMutation.isPending ? "Creating..." : "Create release"}</Button>
+            <Button onClick={() => createMutation.mutate()} disabled={!title || !artistId || !coverFile || createMutation.isPending}>{createMutation.isPending ? "Creating..." : "Create release"}</Button>
           </div>
         </div>
       </SectionCard>
