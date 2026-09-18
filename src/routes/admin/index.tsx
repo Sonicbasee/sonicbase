@@ -43,7 +43,7 @@ function AdminOverviewPage() {
     queryFn: fetchReleases,
   });
 
-  const totalStreams = releases.reduce((sum, r) => sum + r.streams, 0);
+  
   const totalRevenue = releases.reduce((sum, r) => sum + r.revenue, 0);
 
   return (
@@ -70,8 +70,8 @@ function AdminOverviewPage() {
           accent="neutral"
         />
         <StatCard
-          label="Total streams"
-          value={totalStreams.toLocaleString()}
+          
+          
           detail="Overall"
           accent="success"
         />
@@ -102,7 +102,7 @@ function AdminOverviewPage() {
           </div>
         </SectionCard>
 
-        <SectionCard title="Platform mix" eyebrow="Streams">
+        <SectionCard title="Platform mix" eyebrow="Streams"></SectionCard>
           <div className="space-y-4">
             {platformData.map((item) => (
               <div key={item.name}>
