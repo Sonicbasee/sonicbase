@@ -1,0 +1,14 @@
+import { redirect } from "@tanstack/react-router";
+import { getStoredSession, type UserRole } from "@/lib/auth";
+
+export function requireAuth(requiredRole?: UserRole) {
+  const session = getStoredSession();
+
+  if (!session) {
+    throw redirect({ to: "/login" });
+  }
+
+  if (requiredRole && session.role !== requiredRole) {
+    throw redirect({ to: session.role === "admin" ? "/admin" : "/artist" });
+  }
+}

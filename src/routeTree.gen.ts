@@ -11,13 +11,44 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as ArtistRouteImport } from './routes/artist'
 import { Route as ArtistsRouteImport } from './routes/artists'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as MusicRouteImport } from './routes/music'
 import { Route as NewsRouteImport } from './routes/news'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ShopRouteImport } from './routes/shop'
+import { Route as AdminArtistsRouteImport } from './routes/admin/artists'
+import { Route as AdminContractsRouteImport } from './routes/admin/contracts'
+import { Route as AdminDistributionRouteImport } from './routes/admin/distribution'
+import { Route as AdminLegalRouteImport } from './routes/admin/legal'
+import { Route as AdminMerchandiseRouteImport } from './routes/admin/merchandise'
+import { Route as AdminNewsRouteImport } from './routes/admin/news'
+import { Route as AdminProfileRouteImport } from './routes/admin/profile'
+import { Route as AdminReleasesRouteImport } from './routes/admin/releases'
+import { Route as AdminReportsRouteImport } from './routes/admin/reports'
+import { Route as AdminRevenueRouteImport } from './routes/admin/revenue'
+import { Route as AdminStreamsRouteImport } from './routes/admin/streams'
+import { Route as ArtistProfileRouteImport } from './routes/artist/profile'
+import { Route as ArtistReleasesRouteImport } from './routes/artist/releases'
+import { Route as ArtistRevenueRouteImport } from './routes/artist/revenue'
+import { Route as ArtistStreamsRouteImport } from './routes/artist/streams'
 import { Route as ArtistsArtistRouteImport } from './routes/artists.$artist'
 import { Route as MusicReleaseRouteImport } from './routes/music.$release'
+import { Route as AdminContractsChar91idChar93RouteImport } from './routes/admin/contracts/[id]'
+import { Route as AdminDistributionChar91idChar93RouteImport } from './routes/admin/distribution/[id]'
+import { Route as AdminLegalChar91idChar93RouteImport } from './routes/admin/legal/[id]'
+import { Route as AdminMerchandiseNewRouteImport } from './routes/admin/merchandise/new'
+import { Route as AdminNewsNewRouteImport } from './routes/admin/news/new'
+import { Route as AdminReleasesNewRouteImport } from './routes/admin/releases/new'
+import { Route as AdminReleasesChar91releaseChar93RouteImport } from './routes/admin/releases/[release]'
+import { Route as ArtistReleasesReleaseRouteImport } from './routes/artist/releases/$release'
+import { Route as AdminMerchandiseChar91idChar93EditRouteImport } from './routes/admin/merchandise/[id]/edit'
+import { Route as AdminNewsChar91idChar93EditRouteImport } from './routes/admin/news/[id]/edit'
+import { Route as AdminReleasesChar91releaseChar93EditRouteImport } from './routes/admin/releases/[release]/edit'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -27,6 +58,16 @@ const IndexRoute = IndexRouteImport.update({
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArtistRoute = ArtistRouteImport.update({
+  id: '/artist',
+  path: '/artist',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ArtistsRoute = ArtistsRouteImport.update({
@@ -39,6 +80,16 @@ const ContactRoute = ContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MusicRoute = MusicRouteImport.update({
   id: '/music',
   path: '/music',
@@ -49,10 +100,90 @@ const NewsRoute = NewsRouteImport.update({
   path: '/news',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ShopRoute = ShopRouteImport.update({
   id: '/shop',
   path: '/shop',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AdminArtistsRoute = AdminArtistsRouteImport.update({
+  id: '/artists',
+  path: '/artists',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminContractsRoute = AdminContractsRouteImport.update({
+  id: '/contracts',
+  path: '/contracts',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminDistributionRoute = AdminDistributionRouteImport.update({
+  id: '/distribution',
+  path: '/distribution',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminLegalRoute = AdminLegalRouteImport.update({
+  id: '/legal',
+  path: '/legal',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminMerchandiseRoute = AdminMerchandiseRouteImport.update({
+  id: '/merchandise',
+  path: '/merchandise',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminNewsRoute = AdminNewsRouteImport.update({
+  id: '/news',
+  path: '/news',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminProfileRoute = AdminProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminReleasesRoute = AdminReleasesRouteImport.update({
+  id: '/releases',
+  path: '/releases',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminReportsRoute = AdminReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminRevenueRoute = AdminRevenueRouteImport.update({
+  id: '/revenue',
+  path: '/revenue',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminStreamsRoute = AdminStreamsRouteImport.update({
+  id: '/streams',
+  path: '/streams',
+  getParentRoute: () => AdminRoute,
+} as any)
+const ArtistProfileRoute = ArtistProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => ArtistRoute,
+} as any)
+const ArtistReleasesRoute = ArtistReleasesRouteImport.update({
+  id: '/releases',
+  path: '/releases',
+  getParentRoute: () => ArtistRoute,
+} as any)
+const ArtistRevenueRoute = ArtistRevenueRouteImport.update({
+  id: '/revenue',
+  path: '/revenue',
+  getParentRoute: () => ArtistRoute,
+} as any)
+const ArtistStreamsRoute = ArtistStreamsRouteImport.update({
+  id: '/streams',
+  path: '/streams',
+  getParentRoute: () => ArtistRoute,
 } as any)
 const ArtistsArtistRoute = ArtistsArtistRouteImport.update({
   id: '/$artist',
@@ -64,84 +195,337 @@ const MusicReleaseRoute = MusicReleaseRouteImport.update({
   path: '/$release',
   getParentRoute: () => MusicRoute,
 } as any)
+const AdminContractsChar91idChar93Route =
+  AdminContractsChar91idChar93RouteImport.update({
+    id: '/id',
+    path: '/id',
+    getParentRoute: () => AdminContractsRoute,
+  } as any)
+const AdminDistributionChar91idChar93Route =
+  AdminDistributionChar91idChar93RouteImport.update({
+    id: '/id',
+    path: '/id',
+    getParentRoute: () => AdminDistributionRoute,
+  } as any)
+const AdminLegalChar91idChar93Route =
+  AdminLegalChar91idChar93RouteImport.update({
+    id: '/id',
+    path: '/id',
+    getParentRoute: () => AdminLegalRoute,
+  } as any)
+const AdminMerchandiseNewRoute = AdminMerchandiseNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => AdminMerchandiseRoute,
+} as any)
+const AdminNewsNewRoute = AdminNewsNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => AdminNewsRoute,
+} as any)
+const AdminReleasesNewRoute = AdminReleasesNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => AdminReleasesRoute,
+} as any)
+const AdminReleasesChar91releaseChar93Route =
+  AdminReleasesChar91releaseChar93RouteImport.update({
+    id: '/release',
+    path: '/release',
+    getParentRoute: () => AdminReleasesRoute,
+  } as any)
+const ArtistReleasesReleaseRoute = ArtistReleasesReleaseRouteImport.update({
+  id: '/$release',
+  path: '/$release',
+  getParentRoute: () => ArtistReleasesRoute,
+} as any)
+const AdminMerchandiseChar91idChar93EditRoute =
+  AdminMerchandiseChar91idChar93EditRouteImport.update({
+    id: '/id/edit',
+    path: '/id/edit',
+    getParentRoute: () => AdminMerchandiseRoute,
+  } as any)
+const AdminNewsChar91idChar93EditRoute =
+  AdminNewsChar91idChar93EditRouteImport.update({
+    id: '/id/edit',
+    path: '/id/edit',
+    getParentRoute: () => AdminNewsRoute,
+  } as any)
+const AdminReleasesChar91releaseChar93EditRoute =
+  AdminReleasesChar91releaseChar93EditRouteImport.update({
+    id: '/edit',
+    path: '/edit',
+    getParentRoute: () => AdminReleasesChar91releaseChar93Route,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/artist': typeof ArtistRouteWithChildren
   '/artists': typeof ArtistsRouteWithChildren
   '/contact': typeof ContactRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/login': typeof LoginRoute
   '/music': typeof MusicRouteWithChildren
   '/news': typeof NewsRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/shop': typeof ShopRoute
+  '/admin/artists': typeof AdminArtistsRoute
+  '/admin/contracts': typeof AdminContractsRouteWithChildren
+  '/admin/distribution': typeof AdminDistributionRouteWithChildren
+  '/admin/legal': typeof AdminLegalRouteWithChildren
+  '/admin/merchandise': typeof AdminMerchandiseRouteWithChildren
+  '/admin/news': typeof AdminNewsRouteWithChildren
+  '/admin/profile': typeof AdminProfileRoute
+  '/admin/releases': typeof AdminReleasesRouteWithChildren
+  '/admin/reports': typeof AdminReportsRoute
+  '/admin/revenue': typeof AdminRevenueRoute
+  '/admin/streams': typeof AdminStreamsRoute
+  '/artist/profile': typeof ArtistProfileRoute
+  '/artist/releases': typeof ArtistReleasesRouteWithChildren
+  '/artist/revenue': typeof ArtistRevenueRoute
+  '/artist/streams': typeof ArtistStreamsRoute
   '/artists/$artist': typeof ArtistsArtistRoute
   '/music/$release': typeof MusicReleaseRoute
+  '/admin/contracts/id': typeof AdminContractsChar91idChar93Route
+  '/admin/distribution/id': typeof AdminDistributionChar91idChar93Route
+  '/admin/legal/id': typeof AdminLegalChar91idChar93Route
+  '/admin/merchandise/new': typeof AdminMerchandiseNewRoute
+  '/admin/news/new': typeof AdminNewsNewRoute
+  '/admin/releases/new': typeof AdminReleasesNewRoute
+  '/admin/releases/release': typeof AdminReleasesChar91releaseChar93RouteWithChildren
+  '/artist/releases/$release': typeof ArtistReleasesReleaseRoute
+  '/admin/merchandise/id/edit': typeof AdminMerchandiseChar91idChar93EditRoute
+  '/admin/news/id/edit': typeof AdminNewsChar91idChar93EditRoute
+  '/admin/releases/release/edit': typeof AdminReleasesChar91releaseChar93EditRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/artist': typeof ArtistRouteWithChildren
   '/artists': typeof ArtistsRouteWithChildren
   '/contact': typeof ContactRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/login': typeof LoginRoute
   '/music': typeof MusicRouteWithChildren
   '/news': typeof NewsRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/shop': typeof ShopRoute
+  '/admin/artists': typeof AdminArtistsRoute
+  '/admin/contracts': typeof AdminContractsRouteWithChildren
+  '/admin/distribution': typeof AdminDistributionRouteWithChildren
+  '/admin/legal': typeof AdminLegalRouteWithChildren
+  '/admin/merchandise': typeof AdminMerchandiseRouteWithChildren
+  '/admin/news': typeof AdminNewsRouteWithChildren
+  '/admin/profile': typeof AdminProfileRoute
+  '/admin/releases': typeof AdminReleasesRouteWithChildren
+  '/admin/reports': typeof AdminReportsRoute
+  '/admin/revenue': typeof AdminRevenueRoute
+  '/admin/streams': typeof AdminStreamsRoute
+  '/artist/profile': typeof ArtistProfileRoute
+  '/artist/releases': typeof ArtistReleasesRouteWithChildren
+  '/artist/revenue': typeof ArtistRevenueRoute
+  '/artist/streams': typeof ArtistStreamsRoute
   '/artists/$artist': typeof ArtistsArtistRoute
   '/music/$release': typeof MusicReleaseRoute
+  '/admin/contracts/id': typeof AdminContractsChar91idChar93Route
+  '/admin/distribution/id': typeof AdminDistributionChar91idChar93Route
+  '/admin/legal/id': typeof AdminLegalChar91idChar93Route
+  '/admin/merchandise/new': typeof AdminMerchandiseNewRoute
+  '/admin/news/new': typeof AdminNewsNewRoute
+  '/admin/releases/new': typeof AdminReleasesNewRoute
+  '/admin/releases/release': typeof AdminReleasesChar91releaseChar93RouteWithChildren
+  '/artist/releases/$release': typeof ArtistReleasesReleaseRoute
+  '/admin/merchandise/id/edit': typeof AdminMerchandiseChar91idChar93EditRoute
+  '/admin/news/id/edit': typeof AdminNewsChar91idChar93EditRoute
+  '/admin/releases/release/edit': typeof AdminReleasesChar91releaseChar93EditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/artist': typeof ArtistRouteWithChildren
   '/artists': typeof ArtistsRouteWithChildren
   '/contact': typeof ContactRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/login': typeof LoginRoute
   '/music': typeof MusicRouteWithChildren
   '/news': typeof NewsRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/shop': typeof ShopRoute
+  '/admin/artists': typeof AdminArtistsRoute
+  '/admin/contracts': typeof AdminContractsRouteWithChildren
+  '/admin/distribution': typeof AdminDistributionRouteWithChildren
+  '/admin/legal': typeof AdminLegalRouteWithChildren
+  '/admin/merchandise': typeof AdminMerchandiseRouteWithChildren
+  '/admin/news': typeof AdminNewsRouteWithChildren
+  '/admin/profile': typeof AdminProfileRoute
+  '/admin/releases': typeof AdminReleasesRouteWithChildren
+  '/admin/reports': typeof AdminReportsRoute
+  '/admin/revenue': typeof AdminRevenueRoute
+  '/admin/streams': typeof AdminStreamsRoute
+  '/artist/profile': typeof ArtistProfileRoute
+  '/artist/releases': typeof ArtistReleasesRouteWithChildren
+  '/artist/revenue': typeof ArtistRevenueRoute
+  '/artist/streams': typeof ArtistStreamsRoute
   '/artists/$artist': typeof ArtistsArtistRoute
   '/music/$release': typeof MusicReleaseRoute
+  '/admin/contracts/id': typeof AdminContractsChar91idChar93Route
+  '/admin/distribution/id': typeof AdminDistributionChar91idChar93Route
+  '/admin/legal/id': typeof AdminLegalChar91idChar93Route
+  '/admin/merchandise/new': typeof AdminMerchandiseNewRoute
+  '/admin/news/new': typeof AdminNewsNewRoute
+  '/admin/releases/new': typeof AdminReleasesNewRoute
+  '/admin/releases/release': typeof AdminReleasesChar91releaseChar93RouteWithChildren
+  '/artist/releases/$release': typeof ArtistReleasesReleaseRoute
+  '/admin/merchandise/id/edit': typeof AdminMerchandiseChar91idChar93EditRoute
+  '/admin/news/id/edit': typeof AdminNewsChar91idChar93EditRoute
+  '/admin/releases/release/edit': typeof AdminReleasesChar91releaseChar93EditRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/about'
+    | '/admin'
+    | '/artist'
     | '/artists'
     | '/contact'
+    | '/forgot-password'
+    | '/login'
     | '/music'
     | '/news'
+    | '/reset-password'
     | '/shop'
+    | '/admin/artists'
+    | '/admin/contracts'
+    | '/admin/distribution'
+    | '/admin/legal'
+    | '/admin/merchandise'
+    | '/admin/news'
+    | '/admin/profile'
+    | '/admin/releases'
+    | '/admin/reports'
+    | '/admin/revenue'
+    | '/admin/streams'
+    | '/artist/profile'
+    | '/artist/releases'
+    | '/artist/revenue'
+    | '/artist/streams'
     | '/artists/$artist'
     | '/music/$release'
+    | '/admin/contracts/id'
+    | '/admin/distribution/id'
+    | '/admin/legal/id'
+    | '/admin/merchandise/new'
+    | '/admin/news/new'
+    | '/admin/releases/new'
+    | '/admin/releases/release'
+    | '/artist/releases/$release'
+    | '/admin/merchandise/id/edit'
+    | '/admin/news/id/edit'
+    | '/admin/releases/release/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
+    | '/admin'
+    | '/artist'
     | '/artists'
     | '/contact'
+    | '/forgot-password'
+    | '/login'
     | '/music'
     | '/news'
+    | '/reset-password'
     | '/shop'
+    | '/admin/artists'
+    | '/admin/contracts'
+    | '/admin/distribution'
+    | '/admin/legal'
+    | '/admin/merchandise'
+    | '/admin/news'
+    | '/admin/profile'
+    | '/admin/releases'
+    | '/admin/reports'
+    | '/admin/revenue'
+    | '/admin/streams'
+    | '/artist/profile'
+    | '/artist/releases'
+    | '/artist/revenue'
+    | '/artist/streams'
     | '/artists/$artist'
     | '/music/$release'
+    | '/admin/contracts/id'
+    | '/admin/distribution/id'
+    | '/admin/legal/id'
+    | '/admin/merchandise/new'
+    | '/admin/news/new'
+    | '/admin/releases/new'
+    | '/admin/releases/release'
+    | '/artist/releases/$release'
+    | '/admin/merchandise/id/edit'
+    | '/admin/news/id/edit'
+    | '/admin/releases/release/edit'
   id:
     | '__root__'
     | '/'
     | '/about'
+    | '/admin'
+    | '/artist'
     | '/artists'
     | '/contact'
+    | '/forgot-password'
+    | '/login'
     | '/music'
     | '/news'
+    | '/reset-password'
     | '/shop'
+    | '/admin/artists'
+    | '/admin/contracts'
+    | '/admin/distribution'
+    | '/admin/legal'
+    | '/admin/merchandise'
+    | '/admin/news'
+    | '/admin/profile'
+    | '/admin/releases'
+    | '/admin/reports'
+    | '/admin/revenue'
+    | '/admin/streams'
+    | '/artist/profile'
+    | '/artist/releases'
+    | '/artist/revenue'
+    | '/artist/streams'
     | '/artists/$artist'
     | '/music/$release'
+    | '/admin/contracts/id'
+    | '/admin/distribution/id'
+    | '/admin/legal/id'
+    | '/admin/merchandise/new'
+    | '/admin/news/new'
+    | '/admin/releases/new'
+    | '/admin/releases/release'
+    | '/artist/releases/$release'
+    | '/admin/merchandise/id/edit'
+    | '/admin/news/id/edit'
+    | '/admin/releases/release/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AdminRoute: typeof AdminRouteWithChildren
+  ArtistRoute: typeof ArtistRouteWithChildren
   ArtistsRoute: typeof ArtistsRouteWithChildren
   ContactRoute: typeof ContactRoute
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
+  LoginRoute: typeof LoginRoute
   MusicRoute: typeof MusicRouteWithChildren
   NewsRoute: typeof NewsRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   ShopRoute: typeof ShopRoute
 }
 
@@ -161,6 +545,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/artist': {
+      id: '/artist'
+      path: '/artist'
+      fullPath: '/artist'
+      preLoaderRoute: typeof ArtistRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/artists': {
       id: '/artists'
       path: '/artists'
@@ -173,6 +571,20 @@ declare module '@tanstack/react-router' {
       path: '/contact'
       fullPath: '/contact'
       preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/music': {
@@ -189,12 +601,124 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NewsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/shop': {
       id: '/shop'
       path: '/shop'
       fullPath: '/shop'
       preLoaderRoute: typeof ShopRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/artists': {
+      id: '/admin/artists'
+      path: '/artists'
+      fullPath: '/admin/artists'
+      preLoaderRoute: typeof AdminArtistsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/contracts': {
+      id: '/admin/contracts'
+      path: '/contracts'
+      fullPath: '/admin/contracts'
+      preLoaderRoute: typeof AdminContractsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/distribution': {
+      id: '/admin/distribution'
+      path: '/distribution'
+      fullPath: '/admin/distribution'
+      preLoaderRoute: typeof AdminDistributionRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/legal': {
+      id: '/admin/legal'
+      path: '/legal'
+      fullPath: '/admin/legal'
+      preLoaderRoute: typeof AdminLegalRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/merchandise': {
+      id: '/admin/merchandise'
+      path: '/merchandise'
+      fullPath: '/admin/merchandise'
+      preLoaderRoute: typeof AdminMerchandiseRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/news': {
+      id: '/admin/news'
+      path: '/news'
+      fullPath: '/admin/news'
+      preLoaderRoute: typeof AdminNewsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/profile': {
+      id: '/admin/profile'
+      path: '/profile'
+      fullPath: '/admin/profile'
+      preLoaderRoute: typeof AdminProfileRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/releases': {
+      id: '/admin/releases'
+      path: '/releases'
+      fullPath: '/admin/releases'
+      preLoaderRoute: typeof AdminReleasesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/reports': {
+      id: '/admin/reports'
+      path: '/reports'
+      fullPath: '/admin/reports'
+      preLoaderRoute: typeof AdminReportsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/revenue': {
+      id: '/admin/revenue'
+      path: '/revenue'
+      fullPath: '/admin/revenue'
+      preLoaderRoute: typeof AdminRevenueRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/streams': {
+      id: '/admin/streams'
+      path: '/streams'
+      fullPath: '/admin/streams'
+      preLoaderRoute: typeof AdminStreamsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/artist/profile': {
+      id: '/artist/profile'
+      path: '/profile'
+      fullPath: '/artist/profile'
+      preLoaderRoute: typeof ArtistProfileRouteImport
+      parentRoute: typeof ArtistRoute
+    }
+    '/artist/releases': {
+      id: '/artist/releases'
+      path: '/releases'
+      fullPath: '/artist/releases'
+      preLoaderRoute: typeof ArtistReleasesRouteImport
+      parentRoute: typeof ArtistRoute
+    }
+    '/artist/revenue': {
+      id: '/artist/revenue'
+      path: '/revenue'
+      fullPath: '/artist/revenue'
+      preLoaderRoute: typeof ArtistRevenueRouteImport
+      parentRoute: typeof ArtistRoute
+    }
+    '/artist/streams': {
+      id: '/artist/streams'
+      path: '/streams'
+      fullPath: '/artist/streams'
+      preLoaderRoute: typeof ArtistStreamsRouteImport
+      parentRoute: typeof ArtistRoute
     }
     '/artists/$artist': {
       id: '/artists/$artist'
@@ -210,8 +734,237 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MusicReleaseRouteImport
       parentRoute: typeof MusicRoute
     }
+    '/admin/contracts/id': {
+      id: '/admin/contracts/id'
+      path: '/id'
+      fullPath: '/admin/contracts/id'
+      preLoaderRoute: typeof AdminContractsChar91idChar93RouteImport
+      parentRoute: typeof AdminContractsRoute
+    }
+    '/admin/distribution/id': {
+      id: '/admin/distribution/id'
+      path: '/id'
+      fullPath: '/admin/distribution/id'
+      preLoaderRoute: typeof AdminDistributionChar91idChar93RouteImport
+      parentRoute: typeof AdminDistributionRoute
+    }
+    '/admin/legal/id': {
+      id: '/admin/legal/id'
+      path: '/id'
+      fullPath: '/admin/legal/id'
+      preLoaderRoute: typeof AdminLegalChar91idChar93RouteImport
+      parentRoute: typeof AdminLegalRoute
+    }
+    '/admin/merchandise/new': {
+      id: '/admin/merchandise/new'
+      path: '/new'
+      fullPath: '/admin/merchandise/new'
+      preLoaderRoute: typeof AdminMerchandiseNewRouteImport
+      parentRoute: typeof AdminMerchandiseRoute
+    }
+    '/admin/news/new': {
+      id: '/admin/news/new'
+      path: '/new'
+      fullPath: '/admin/news/new'
+      preLoaderRoute: typeof AdminNewsNewRouteImport
+      parentRoute: typeof AdminNewsRoute
+    }
+    '/admin/releases/new': {
+      id: '/admin/releases/new'
+      path: '/new'
+      fullPath: '/admin/releases/new'
+      preLoaderRoute: typeof AdminReleasesNewRouteImport
+      parentRoute: typeof AdminReleasesRoute
+    }
+    '/admin/releases/release': {
+      id: '/admin/releases/release'
+      path: '/release'
+      fullPath: '/admin/releases/release'
+      preLoaderRoute: typeof AdminReleasesChar91releaseChar93RouteImport
+      parentRoute: typeof AdminReleasesRoute
+    }
+    '/artist/releases/$release': {
+      id: '/artist/releases/$release'
+      path: '/$release'
+      fullPath: '/artist/releases/$release'
+      preLoaderRoute: typeof ArtistReleasesReleaseRouteImport
+      parentRoute: typeof ArtistReleasesRoute
+    }
+    '/admin/merchandise/id/edit': {
+      id: '/admin/merchandise/id/edit'
+      path: '/id/edit'
+      fullPath: '/admin/merchandise/id/edit'
+      preLoaderRoute: typeof AdminMerchandiseChar91idChar93EditRouteImport
+      parentRoute: typeof AdminMerchandiseRoute
+    }
+    '/admin/news/id/edit': {
+      id: '/admin/news/id/edit'
+      path: '/id/edit'
+      fullPath: '/admin/news/id/edit'
+      preLoaderRoute: typeof AdminNewsChar91idChar93EditRouteImport
+      parentRoute: typeof AdminNewsRoute
+    }
+    '/admin/releases/release/edit': {
+      id: '/admin/releases/release/edit'
+      path: '/edit'
+      fullPath: '/admin/releases/release/edit'
+      preLoaderRoute: typeof AdminReleasesChar91releaseChar93EditRouteImport
+      parentRoute: typeof AdminReleasesChar91releaseChar93Route
+    }
   }
 }
+
+interface AdminContractsRouteChildren {
+  AdminContractsChar91idChar93Route: typeof AdminContractsChar91idChar93Route
+}
+
+const AdminContractsRouteChildren: AdminContractsRouteChildren = {
+  AdminContractsChar91idChar93Route: AdminContractsChar91idChar93Route,
+}
+
+const AdminContractsRouteWithChildren = AdminContractsRoute._addFileChildren(
+  AdminContractsRouteChildren,
+)
+
+interface AdminDistributionRouteChildren {
+  AdminDistributionChar91idChar93Route: typeof AdminDistributionChar91idChar93Route
+}
+
+const AdminDistributionRouteChildren: AdminDistributionRouteChildren = {
+  AdminDistributionChar91idChar93Route: AdminDistributionChar91idChar93Route,
+}
+
+const AdminDistributionRouteWithChildren =
+  AdminDistributionRoute._addFileChildren(AdminDistributionRouteChildren)
+
+interface AdminLegalRouteChildren {
+  AdminLegalChar91idChar93Route: typeof AdminLegalChar91idChar93Route
+}
+
+const AdminLegalRouteChildren: AdminLegalRouteChildren = {
+  AdminLegalChar91idChar93Route: AdminLegalChar91idChar93Route,
+}
+
+const AdminLegalRouteWithChildren = AdminLegalRoute._addFileChildren(
+  AdminLegalRouteChildren,
+)
+
+interface AdminMerchandiseRouteChildren {
+  AdminMerchandiseNewRoute: typeof AdminMerchandiseNewRoute
+  AdminMerchandiseChar91idChar93EditRoute: typeof AdminMerchandiseChar91idChar93EditRoute
+}
+
+const AdminMerchandiseRouteChildren: AdminMerchandiseRouteChildren = {
+  AdminMerchandiseNewRoute: AdminMerchandiseNewRoute,
+  AdminMerchandiseChar91idChar93EditRoute:
+    AdminMerchandiseChar91idChar93EditRoute,
+}
+
+const AdminMerchandiseRouteWithChildren =
+  AdminMerchandiseRoute._addFileChildren(AdminMerchandiseRouteChildren)
+
+interface AdminNewsRouteChildren {
+  AdminNewsNewRoute: typeof AdminNewsNewRoute
+  AdminNewsChar91idChar93EditRoute: typeof AdminNewsChar91idChar93EditRoute
+}
+
+const AdminNewsRouteChildren: AdminNewsRouteChildren = {
+  AdminNewsNewRoute: AdminNewsNewRoute,
+  AdminNewsChar91idChar93EditRoute: AdminNewsChar91idChar93EditRoute,
+}
+
+const AdminNewsRouteWithChildren = AdminNewsRoute._addFileChildren(
+  AdminNewsRouteChildren,
+)
+
+interface AdminReleasesChar91releaseChar93RouteChildren {
+  AdminReleasesChar91releaseChar93EditRoute: typeof AdminReleasesChar91releaseChar93EditRoute
+}
+
+const AdminReleasesChar91releaseChar93RouteChildren: AdminReleasesChar91releaseChar93RouteChildren =
+  {
+    AdminReleasesChar91releaseChar93EditRoute:
+      AdminReleasesChar91releaseChar93EditRoute,
+  }
+
+const AdminReleasesChar91releaseChar93RouteWithChildren =
+  AdminReleasesChar91releaseChar93Route._addFileChildren(
+    AdminReleasesChar91releaseChar93RouteChildren,
+  )
+
+interface AdminReleasesRouteChildren {
+  AdminReleasesNewRoute: typeof AdminReleasesNewRoute
+  AdminReleasesChar91releaseChar93Route: typeof AdminReleasesChar91releaseChar93RouteWithChildren
+}
+
+const AdminReleasesRouteChildren: AdminReleasesRouteChildren = {
+  AdminReleasesNewRoute: AdminReleasesNewRoute,
+  AdminReleasesChar91releaseChar93Route:
+    AdminReleasesChar91releaseChar93RouteWithChildren,
+}
+
+const AdminReleasesRouteWithChildren = AdminReleasesRoute._addFileChildren(
+  AdminReleasesRouteChildren,
+)
+
+interface AdminRouteChildren {
+  AdminArtistsRoute: typeof AdminArtistsRoute
+  AdminContractsRoute: typeof AdminContractsRouteWithChildren
+  AdminDistributionRoute: typeof AdminDistributionRouteWithChildren
+  AdminLegalRoute: typeof AdminLegalRouteWithChildren
+  AdminMerchandiseRoute: typeof AdminMerchandiseRouteWithChildren
+  AdminNewsRoute: typeof AdminNewsRouteWithChildren
+  AdminProfileRoute: typeof AdminProfileRoute
+  AdminReleasesRoute: typeof AdminReleasesRouteWithChildren
+  AdminReportsRoute: typeof AdminReportsRoute
+  AdminRevenueRoute: typeof AdminRevenueRoute
+  AdminStreamsRoute: typeof AdminStreamsRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminArtistsRoute: AdminArtistsRoute,
+  AdminContractsRoute: AdminContractsRouteWithChildren,
+  AdminDistributionRoute: AdminDistributionRouteWithChildren,
+  AdminLegalRoute: AdminLegalRouteWithChildren,
+  AdminMerchandiseRoute: AdminMerchandiseRouteWithChildren,
+  AdminNewsRoute: AdminNewsRouteWithChildren,
+  AdminProfileRoute: AdminProfileRoute,
+  AdminReleasesRoute: AdminReleasesRouteWithChildren,
+  AdminReportsRoute: AdminReportsRoute,
+  AdminRevenueRoute: AdminRevenueRoute,
+  AdminStreamsRoute: AdminStreamsRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
+interface ArtistReleasesRouteChildren {
+  ArtistReleasesReleaseRoute: typeof ArtistReleasesReleaseRoute
+}
+
+const ArtistReleasesRouteChildren: ArtistReleasesRouteChildren = {
+  ArtistReleasesReleaseRoute: ArtistReleasesReleaseRoute,
+}
+
+const ArtistReleasesRouteWithChildren = ArtistReleasesRoute._addFileChildren(
+  ArtistReleasesRouteChildren,
+)
+
+interface ArtistRouteChildren {
+  ArtistProfileRoute: typeof ArtistProfileRoute
+  ArtistReleasesRoute: typeof ArtistReleasesRouteWithChildren
+  ArtistRevenueRoute: typeof ArtistRevenueRoute
+  ArtistStreamsRoute: typeof ArtistStreamsRoute
+}
+
+const ArtistRouteChildren: ArtistRouteChildren = {
+  ArtistProfileRoute: ArtistProfileRoute,
+  ArtistReleasesRoute: ArtistReleasesRouteWithChildren,
+  ArtistRevenueRoute: ArtistRevenueRoute,
+  ArtistStreamsRoute: ArtistStreamsRoute,
+}
+
+const ArtistRouteWithChildren =
+  ArtistRoute._addFileChildren(ArtistRouteChildren)
 
 interface ArtistsRouteChildren {
   ArtistsArtistRoute: typeof ArtistsArtistRoute
@@ -237,10 +990,15 @@ const MusicRouteWithChildren = MusicRoute._addFileChildren(MusicRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AdminRoute: AdminRouteWithChildren,
+  ArtistRoute: ArtistRouteWithChildren,
   ArtistsRoute: ArtistsRouteWithChildren,
   ContactRoute: ContactRoute,
+  ForgotPasswordRoute: ForgotPasswordRoute,
+  LoginRoute: LoginRoute,
   MusicRoute: MusicRouteWithChildren,
   NewsRoute: NewsRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   ShopRoute: ShopRoute,
 }
 export const routeTree = rootRouteImport
