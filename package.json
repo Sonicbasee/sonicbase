@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev",
-    "build": "vite build",
+    "build": "vite build && node -e \"const f='.vercel/output/functions/__server.func/.vc-config.json';const j=require('fs').readFileSync(f,'utf8');require('fs').writeFileSync(f,j.replace('nodejs24.x','nodejs20.x'))\"",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",
