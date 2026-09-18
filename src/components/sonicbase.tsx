@@ -154,11 +154,11 @@ export function HeroCarousel() {
       <button type="button" onClick={() => go(1)} aria-label="Next slide" className="absolute right-4 top-1/2 z-20 -translate-y-1/2 p-2 transition-opacity hover:opacity-70 md:right-8"><ArrowRight className="h-8 w-8" strokeWidth={1.6} /></button>
 
       <div className="page-shell absolute inset-x-0 bottom-10 z-10 text-center">
-        <h1 className="display-title text-[13vw] leading-[0.85] sm:text-[11vw] lg:text-[8.5rem]">{heroSlides[index].title}</h1>
-        <p className="mt-4 text-2xl font-medium uppercase tracking-tight md:text-[2.6rem]">{heroSlides[index].subtitle}</p>
+        <h1 className="display-title text-[13vw] leading-[0.85] sm:text-[11vw] lg:text-[8.5rem]">{active.title}</h1>
+        <p className="mt-4 text-2xl font-medium uppercase tracking-tight md:text-[2.6rem]">{active.subtitle}</p>
         <div className="mt-7 flex justify-center gap-4">
-          <Link to={heroSlides[index].primaryTo} className="inline-flex items-center rounded-full bg-background px-12 py-3.5 text-xl font-medium text-foreground transition-opacity hover:opacity-85 md:text-2xl">Listen</Link>
-          <Link to={heroSlides[index].secondaryTo} className="inline-flex items-center rounded-full bg-background px-12 py-3.5 text-xl font-medium text-foreground transition-opacity hover:opacity-85 md:text-2xl">Watch</Link>
+          <Link to={active.primaryTo} className="inline-flex items-center rounded-full bg-background px-12 py-3.5 text-xl font-medium text-foreground transition-opacity hover:opacity-85 md:text-2xl">Listen</Link>
+          <Link to={active.secondaryTo} className="inline-flex items-center rounded-full bg-background px-12 py-3.5 text-xl font-medium text-foreground transition-opacity hover:opacity-85 md:text-2xl">Watch</Link>
         </div>
         <div className="mt-7 flex justify-center gap-2.5" role="tablist" aria-label="Hero slides">
           {heroSlides.map((slide, i) => (
