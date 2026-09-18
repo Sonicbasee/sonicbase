@@ -41,8 +41,8 @@ export async function loginUser(email: string, password: string): Promise<Sessio
       password,
     });
 
-    if (error) return null;
-    if (!data.user) return null;
+    if (error) { console.error("signInWithPassword error:", error.message, error.code); return null; }
+    if (!data.user) { console.error("No user returned from signIn"); return null; }
 
     const { user } = data;
     const rawRole: string | undefined = user.user_metadata?.["role"];
@@ -59,7 +59,8 @@ export async function loginUser(email: string, password: string): Promise<Sessio
 
     setStoredSession(session);
     return session;
-  } catch {
+  } catch (e) {
+    console.error("Login exception:", e);
     return null;
   }
 }
