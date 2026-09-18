@@ -184,5 +184,4 @@
 
 @media (prefers-reduced-motion: reduce) {
   .marquee-track, .image-reveal { animation: none; }
-  }
 }
