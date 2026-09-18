@@ -23,16 +23,11 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ShopRouteImport } from './routes/shop'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AdminArtistsRouteImport } from './routes/admin/artists'
-import { Route as AdminContractsRouteImport } from './routes/admin/contracts'
-import { Route as AdminDistributionRouteImport } from './routes/admin/distribution'
-import { Route as AdminLegalRouteImport } from './routes/admin/legal'
 import { Route as AdminMerchandiseRouteImport } from './routes/admin/merchandise'
 import { Route as AdminNewsRouteImport } from './routes/admin/news'
 import { Route as AdminProfileRouteImport } from './routes/admin/profile'
 import { Route as AdminReleasesRouteImport } from './routes/admin/releases'
-import { Route as AdminReportsRouteImport } from './routes/admin/reports'
 import { Route as AdminRevenueRouteImport } from './routes/admin/revenue'
-import { Route as AdminStreamsRouteImport } from './routes/admin/streams'
 import { Route as ArtistIndexRouteImport } from './routes/artist/index'
 import { Route as ArtistProfileRouteImport } from './routes/artist/profile'
 import { Route as ArtistReleasesRouteImport } from './routes/artist/releases'
@@ -42,9 +37,6 @@ import { Route as ArtistsArtistRouteImport } from './routes/artists.$artist'
 import { Route as MusicReleaseRouteImport } from './routes/music.$release'
 import { Route as AdminArtistsArtistRouteImport } from './routes/admin/artists/$artist'
 import { Route as AdminArtistsNewRouteImport } from './routes/admin/artists/new'
-import { Route as AdminContractsChar91idChar93RouteImport } from './routes/admin/contracts/[id]'
-import { Route as AdminDistributionChar91idChar93RouteImport } from './routes/admin/distribution/[id]'
-import { Route as AdminLegalChar91idChar93RouteImport } from './routes/admin/legal/[id]'
 import { Route as AdminMerchandiseNewRouteImport } from './routes/admin/merchandise/new'
 import { Route as AdminNewsNewRouteImport } from './routes/admin/news/new'
 import { Route as AdminReleasesNewRouteImport } from './routes/admin/releases/new'
@@ -124,21 +116,6 @@ const AdminArtistsRoute = AdminArtistsRouteImport.update({
   path: '/artists',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminContractsRoute = AdminContractsRouteImport.update({
-  id: '/contracts',
-  path: '/contracts',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminDistributionRoute = AdminDistributionRouteImport.update({
-  id: '/distribution',
-  path: '/distribution',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminLegalRoute = AdminLegalRouteImport.update({
-  id: '/legal',
-  path: '/legal',
-  getParentRoute: () => AdminRoute,
-} as any)
 const AdminMerchandiseRoute = AdminMerchandiseRouteImport.update({
   id: '/merchandise',
   path: '/merchandise',
@@ -159,19 +136,9 @@ const AdminReleasesRoute = AdminReleasesRouteImport.update({
   path: '/releases',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminReportsRoute = AdminReportsRouteImport.update({
-  id: '/reports',
-  path: '/reports',
-  getParentRoute: () => AdminRoute,
-} as any)
 const AdminRevenueRoute = AdminRevenueRouteImport.update({
   id: '/revenue',
   path: '/revenue',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminStreamsRoute = AdminStreamsRouteImport.update({
-  id: '/streams',
-  path: '/streams',
   getParentRoute: () => AdminRoute,
 } as any)
 const ArtistIndexRoute = ArtistIndexRouteImport.update({
@@ -219,24 +186,6 @@ const AdminArtistsNewRoute = AdminArtistsNewRouteImport.update({
   path: '/new',
   getParentRoute: () => AdminArtistsRoute,
 } as any)
-const AdminContractsChar91idChar93Route =
-  AdminContractsChar91idChar93RouteImport.update({
-    id: '/id',
-    path: '/id',
-    getParentRoute: () => AdminContractsRoute,
-  } as any)
-const AdminDistributionChar91idChar93Route =
-  AdminDistributionChar91idChar93RouteImport.update({
-    id: '/id',
-    path: '/id',
-    getParentRoute: () => AdminDistributionRoute,
-  } as any)
-const AdminLegalChar91idChar93Route =
-  AdminLegalChar91idChar93RouteImport.update({
-    id: '/id',
-    path: '/id',
-    getParentRoute: () => AdminLegalRoute,
-  } as any)
 const AdminMerchandiseNewRoute = AdminMerchandiseNewRouteImport.update({
   id: '/new',
   path: '/new',
@@ -296,16 +245,11 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/shop': typeof ShopRoute
   '/admin/artists': typeof AdminArtistsRouteWithChildren
-  '/admin/contracts': typeof AdminContractsRouteWithChildren
-  '/admin/distribution': typeof AdminDistributionRouteWithChildren
-  '/admin/legal': typeof AdminLegalRouteWithChildren
   '/admin/merchandise': typeof AdminMerchandiseRouteWithChildren
   '/admin/news': typeof AdminNewsRouteWithChildren
   '/admin/profile': typeof AdminProfileRoute
   '/admin/releases': typeof AdminReleasesRouteWithChildren
-  '/admin/reports': typeof AdminReportsRoute
   '/admin/revenue': typeof AdminRevenueRoute
-  '/admin/streams': typeof AdminStreamsRoute
   '/artist/profile': typeof ArtistProfileRoute
   '/artist/releases': typeof ArtistReleasesRouteWithChildren
   '/artist/revenue': typeof ArtistRevenueRoute
@@ -316,9 +260,6 @@ export interface FileRoutesByFullPath {
   '/artist/': typeof ArtistIndexRoute
   '/admin/artists/$artist': typeof AdminArtistsArtistRoute
   '/admin/artists/new': typeof AdminArtistsNewRoute
-  '/admin/contracts/id': typeof AdminContractsChar91idChar93Route
-  '/admin/distribution/id': typeof AdminDistributionChar91idChar93Route
-  '/admin/legal/id': typeof AdminLegalChar91idChar93Route
   '/admin/merchandise/new': typeof AdminMerchandiseNewRoute
   '/admin/news/new': typeof AdminNewsNewRoute
   '/admin/releases/new': typeof AdminReleasesNewRoute
@@ -340,16 +281,11 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/shop': typeof ShopRoute
   '/admin/artists': typeof AdminArtistsRouteWithChildren
-  '/admin/contracts': typeof AdminContractsRouteWithChildren
-  '/admin/distribution': typeof AdminDistributionRouteWithChildren
-  '/admin/legal': typeof AdminLegalRouteWithChildren
   '/admin/merchandise': typeof AdminMerchandiseRouteWithChildren
   '/admin/news': typeof AdminNewsRouteWithChildren
   '/admin/profile': typeof AdminProfileRoute
   '/admin/releases': typeof AdminReleasesRouteWithChildren
-  '/admin/reports': typeof AdminReportsRoute
   '/admin/revenue': typeof AdminRevenueRoute
-  '/admin/streams': typeof AdminStreamsRoute
   '/artist/profile': typeof ArtistProfileRoute
   '/artist/releases': typeof ArtistReleasesRouteWithChildren
   '/artist/revenue': typeof ArtistRevenueRoute
@@ -360,9 +296,6 @@ export interface FileRoutesByTo {
   '/artist': typeof ArtistIndexRoute
   '/admin/artists/$artist': typeof AdminArtistsArtistRoute
   '/admin/artists/new': typeof AdminArtistsNewRoute
-  '/admin/contracts/id': typeof AdminContractsChar91idChar93Route
-  '/admin/distribution/id': typeof AdminDistributionChar91idChar93Route
-  '/admin/legal/id': typeof AdminLegalChar91idChar93Route
   '/admin/merchandise/new': typeof AdminMerchandiseNewRoute
   '/admin/news/new': typeof AdminNewsNewRoute
   '/admin/releases/new': typeof AdminReleasesNewRoute
@@ -387,16 +320,11 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/shop': typeof ShopRoute
   '/admin/artists': typeof AdminArtistsRouteWithChildren
-  '/admin/contracts': typeof AdminContractsRouteWithChildren
-  '/admin/distribution': typeof AdminDistributionRouteWithChildren
-  '/admin/legal': typeof AdminLegalRouteWithChildren
   '/admin/merchandise': typeof AdminMerchandiseRouteWithChildren
   '/admin/news': typeof AdminNewsRouteWithChildren
   '/admin/profile': typeof AdminProfileRoute
   '/admin/releases': typeof AdminReleasesRouteWithChildren
-  '/admin/reports': typeof AdminReportsRoute
   '/admin/revenue': typeof AdminRevenueRoute
-  '/admin/streams': typeof AdminStreamsRoute
   '/artist/profile': typeof ArtistProfileRoute
   '/artist/releases': typeof ArtistReleasesRouteWithChildren
   '/artist/revenue': typeof ArtistRevenueRoute
@@ -407,9 +335,6 @@ export interface FileRoutesById {
   '/artist/': typeof ArtistIndexRoute
   '/admin/artists/$artist': typeof AdminArtistsArtistRoute
   '/admin/artists/new': typeof AdminArtistsNewRoute
-  '/admin/contracts/id': typeof AdminContractsChar91idChar93Route
-  '/admin/distribution/id': typeof AdminDistributionChar91idChar93Route
-  '/admin/legal/id': typeof AdminLegalChar91idChar93Route
   '/admin/merchandise/new': typeof AdminMerchandiseNewRoute
   '/admin/news/new': typeof AdminNewsNewRoute
   '/admin/releases/new': typeof AdminReleasesNewRoute
@@ -435,16 +360,11 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/shop'
     | '/admin/artists'
-    | '/admin/contracts'
-    | '/admin/distribution'
-    | '/admin/legal'
     | '/admin/merchandise'
     | '/admin/news'
     | '/admin/profile'
     | '/admin/releases'
-    | '/admin/reports'
     | '/admin/revenue'
-    | '/admin/streams'
     | '/artist/profile'
     | '/artist/releases'
     | '/artist/revenue'
@@ -455,9 +375,6 @@ export interface FileRouteTypes {
     | '/artist/'
     | '/admin/artists/$artist'
     | '/admin/artists/new'
-    | '/admin/contracts/id'
-    | '/admin/distribution/id'
-    | '/admin/legal/id'
     | '/admin/merchandise/new'
     | '/admin/news/new'
     | '/admin/releases/new'
@@ -479,16 +396,11 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/shop'
     | '/admin/artists'
-    | '/admin/contracts'
-    | '/admin/distribution'
-    | '/admin/legal'
     | '/admin/merchandise'
     | '/admin/news'
     | '/admin/profile'
     | '/admin/releases'
-    | '/admin/reports'
     | '/admin/revenue'
-    | '/admin/streams'
     | '/artist/profile'
     | '/artist/releases'
     | '/artist/revenue'
@@ -499,9 +411,6 @@ export interface FileRouteTypes {
     | '/artist'
     | '/admin/artists/$artist'
     | '/admin/artists/new'
-    | '/admin/contracts/id'
-    | '/admin/distribution/id'
-    | '/admin/legal/id'
     | '/admin/merchandise/new'
     | '/admin/news/new'
     | '/admin/releases/new'
@@ -525,16 +434,11 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/shop'
     | '/admin/artists'
-    | '/admin/contracts'
-    | '/admin/distribution'
-    | '/admin/legal'
     | '/admin/merchandise'
     | '/admin/news'
     | '/admin/profile'
     | '/admin/releases'
-    | '/admin/reports'
     | '/admin/revenue'
-    | '/admin/streams'
     | '/artist/profile'
     | '/artist/releases'
     | '/artist/revenue'
@@ -545,9 +449,6 @@ export interface FileRouteTypes {
     | '/artist/'
     | '/admin/artists/$artist'
     | '/admin/artists/new'
-    | '/admin/contracts/id'
-    | '/admin/distribution/id'
-    | '/admin/legal/id'
     | '/admin/merchandise/new'
     | '/admin/news/new'
     | '/admin/releases/new'
@@ -673,27 +574,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminArtistsRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/contracts': {
-      id: '/admin/contracts'
-      path: '/contracts'
-      fullPath: '/admin/contracts'
-      preLoaderRoute: typeof AdminContractsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/distribution': {
-      id: '/admin/distribution'
-      path: '/distribution'
-      fullPath: '/admin/distribution'
-      preLoaderRoute: typeof AdminDistributionRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/legal': {
-      id: '/admin/legal'
-      path: '/legal'
-      fullPath: '/admin/legal'
-      preLoaderRoute: typeof AdminLegalRouteImport
-      parentRoute: typeof AdminRoute
-    }
     '/admin/merchandise': {
       id: '/admin/merchandise'
       path: '/merchandise'
@@ -722,25 +602,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminReleasesRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/reports': {
-      id: '/admin/reports'
-      path: '/reports'
-      fullPath: '/admin/reports'
-      preLoaderRoute: typeof AdminReportsRouteImport
-      parentRoute: typeof AdminRoute
-    }
     '/admin/revenue': {
       id: '/admin/revenue'
       path: '/revenue'
       fullPath: '/admin/revenue'
       preLoaderRoute: typeof AdminRevenueRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/streams': {
-      id: '/admin/streams'
-      path: '/streams'
-      fullPath: '/admin/streams'
-      preLoaderRoute: typeof AdminStreamsRouteImport
       parentRoute: typeof AdminRoute
     }
     '/artist/': {
@@ -805,27 +671,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/artists/new'
       preLoaderRoute: typeof AdminArtistsNewRouteImport
       parentRoute: typeof AdminArtistsRoute
-    }
-    '/admin/contracts/id': {
-      id: '/admin/contracts/id'
-      path: '/id'
-      fullPath: '/admin/contracts/id'
-      preLoaderRoute: typeof AdminContractsChar91idChar93RouteImport
-      parentRoute: typeof AdminContractsRoute
-    }
-    '/admin/distribution/id': {
-      id: '/admin/distribution/id'
-      path: '/id'
-      fullPath: '/admin/distribution/id'
-      preLoaderRoute: typeof AdminDistributionChar91idChar93RouteImport
-      parentRoute: typeof AdminDistributionRoute
-    }
-    '/admin/legal/id': {
-      id: '/admin/legal/id'
-      path: '/id'
-      fullPath: '/admin/legal/id'
-      preLoaderRoute: typeof AdminLegalChar91idChar93RouteImport
-      parentRoute: typeof AdminLegalRoute
     }
     '/admin/merchandise/new': {
       id: '/admin/merchandise/new'
@@ -900,41 +745,6 @@ const AdminArtistsRouteWithChildren = AdminArtistsRoute._addFileChildren(
   AdminArtistsRouteChildren,
 )
 
-interface AdminContractsRouteChildren {
-  AdminContractsChar91idChar93Route: typeof AdminContractsChar91idChar93Route
-}
-
-const AdminContractsRouteChildren: AdminContractsRouteChildren = {
-  AdminContractsChar91idChar93Route: AdminContractsChar91idChar93Route,
-}
-
-const AdminContractsRouteWithChildren = AdminContractsRoute._addFileChildren(
-  AdminContractsRouteChildren,
-)
-
-interface AdminDistributionRouteChildren {
-  AdminDistributionChar91idChar93Route: typeof AdminDistributionChar91idChar93Route
-}
-
-const AdminDistributionRouteChildren: AdminDistributionRouteChildren = {
-  AdminDistributionChar91idChar93Route: AdminDistributionChar91idChar93Route,
-}
-
-const AdminDistributionRouteWithChildren =
-  AdminDistributionRoute._addFileChildren(AdminDistributionRouteChildren)
-
-interface AdminLegalRouteChildren {
-  AdminLegalChar91idChar93Route: typeof AdminLegalChar91idChar93Route
-}
-
-const AdminLegalRouteChildren: AdminLegalRouteChildren = {
-  AdminLegalChar91idChar93Route: AdminLegalChar91idChar93Route,
-}
-
-const AdminLegalRouteWithChildren = AdminLegalRoute._addFileChildren(
-  AdminLegalRouteChildren,
-)
-
 interface AdminMerchandiseRouteChildren {
   AdminMerchandiseNewRoute: typeof AdminMerchandiseNewRoute
   AdminMerchandiseChar91idChar93EditRoute: typeof AdminMerchandiseChar91idChar93EditRoute
@@ -995,31 +805,21 @@ const AdminReleasesRouteWithChildren = AdminReleasesRoute._addFileChildren(
 
 interface AdminRouteChildren {
   AdminArtistsRoute: typeof AdminArtistsRouteWithChildren
-  AdminContractsRoute: typeof AdminContractsRouteWithChildren
-  AdminDistributionRoute: typeof AdminDistributionRouteWithChildren
-  AdminLegalRoute: typeof AdminLegalRouteWithChildren
   AdminMerchandiseRoute: typeof AdminMerchandiseRouteWithChildren
   AdminNewsRoute: typeof AdminNewsRouteWithChildren
   AdminProfileRoute: typeof AdminProfileRoute
   AdminReleasesRoute: typeof AdminReleasesRouteWithChildren
-  AdminReportsRoute: typeof AdminReportsRoute
   AdminRevenueRoute: typeof AdminRevenueRoute
-  AdminStreamsRoute: typeof AdminStreamsRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminArtistsRoute: AdminArtistsRouteWithChildren,
-  AdminContractsRoute: AdminContractsRouteWithChildren,
-  AdminDistributionRoute: AdminDistributionRouteWithChildren,
-  AdminLegalRoute: AdminLegalRouteWithChildren,
   AdminMerchandiseRoute: AdminMerchandiseRouteWithChildren,
   AdminNewsRoute: AdminNewsRouteWithChildren,
   AdminProfileRoute: AdminProfileRoute,
   AdminReleasesRoute: AdminReleasesRouteWithChildren,
-  AdminReportsRoute: AdminReportsRoute,
   AdminRevenueRoute: AdminRevenueRoute,
-  AdminStreamsRoute: AdminStreamsRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 
