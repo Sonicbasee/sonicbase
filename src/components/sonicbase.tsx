@@ -1,6 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
-import { Menu, Search, ShoppingBag, X, ArrowRight, ArrowLeft, Instagram, Youtube } from "lucide-react";
+import { Menu, Search, ShoppingBag, X, ArrowRight, Instagram, Youtube } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -175,10 +175,9 @@ function CartPanel() {
 export function HeroCarousel() {
   const [index, setIndex] = useState(0);
   const count = heroSlides.length;
-  const go = useCallback((dir: number) => setIndex((i) => (i + dir + count) % count), [count]);
 
   useEffect(() => {
-    const id = setInterval(() => setIndex((i) => (i + 1) % count), 7000);
+    const id = setInterval(() => setIndex((i) => (i + 1) % count), 12000);
     return () => clearInterval(id);
   }, [count]);
 
@@ -197,10 +196,8 @@ export function HeroCarousel() {
         />
       ))}
       <div className="absolute inset-0 bg-foreground/20" />
-      <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-foreground/85 via-foreground/25 to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-3/4 bg-gradient-to-t from-foreground/95 via-foreground/40 to-transparent" />
 
-      <button type="button" onClick={() => go(-1)} aria-label="Previous slide" className="absolute left-4 top-1/2 z-20 -translate-y-1/2 p-2 transition-opacity hover:opacity-70 md:left-8"><ArrowLeft className="h-8 w-8" strokeWidth={1.6} /></button>
-      <button type="button" onClick={() => go(1)} aria-label="Next slide" className="absolute right-4 top-1/2 z-20 -translate-y-1/2 p-2 transition-opacity hover:opacity-70 md:right-8"><ArrowRight className="h-8 w-8" strokeWidth={1.6} /></button>
 
       <div className="page-shell absolute inset-x-0 bottom-10 z-10 text-center">
         <h1 className="display-title text-[11vw] leading-[0.85] sm:text-[9vw] lg:text-[7rem]">{active.title}</h1>
