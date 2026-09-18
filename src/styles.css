@@ -165,6 +165,14 @@
   padding-inline: clamp(1rem, 2.7vw, 3.25rem);
 }
 
+@utility sonicbase-logo-mark {
+  background-color: currentColor;
+  mask-image: url("./assets/sonicbase-mark.svg");
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-size: contain;
+}
+
 @keyframes marquee {
   to { transform: translateX(-50%); }
 }
