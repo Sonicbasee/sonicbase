@@ -10,33 +10,139 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as ArtistsRouteImport } from './routes/artists'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as MusicRouteImport } from './routes/music'
+import { Route as NewsRouteImport } from './routes/news'
+import { Route as ShopRouteImport } from './routes/shop'
+import { Route as ArtistsArtistRouteImport } from './routes/artists.$artist'
+import { Route as MusicReleaseRouteImport } from './routes/music.$release'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArtistsRoute = ArtistsRouteImport.update({
+  id: '/artists',
+  path: '/artists',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MusicRoute = MusicRouteImport.update({
+  id: '/music',
+  path: '/music',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NewsRoute = NewsRouteImport.update({
+  id: '/news',
+  path: '/news',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShopRoute = ShopRouteImport.update({
+  id: '/shop',
+  path: '/shop',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArtistsArtistRoute = ArtistsArtistRouteImport.update({
+  id: '/$artist',
+  path: '/$artist',
+  getParentRoute: () => ArtistsRoute,
+} as any)
+const MusicReleaseRoute = MusicReleaseRouteImport.update({
+  id: '/$release',
+  path: '/$release',
+  getParentRoute: () => MusicRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/artists': typeof ArtistsRouteWithChildren
+  '/contact': typeof ContactRoute
+  '/music': typeof MusicRouteWithChildren
+  '/news': typeof NewsRoute
+  '/shop': typeof ShopRoute
+  '/artists/$artist': typeof ArtistsArtistRoute
+  '/music/$release': typeof MusicReleaseRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/artists': typeof ArtistsRouteWithChildren
+  '/contact': typeof ContactRoute
+  '/music': typeof MusicRouteWithChildren
+  '/news': typeof NewsRoute
+  '/shop': typeof ShopRoute
+  '/artists/$artist': typeof ArtistsArtistRoute
+  '/music/$release': typeof MusicReleaseRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/artists': typeof ArtistsRouteWithChildren
+  '/contact': typeof ContactRoute
+  '/music': typeof MusicRouteWithChildren
+  '/news': typeof NewsRoute
+  '/shop': typeof ShopRoute
+  '/artists/$artist': typeof ArtistsArtistRoute
+  '/music/$release': typeof MusicReleaseRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/artists'
+    | '/contact'
+    | '/music'
+    | '/news'
+    | '/shop'
+    | '/artists/$artist'
+    | '/music/$release'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/about'
+    | '/artists'
+    | '/contact'
+    | '/music'
+    | '/news'
+    | '/shop'
+    | '/artists/$artist'
+    | '/music/$release'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/artists'
+    | '/contact'
+    | '/music'
+    | '/news'
+    | '/shop'
+    | '/artists/$artist'
+    | '/music/$release'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  ArtistsRoute: typeof ArtistsRouteWithChildren
+  ContactRoute: typeof ContactRoute
+  MusicRoute: typeof MusicRouteWithChildren
+  NewsRoute: typeof NewsRoute
+  ShopRoute: typeof ShopRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +154,94 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/artists': {
+      id: '/artists'
+      path: '/artists'
+      fullPath: '/artists'
+      preLoaderRoute: typeof ArtistsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/music': {
+      id: '/music'
+      path: '/music'
+      fullPath: '/music'
+      preLoaderRoute: typeof MusicRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/news': {
+      id: '/news'
+      path: '/news'
+      fullPath: '/news'
+      preLoaderRoute: typeof NewsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/shop': {
+      id: '/shop'
+      path: '/shop'
+      fullPath: '/shop'
+      preLoaderRoute: typeof ShopRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/artists/$artist': {
+      id: '/artists/$artist'
+      path: '/$artist'
+      fullPath: '/artists/$artist'
+      preLoaderRoute: typeof ArtistsArtistRouteImport
+      parentRoute: typeof ArtistsRoute
+    }
+    '/music/$release': {
+      id: '/music/$release'
+      path: '/$release'
+      fullPath: '/music/$release'
+      preLoaderRoute: typeof MusicReleaseRouteImport
+      parentRoute: typeof MusicRoute
+    }
   }
 }
 
+interface ArtistsRouteChildren {
+  ArtistsArtistRoute: typeof ArtistsArtistRoute
+}
+
+const ArtistsRouteChildren: ArtistsRouteChildren = {
+  ArtistsArtistRoute: ArtistsArtistRoute,
+}
+
+const ArtistsRouteWithChildren =
+  ArtistsRoute._addFileChildren(ArtistsRouteChildren)
+
+interface MusicRouteChildren {
+  MusicReleaseRoute: typeof MusicReleaseRoute
+}
+
+const MusicRouteChildren: MusicRouteChildren = {
+  MusicReleaseRoute: MusicReleaseRoute,
+}
+
+const MusicRouteWithChildren = MusicRoute._addFileChildren(MusicRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
+  ArtistsRoute: ArtistsRouteWithChildren,
+  ContactRoute: ContactRoute,
+  MusicRoute: MusicRouteWithChildren,
+  NewsRoute: NewsRoute,
+  ShopRoute: ShopRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
