@@ -38,6 +38,7 @@ import { Route as ArtistRevenueRouteImport } from './routes/artist/revenue'
 import { Route as ArtistStreamsRouteImport } from './routes/artist/streams'
 import { Route as ArtistsArtistRouteImport } from './routes/artists.$artist'
 import { Route as MusicReleaseRouteImport } from './routes/music.$release'
+import { Route as AdminArtistsArtistRouteImport } from './routes/admin/artists/$artist'
 import { Route as AdminContractsChar91idChar93RouteImport } from './routes/admin/contracts/[id]'
 import { Route as AdminDistributionChar91idChar93RouteImport } from './routes/admin/distribution/[id]'
 import { Route as AdminLegalChar91idChar93RouteImport } from './routes/admin/legal/[id]'
@@ -195,6 +196,11 @@ const MusicReleaseRoute = MusicReleaseRouteImport.update({
   path: '/$release',
   getParentRoute: () => MusicRoute,
 } as any)
+const AdminArtistsArtistRoute = AdminArtistsArtistRouteImport.update({
+  id: '/$artist',
+  path: '/$artist',
+  getParentRoute: () => AdminArtistsRoute,
+} as any)
 const AdminContractsChar91idChar93Route =
   AdminContractsChar91idChar93RouteImport.update({
     id: '/id',
@@ -271,7 +277,7 @@ export interface FileRoutesByFullPath {
   '/news': typeof NewsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/shop': typeof ShopRoute
-  '/admin/artists': typeof AdminArtistsRoute
+  '/admin/artists': typeof AdminArtistsRouteWithChildren
   '/admin/contracts': typeof AdminContractsRouteWithChildren
   '/admin/distribution': typeof AdminDistributionRouteWithChildren
   '/admin/legal': typeof AdminLegalRouteWithChildren
@@ -288,6 +294,7 @@ export interface FileRoutesByFullPath {
   '/artist/streams': typeof ArtistStreamsRoute
   '/artists/$artist': typeof ArtistsArtistRoute
   '/music/$release': typeof MusicReleaseRoute
+  '/admin/artists/$artist': typeof AdminArtistsArtistRoute
   '/admin/contracts/id': typeof AdminContractsChar91idChar93Route
   '/admin/distribution/id': typeof AdminDistributionChar91idChar93Route
   '/admin/legal/id': typeof AdminLegalChar91idChar93Route
@@ -313,7 +320,7 @@ export interface FileRoutesByTo {
   '/news': typeof NewsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/shop': typeof ShopRoute
-  '/admin/artists': typeof AdminArtistsRoute
+  '/admin/artists': typeof AdminArtistsRouteWithChildren
   '/admin/contracts': typeof AdminContractsRouteWithChildren
   '/admin/distribution': typeof AdminDistributionRouteWithChildren
   '/admin/legal': typeof AdminLegalRouteWithChildren
@@ -330,6 +337,7 @@ export interface FileRoutesByTo {
   '/artist/streams': typeof ArtistStreamsRoute
   '/artists/$artist': typeof ArtistsArtistRoute
   '/music/$release': typeof MusicReleaseRoute
+  '/admin/artists/$artist': typeof AdminArtistsArtistRoute
   '/admin/contracts/id': typeof AdminContractsChar91idChar93Route
   '/admin/distribution/id': typeof AdminDistributionChar91idChar93Route
   '/admin/legal/id': typeof AdminLegalChar91idChar93Route
@@ -356,7 +364,7 @@ export interface FileRoutesById {
   '/news': typeof NewsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/shop': typeof ShopRoute
-  '/admin/artists': typeof AdminArtistsRoute
+  '/admin/artists': typeof AdminArtistsRouteWithChildren
   '/admin/contracts': typeof AdminContractsRouteWithChildren
   '/admin/distribution': typeof AdminDistributionRouteWithChildren
   '/admin/legal': typeof AdminLegalRouteWithChildren
@@ -373,6 +381,7 @@ export interface FileRoutesById {
   '/artist/streams': typeof ArtistStreamsRoute
   '/artists/$artist': typeof ArtistsArtistRoute
   '/music/$release': typeof MusicReleaseRoute
+  '/admin/artists/$artist': typeof AdminArtistsArtistRoute
   '/admin/contracts/id': typeof AdminContractsChar91idChar93Route
   '/admin/distribution/id': typeof AdminDistributionChar91idChar93Route
   '/admin/legal/id': typeof AdminLegalChar91idChar93Route
@@ -417,6 +426,7 @@ export interface FileRouteTypes {
     | '/artist/streams'
     | '/artists/$artist'
     | '/music/$release'
+    | '/admin/artists/$artist'
     | '/admin/contracts/id'
     | '/admin/distribution/id'
     | '/admin/legal/id'
@@ -459,6 +469,7 @@ export interface FileRouteTypes {
     | '/artist/streams'
     | '/artists/$artist'
     | '/music/$release'
+    | '/admin/artists/$artist'
     | '/admin/contracts/id'
     | '/admin/distribution/id'
     | '/admin/legal/id'
@@ -501,6 +512,7 @@ export interface FileRouteTypes {
     | '/artist/streams'
     | '/artists/$artist'
     | '/music/$release'
+    | '/admin/artists/$artist'
     | '/admin/contracts/id'
     | '/admin/distribution/id'
     | '/admin/legal/id'
@@ -734,6 +746,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MusicReleaseRouteImport
       parentRoute: typeof MusicRoute
     }
+    '/admin/artists/$artist': {
+      id: '/admin/artists/$artist'
+      path: '/$artist'
+      fullPath: '/admin/artists/$artist'
+      preLoaderRoute: typeof AdminArtistsArtistRouteImport
+      parentRoute: typeof AdminArtistsRoute
+    }
     '/admin/contracts/id': {
       id: '/admin/contracts/id'
       path: '/id'
@@ -813,6 +832,18 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface AdminArtistsRouteChildren {
+  AdminArtistsArtistRoute: typeof AdminArtistsArtistRoute
+}
+
+const AdminArtistsRouteChildren: AdminArtistsRouteChildren = {
+  AdminArtistsArtistRoute: AdminArtistsArtistRoute,
+}
+
+const AdminArtistsRouteWithChildren = AdminArtistsRoute._addFileChildren(
+  AdminArtistsRouteChildren,
+)
 
 interface AdminContractsRouteChildren {
   AdminContractsChar91idChar93Route: typeof AdminContractsChar91idChar93Route
@@ -908,7 +939,7 @@ const AdminReleasesRouteWithChildren = AdminReleasesRoute._addFileChildren(
 )
 
 interface AdminRouteChildren {
-  AdminArtistsRoute: typeof AdminArtistsRoute
+  AdminArtistsRoute: typeof AdminArtistsRouteWithChildren
   AdminContractsRoute: typeof AdminContractsRouteWithChildren
   AdminDistributionRoute: typeof AdminDistributionRouteWithChildren
   AdminLegalRoute: typeof AdminLegalRouteWithChildren
@@ -922,7 +953,7 @@ interface AdminRouteChildren {
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
-  AdminArtistsRoute: AdminArtistsRoute,
+  AdminArtistsRoute: AdminArtistsRouteWithChildren,
   AdminContractsRoute: AdminContractsRouteWithChildren,
   AdminDistributionRoute: AdminDistributionRouteWithChildren,
   AdminLegalRoute: AdminLegalRouteWithChildren,
