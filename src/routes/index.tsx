@@ -1,8 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ArtistCard, HeroCarousel, NewsGrid, PillLink, ProductCard, ReleaseCard, SectionHeading, Socials } from "@/components/sonicbase";
-import { artists, products, releases } from "@/lib/sonicbase-data";
+import { HeroCarousel, NewsGrid, PillLink, ProductCard, ReleaseCard, SectionHeading, Socials } from "@/components/sonicbase";
+import { products, releases } from "@/lib/sonicbase-data";
 
 export const Route = createFileRoute("/")({
   head: () => ({ meta: [
@@ -47,13 +47,6 @@ function Index() {
       <section className="page-shell pb-20 md:pb-28">
         <SectionHeading action={<PillLink to="/news">All News</PillLink>}>News</SectionHeading>
         <div className="mt-12"><NewsGrid /></div>
-      </section>
-
-      <section className="page-shell pb-20 md:pb-28">
-        <SectionHeading action={<PillLink to="/artists">All Artists</PillLink>}>Artists</SectionHeading>
-        <div className="mt-12 grid grid-cols-2 gap-x-3 gap-y-10 lg:grid-cols-3">
-          {artists.map((artist) => <ArtistCard key={artist.slug} artist={artist} />)}
-        </div>
       </section>
 
       <section className="bg-primary py-20 text-primary-foreground md:py-28">

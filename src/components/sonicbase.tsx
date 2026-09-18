@@ -3,16 +3,13 @@ import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react
 import { Menu, Search, ShoppingBag, X, ArrowRight, ArrowLeft, Instagram, Youtube } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { artists, heroSlides, news, releases, socials, type Artist, type Release } from "@/lib/sonicbase-data";
+import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { artists, heroSlides, news, products, releases, socials, type Artist, type Release } from "@/lib/sonicbase-data";
 
 export function Logo({ className = "h-11 w-11" }: { className?: string }) {
   return (
     <span className="inline-flex flex-col items-center gap-0.5" aria-label="Sonicbase">
-      <svg viewBox="0 0 48 48" className={className} fill="none" aria-hidden="true">
-        <circle cx="24" cy="24" r="20" stroke="currentColor" strokeWidth="2.5" />
-        <path d="M24 7v34M7 24h34M15 15h9v9h-9v9h9v9M33 7v17h8M33 41V32h8" stroke="currentColor" strokeWidth="2.5" />
-      </svg>
+      <span className={`sonicbase-logo-mark block ${className}`} aria-hidden="true" />
       <span className="text-[8px] font-bold uppercase tracking-[0.24em]">Sonicbase</span>
     </span>
   );
@@ -101,7 +98,7 @@ export function Header() {
         <div className="flex items-center justify-end gap-3 sm:gap-6">
           <Button type="button" variant="ghost" className="hidden h-auto p-0 text-[15px] hover:bg-transparent sm:inline-flex" onClick={() => setSearchOpen(true)}>Search</Button>
           <Button variant="ghost" size="icon" className="sm:hidden" onClick={() => setSearchOpen(true)} aria-label="Search"><Search /></Button>
-          <Link to="/shop" className="flex items-center gap-2 text-[15px]" aria-label="Shopping bag, 0 items"><ShoppingBag className="h-5 w-5" strokeWidth={1.7} /><span>0</span></Link>
+          <CartPanel />
         </div>
       </header>
       {searchOpen && (
@@ -120,6 +117,56 @@ export function Header() {
         </div>
       )}
     </>
+  );
+}
+
+function CartPanel() {
+  const popular = products.slice(0, 4);
+
+  return (
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button variant="ghost" className="h-auto gap-2 p-0 text-[15px] hover:bg-transparent" aria-label="Open shopping bag, 0 items">
+          <ShoppingBag className="h-5 w-5" strokeWidth={1.7} />
+          <span>0</span>
+        </Button>
+      </SheetTrigger>
+      <SheetContent side="right" className="flex w-full flex-col gap-0 rounded-l-[18px] border-l bg-background p-0 sm:max-w-[460px] [&>button]:hidden">
+        <div className="flex h-16 shrink-0 items-center justify-between border-b px-5">
+          <SheetTitle className="text-base font-bold">Your cart is empty</SheetTitle>
+          <SheetClose asChild>
+            <Button variant="ghost" size="icon" aria-label="Close shopping bag"><X className="h-5 w-5" /></Button>
+          </SheetClose>
+        </div>
+
+        <div className="flex min-h-0 flex-1 flex-col px-5 pb-5">
+          <div className="flex items-center justify-between py-6 text-sm">
+            <span className="text-muted-foreground">Popular items</span>
+            <SheetClose asChild>
+              <Link to="/shop" className="inline-flex items-center gap-2 font-medium">Go to Shop <ArrowRight className="h-4 w-4" /></Link>
+            </SheetClose>
+          </div>
+
+          <div className="grid gap-4 overflow-y-auto">
+            {popular.map((product) => (
+              <article key={product.name} className="grid grid-cols-[90px_1fr] items-start gap-4">
+                <div className="aspect-square overflow-hidden rounded-[8px] bg-muted">
+                  <img src={product.image} alt="" width={180} height={180} className="h-full w-full object-cover" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium leading-snug">{product.name}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">{product.price}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          <div className="mt-auto flex justify-center gap-3 pt-8" aria-label="Accepted payment methods">
+            {["VISA", "●●", "DISCOVER", "AMEX"].map((label) => <span key={label} className="inline-flex h-6 min-w-10 items-center justify-center rounded-[3px] border px-1.5 text-[9px] font-bold text-foreground">{label}</span>)}
+          </div>
+        </div>
+      </SheetContent>
+    </Sheet>
   );
 }
 
