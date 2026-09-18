@@ -150,7 +150,7 @@ function CartPanel() {
 
 /* ---------------------------------------------- hero carousel */
 
-export function HeroCarousel({ slides = [] }: { slides?: { title: string; subtitle: string; image: string; alt: string; primaryTo: string; secondaryTo: string }[] }) {
+export function HeroCarousel({ slides = [] }: { slides?: { title: string; subtitle: string; image: string; alt: string; primaryTo: string; secondaryTo: string; secondaryParams?: Record<string, string> }[] }) {
   const [index, setIndex] = useState(0);
   const count = slides.length;
 
@@ -192,7 +192,7 @@ export function HeroCarousel({ slides = [] }: { slides?: { title: string; subtit
         <p className="mt-3 text-lg font-medium uppercase md:text-2xl">{active.subtitle}</p>
         <div className="mt-5 flex justify-center gap-3">
           <Link to={active.primaryTo} className="inline-flex items-center rounded-full bg-background px-8 py-2.5 text-base font-medium text-foreground transition-opacity hover:opacity-85">Listen</Link>
-          <Link to={active.secondaryTo} className="inline-flex items-center rounded-full bg-background px-8 py-2.5 text-base font-medium text-foreground transition-opacity hover:opacity-85">Watch</Link>
+          <Link to={active.secondaryTo} params={active.secondaryParams} className="inline-flex items-center rounded-full bg-background px-8 py-2.5 text-base font-medium text-foreground transition-opacity hover:opacity-85">Watch</Link>
         </div>
         <div className="mt-7 flex justify-center gap-2.5" role="tablist" aria-label="Hero slides">
           {slides.map((slide, i) => (

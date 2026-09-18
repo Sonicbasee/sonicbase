@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { NewsGrid, PageTitle, PillLink, Socials } from "@/components/sonicbase";
+import { NewsGrid, PageTitle, Socials } from "@/components/sonicbase";
 import { fetchPublishedNews, fetchPublicArtists } from "@/lib/public-data";
 
 export const Route = createFileRoute("/news")({ head: () => ({ meta: [
@@ -16,7 +16,7 @@ function NewsPage() {
 
   return (
     <>
-      <PageTitle action={<PillLink to="/news">All News</PillLink>}>News</PageTitle>
+      <PageTitle intro="News, interviews and studio stories from Sonicbase.">News</PageTitle>
       <section className="page-shell pb-8">
         {isLoading ? <p className="text-muted-foreground py-8 text-center">Loading news...</p> : <NewsGrid items={newsItems} />}
       </section>

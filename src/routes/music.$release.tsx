@@ -39,8 +39,8 @@ function ReleasePage() {
           <p className="mt-6 max-w-lg text-base text-muted-foreground">{release.description}</p>
           <p className="mt-5 text-xs">{release.date}</p>
           <div className="mt-7 flex flex-wrap gap-2">
-            <Button>Listen now</Button>
-            <Button variant="outline">Buy</Button>
+            <Button onClick={() => alert("Streaming links coming soon!")}>Listen now</Button>
+            <Button variant="outline" onClick={() => alert("Purchase options coming soon!")}>Buy</Button>
           </div>
         </div>
       </section>

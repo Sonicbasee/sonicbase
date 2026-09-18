@@ -44,9 +44,9 @@ function ArtistPage() {
         <div>
           <p className="text-lg leading-relaxed">{artist.bio}</p>
           <div className="mt-7 flex gap-2">
-            <Button>Spotify</Button>
-            <Button variant="outline">Apple Music</Button>
-            <Button variant="outline">Instagram</Button>
+            <Button onClick={() => alert("Streaming links coming soon!")}>Spotify</Button>
+            <Button variant="outline" onClick={() => alert("Streaming links coming soon!")}>Apple Music</Button>
+            <Button variant="outline" onClick={() => alert("Social links coming soon!")}>Instagram</Button>
           </div>
         </div>
       </section>
