@@ -2,7 +2,8 @@ import { redirect } from "@tanstack/react-router";
 import { getStoredSession, type UserRole } from "@/lib/auth";
 
 export async function requireAuth(requiredRole?: UserRole) {
-  const session = typeof window === "undefined" ? null : getStoredSession();
+  if (typeof window === "undefined") return;
+  const session = getStoredSession();
 
   if (!session) {
     throw redirect({ to: "/login" });
