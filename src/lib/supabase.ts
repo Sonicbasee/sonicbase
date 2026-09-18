@@ -9,7 +9,15 @@ if (!supabaseUrl || !supabasePublishableKey) {
 
 export const supabase = createClient(
   supabaseUrl || "https://placeholder.supabase.co",
-  supabasePublishableKey || "placeholder-key"
+  supabasePublishableKey || "placeholder-key",
+  {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: false,
+      storage: typeof window !== "undefined" ? window.localStorage : undefined,
+    },
+  }
 );
 
 export const isSupabaseConfigured = !!(supabaseUrl && supabasePublishableKey);
