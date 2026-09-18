@@ -32,14 +32,19 @@ function Index() {
     return merchItems.slice(0, 5);
   }, [shopCategory, merchItems]);
 
-  const heroSlides = artists.slice(0, 3).map((a) => ({
-    title: a.name,
-    subtitle: `${a.genre} · ${a.city}`,
-    image: a.image || "",
-    alt: a.name,
-    primaryTo: "/music",
-    secondaryTo: "/artists/$artist",
-    secondaryParams: { artist: a.slug },
+  const heroSlides = releases.slice(0, 3).map((release) => ({
+    title: release.title,
+    subtitle: `${release.artist} · ${release.type}`,
+    image: release.image || "",
+    alt: `${release.title} artwork`,
+    primaryTo: "/music/$release",
+    primaryParams: { release: release.slug },
+    primaryHref: release.listenUrl,
+    primaryLabel: release.listenUrl ? "Listen" : "View release",
+    secondaryHref: release.watchUrl,
+    secondaryTo: "/music/$release",
+    secondaryParams: { release: release.slug },
+    secondaryLabel: release.watchUrl ? "Watch" : "Details",
   }));
 
   const socialImages = artists.filter((a) => a.image).map((a) => ({ image: a.image, alt: a.name }));

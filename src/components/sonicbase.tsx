@@ -150,7 +150,7 @@ function CartPanel() {
 
 /* ---------------------------------------------- hero carousel */
 
-export function HeroCarousel({ slides = [] }: { slides?: { title: string; subtitle: string; image: string; alt: string; primaryTo: string; secondaryTo: string; secondaryParams?: Record<string, string> }[] }) {
+export function HeroCarousel({ slides = [] }: { slides?: { title: string; subtitle: string; image: string; alt: string; primaryTo: string; primaryParams?: Record<string, string>; primaryHref?: string; primaryLabel?: string; secondaryTo: string; secondaryParams?: Record<string, string>; secondaryHref?: string; secondaryLabel?: string }[] }) {
   const [index, setIndex] = useState(0);
   const count = slides.length;
 
@@ -191,8 +191,16 @@ export function HeroCarousel({ slides = [] }: { slides?: { title: string; subtit
         <h1 className="display-title text-[11vw] leading-[0.85] sm:text-[9vw] lg:text-[7rem]">{active.title}</h1>
         <p className="mt-3 text-lg font-medium uppercase md:text-2xl">{active.subtitle}</p>
         <div className="mt-5 flex justify-center gap-3">
-          <Link to={active.primaryTo} className="inline-flex items-center rounded-full bg-background px-8 py-2.5 text-base font-medium text-foreground transition-opacity hover:opacity-85">Listen</Link>
-          <Link to={active.secondaryTo} params={active.secondaryParams} className="inline-flex items-center rounded-full bg-background px-8 py-2.5 text-base font-medium text-foreground transition-opacity hover:opacity-85">Watch</Link>
+          {active.primaryHref ? (
+            <a href={active.primaryHref} target="_blank" rel="noreferrer" className="inline-flex items-center rounded-full bg-background px-8 py-2.5 text-base font-medium text-foreground transition-opacity hover:opacity-85">{active.primaryLabel ?? "Listen"}</a>
+          ) : (
+            <Link to={active.primaryTo} params={active.primaryParams} className="inline-flex items-center rounded-full bg-background px-8 py-2.5 text-base font-medium text-foreground transition-opacity hover:opacity-85">{active.primaryLabel ?? "View release"}</Link>
+          )}
+          {active.secondaryHref ? (
+            <a href={active.secondaryHref} target="_blank" rel="noreferrer" className="inline-flex items-center rounded-full bg-background px-8 py-2.5 text-base font-medium text-foreground transition-opacity hover:opacity-85">{active.secondaryLabel ?? "Watch"}</a>
+          ) : (
+            <Link to={active.secondaryTo} params={active.secondaryParams} className="inline-flex items-center rounded-full bg-background px-8 py-2.5 text-base font-medium text-foreground transition-opacity hover:opacity-85">{active.secondaryLabel ?? "Details"}</Link>
+          )}
         </div>
         <div className="mt-7 flex justify-center gap-2.5" role="tablist" aria-label="Hero slides">
           {slides.map((slide, i) => (
