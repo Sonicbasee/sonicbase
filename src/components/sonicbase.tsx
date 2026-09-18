@@ -135,6 +135,8 @@ export function HeroCarousel() {
     return () => clearInterval(id);
   }, [count]);
 
+  const active = heroSlides[index] ?? heroSlides[0]!;
+
   return (
     <section className="relative h-[92vh] min-h-[620px] overflow-hidden bg-primary text-primary-foreground">
       {heroSlides.map((slide, i) => (
