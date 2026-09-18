@@ -182,8 +182,9 @@ export function DashboardPage({
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <DashboardShell search={search} setSearch={setSearch} onLogout={handleLogout} title={title} subtitle={subtitle} actions={actions} />
-      <div className="p-4 pb-10 md:p-6 lg:p-8">{children}</div>
+      <DashboardShell search={search} setSearch={setSearch} onLogout={handleLogout} title={title} subtitle={subtitle} actions={actions}>
+        {children}
+      </DashboardShell>
     </div>
   );
 }
@@ -195,6 +196,7 @@ function DashboardShell({
   title,
   subtitle,
   actions,
+  children,
 }: {
   search: string;
   setSearch: (value: string) => void;
@@ -202,6 +204,7 @@ function DashboardShell({
   title: string;
   subtitle?: string;
   actions?: ReactNode;
+  children: ReactNode;
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const role = useMemo(() => (typeof window === "undefined" ? "artist" : (localStorage.getItem("sonicbase-session") ? JSON.parse(localStorage.getItem("sonicbase-session") ?? "{}").role : "artist")), []);

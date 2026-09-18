@@ -2,6 +2,9 @@ import { redirect } from "@tanstack/react-router";
 import { getStoredSession, type UserRole } from "@/lib/auth";
 
 export function requireAuth(requiredRole?: UserRole) {
+  // Demo sessions live in localStorage, so authentication can only be checked in the browser.
+  if (typeof window === "undefined") return;
+
   const session = getStoredSession();
 
   if (!session) {
