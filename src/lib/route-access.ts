@@ -1,8 +1,8 @@
 import { redirect } from "@tanstack/react-router";
-import { getStoredSession, type UserRole, getCurrentSession } from "@/lib/auth";
+import { getStoredSession, type UserRole } from "@/lib/auth";
 
 export async function requireAuth(requiredRole?: UserRole) {
-  const session = await getCurrentSession();
+  const session = getStoredSession();
 
   if (!session) {
     throw redirect({ to: "/login" });
