@@ -1,10 +1,29 @@
-<!-- LOVABLE:BEGIN -->
-> [!IMPORTANT]
-> This project is connected to [Lovable](https://lovable.dev). Avoid rewriting
-> published git history — force pushing, or rebasing/amending/squashing commits
-> that are already pushed — as it rewrites history on Lovable's side and the
-> user will likely lose their project history.
->
-> Commits you push to the connected branch sync back to Lovable and show up in
-> the editor, so keep the branch in a working state.
-<!-- LOVABLE:END -->
+# Sonicbase
+
+Independent music, artist-led.
+
+## Tech Stack
+- TanStack Router + Start
+- Supabase (Auth, Database, Storage)
+- Cloudflare Workers
+- Tailwind CSS
+
+## Development
+```bash
+npm install
+npm run dev
+```
+
+## Deployment
+```bash
+npm run build
+npx wrangler deploy
+```
+
+## Environment Variables
+Set in `.env` for local dev, or as Cloudflare Worker env vars for production:
+- `VITE_SUPABASE_URL` - Supabase project URL
+- `VITE_SUPABASE_PUBLISHABLE_KEY` - Supabase anon key
+
+## Database Setup
+Run `supabase/migrations/001_initial_schema.sql` in the Supabase SQL Editor to create all tables.
