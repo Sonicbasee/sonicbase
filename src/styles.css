@@ -169,6 +169,10 @@
   to { transform: translateX(-50%); }
 }
 
+@keyframes social-loop {
+  to { transform: translateX(-50%); }
+}
+
 @keyframes image-in {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -182,6 +186,10 @@
   animation: image-in 500ms ease-out both;
 }
 
+@utility animate-social-loop {
+  animation: social-loop 32s linear infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .marquee-track, .image-reveal { animation: none; }
+  .marquee-track, .image-reveal, .animate-social-loop { animation: none; }
 }

@@ -1,4 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useMemo, useState } from "react";
+import { Button } from "@/components/ui/button";
 import { ArtistCard, HeroCarousel, NewsGrid, PillLink, ProductCard, ReleaseCard, SectionHeading, Socials } from "@/components/sonicbase";
 import { artists, products, releases } from "@/lib/sonicbase-data";
 
@@ -15,14 +17,23 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  const [shopCategory, setShopCategory] = useState("Trending");
+  const shopCategories = ["Trending", "Bestsellers", "Box Sets", "Merch"];
+  const shopProducts = useMemo(() => {
+    if (shopCategory === "Bestsellers") return products.filter((product) => product.tag === "VINYL");
+    if (shopCategory === "Box Sets") return products.filter((product) => ["VINYL", "PRINT"].includes(product.tag));
+    if (shopCategory === "Merch") return products.filter((product) => ["T-SHIRT", "POSTER", "ZINE"].includes(product.tag));
+    return products.slice(0, 5);
+  }, [shopCategory]);
+
   return (
     <>
       <HeroCarousel />
 
-      <section className="page-shell py-20 md:py-28">
-        <SectionHeading action={<PillLink to="/shop">Shop All</PillLink>}>Shop</SectionHeading>
+      <section className="page-shell py-16 md:py-20">
+        <SectionHeading action={<div className="flex max-w-full gap-2 overflow-x-auto pb-1">{shopCategories.map((category) => <Button key={category} variant={shopCategory === category ? "default" : "outline"} onClick={() => setShopCategory(category)}>{category}</Button>)}</div>}>Shop</SectionHeading>
         <div className="mt-12 grid grid-cols-2 gap-x-3 gap-y-10 lg:grid-cols-4 xl:grid-cols-5">
-          {products.slice(0, 5).map((p) => <ProductCard key={p.name} product={p} />)}
+          {shopProducts.map((p) => <ProductCard key={p.name} product={p} />)}
         </div>
       </section>
 
@@ -47,10 +58,10 @@ function Index() {
 
       <section className="bg-primary py-20 text-primary-foreground md:py-28">
         <div className="page-shell grid gap-12 lg:grid-cols-2 lg:items-end">
-          <h2 className="display-title text-5xl sm:text-7xl">Built around the artist.</h2>
+          <h2 className="display-title text-4xl sm:text-6xl">Built around the artist.</h2>
           <div>
-            <p className="max-w-xl text-xl leading-snug text-primary-foreground/75">Sonicbase is an independent music company built for long careers, lasting records and creative ownership.</p>
-            <Link to="/about" className="mt-8 inline-flex items-center rounded-full bg-background px-9 py-4 text-xl text-foreground transition-opacity hover:opacity-85">Our Story</Link>
+            <p className="max-w-xl text-lg leading-snug text-primary-foreground/75">Sonicbase is an independent music company built for long careers, lasting records and creative ownership.</p>
+            <Link to="/about" className="mt-7 inline-flex items-center rounded-full bg-background px-6 py-3 text-base text-foreground transition-opacity hover:opacity-85">Our Story</Link>
           </div>
         </div>
       </section>
