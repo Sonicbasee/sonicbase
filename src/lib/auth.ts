@@ -35,28 +35,36 @@ export function clearStoredSession() {
 }
 
 export async function loginUser(email: string, password: string): Promise<SessionUser | null> {
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
 
-  if (error || !data.user) return null;
+    if (error) { console.error("Login error:", error.message); return null; }
+    if (!data.user) { console.error("No user returned"); return null; }
 
-  const { user } = data;
-  const rawRole: string | undefined = user.user_metadata?.["role"];
-  const role: UserRole = (rawRole as string) === "admin" ? "admin" : "artist";
-  const fullName: string | undefined = user.user_metadata?.["full_name"] as string;
-  const userEmail = user.email || "user@sonicbase.com";
+    const { user } = data;
+    const rawRole: string | undefined = user.user_metadata?.["role"];
+    const role: UserRole = (rawRole as string) === "admin" ? "admin" : "artist";
+    const fullName: string | undefined = user.user_metadata?.["full_name"] as string;
+    const userEmail = user.email || "user@sonicbase.com";
 
-  const session: SessionUser = {
-    id: user.id,
-    name: fullName || "User",
-    email: userEmail,
-    role,
-  };
+    console.log("Login success, role:", role, "user_metadata:", user.user_metadata);
 
-  setStoredSession(session);
-  return session;
+    const session: SessionUser = {
+      id: user.id,
+      name: fullName || "User",
+      email: userEmail,
+      role,
+    };
+
+    setStoredSession(session);
+    return session;
+  } catch (e) {
+    console.error("Login exception:", e);
+    return null;
+  }
 }
 
 export async function signupUser(name: string, email: string, password: string, role: UserRole): Promise<SessionUser | null> {
