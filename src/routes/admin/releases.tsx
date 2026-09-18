@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { DashboardPage, SectionCard, StatusBadge, TableCard } from "@/components/dashboard";
@@ -11,12 +11,15 @@ export const Route = createFileRoute("/admin/releases")({
 });
 
 function AdminReleasesPage() {
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
   const queryClient = useQueryClient();
   const { data: releases = [], isLoading } = useQuery({ queryKey: ["releases"], queryFn: fetchReleases });
   const deleteMutation = useMutation({
     mutationFn: deleteRelease,
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["releases"] }),
   });
+
+  if (pathname !== "/admin/releases") return <Outlet />;
 
   return (
     <DashboardPage title="Releases" subtitle="Manage release planning, metadata and publishing status." actions={<Link to="/admin/releases/new"><Button size="sm">New release</Button></Link>}>

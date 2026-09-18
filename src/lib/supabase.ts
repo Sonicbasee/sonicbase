@@ -1,15 +1,19 @@
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl = import.meta.env["VITE_SUPABASE_URL"] || "https://rwgjngmypmfnmmydlwve.supabase.co";
-const supabasePublishableKey = import.meta.env["VITE_SUPABASE_PUBLISHABLE_KEY"] || "sb_publishable_71X4hLuGZL_8pi9WbJvhvA_HqSfVCci";
+const supabaseUrl = import.meta.env["VITE_SUPABASE_URL"];
+const supabasePublishableKey = import.meta.env["VITE_SUPABASE_PUBLISHABLE_KEY"];
 
-export const supabase = createClient(supabaseUrl, supabasePublishableKey, {
+export const isSupabaseConfigured = Boolean(supabaseUrl && supabasePublishableKey);
+
+export const supabase = createClient(
+  supabaseUrl || "https://placeholder.supabase.co",
+  supabasePublishableKey || "placeholder-publishable-key",
+  {
   auth: {
     persistSession: true,
     autoRefreshToken: true,
     detectSessionInUrl: false,
     storage: typeof window !== "undefined" ? window.localStorage : undefined,
   },
-  });
-
-export const isSupabaseConfigured = !!supabaseUrl && !!supabasePublishableKey;
+  },
+);

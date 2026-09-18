@@ -27,7 +27,6 @@ import { Route as AdminMerchandiseRouteImport } from './routes/admin/merchandise
 import { Route as AdminNewsRouteImport } from './routes/admin/news'
 import { Route as AdminProfileRouteImport } from './routes/admin/profile'
 import { Route as AdminReleasesRouteImport } from './routes/admin/releases'
-import { Route as AdminRevenueRouteImport } from './routes/admin/revenue'
 import { Route as ArtistIndexRouteImport } from './routes/artist/index'
 import { Route as ArtistProfileRouteImport } from './routes/artist/profile'
 import { Route as ArtistReleasesRouteImport } from './routes/artist/releases'
@@ -134,11 +133,6 @@ const AdminProfileRoute = AdminProfileRouteImport.update({
 const AdminReleasesRoute = AdminReleasesRouteImport.update({
   id: '/releases',
   path: '/releases',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminRevenueRoute = AdminRevenueRouteImport.update({
-  id: '/revenue',
-  path: '/revenue',
   getParentRoute: () => AdminRoute,
 } as any)
 const ArtistIndexRoute = ArtistIndexRouteImport.update({
@@ -249,7 +243,6 @@ export interface FileRoutesByFullPath {
   '/admin/news': typeof AdminNewsRouteWithChildren
   '/admin/profile': typeof AdminProfileRoute
   '/admin/releases': typeof AdminReleasesRouteWithChildren
-  '/admin/revenue': typeof AdminRevenueRoute
   '/artist/profile': typeof ArtistProfileRoute
   '/artist/releases': typeof ArtistReleasesRouteWithChildren
   '/artist/revenue': typeof ArtistRevenueRoute
@@ -285,7 +278,6 @@ export interface FileRoutesByTo {
   '/admin/news': typeof AdminNewsRouteWithChildren
   '/admin/profile': typeof AdminProfileRoute
   '/admin/releases': typeof AdminReleasesRouteWithChildren
-  '/admin/revenue': typeof AdminRevenueRoute
   '/artist/profile': typeof ArtistProfileRoute
   '/artist/releases': typeof ArtistReleasesRouteWithChildren
   '/artist/revenue': typeof ArtistRevenueRoute
@@ -324,7 +316,6 @@ export interface FileRoutesById {
   '/admin/news': typeof AdminNewsRouteWithChildren
   '/admin/profile': typeof AdminProfileRoute
   '/admin/releases': typeof AdminReleasesRouteWithChildren
-  '/admin/revenue': typeof AdminRevenueRoute
   '/artist/profile': typeof ArtistProfileRoute
   '/artist/releases': typeof ArtistReleasesRouteWithChildren
   '/artist/revenue': typeof ArtistRevenueRoute
@@ -364,7 +355,6 @@ export interface FileRouteTypes {
     | '/admin/news'
     | '/admin/profile'
     | '/admin/releases'
-    | '/admin/revenue'
     | '/artist/profile'
     | '/artist/releases'
     | '/artist/revenue'
@@ -400,7 +390,6 @@ export interface FileRouteTypes {
     | '/admin/news'
     | '/admin/profile'
     | '/admin/releases'
-    | '/admin/revenue'
     | '/artist/profile'
     | '/artist/releases'
     | '/artist/revenue'
@@ -438,7 +427,6 @@ export interface FileRouteTypes {
     | '/admin/news'
     | '/admin/profile'
     | '/admin/releases'
-    | '/admin/revenue'
     | '/artist/profile'
     | '/artist/releases'
     | '/artist/revenue'
@@ -600,13 +588,6 @@ declare module '@tanstack/react-router' {
       path: '/releases'
       fullPath: '/admin/releases'
       preLoaderRoute: typeof AdminReleasesRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/revenue': {
-      id: '/admin/revenue'
-      path: '/revenue'
-      fullPath: '/admin/revenue'
-      preLoaderRoute: typeof AdminRevenueRouteImport
       parentRoute: typeof AdminRoute
     }
     '/artist/': {
@@ -809,7 +790,6 @@ interface AdminRouteChildren {
   AdminNewsRoute: typeof AdminNewsRouteWithChildren
   AdminProfileRoute: typeof AdminProfileRoute
   AdminReleasesRoute: typeof AdminReleasesRouteWithChildren
-  AdminRevenueRoute: typeof AdminRevenueRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
@@ -819,7 +799,6 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminNewsRoute: AdminNewsRouteWithChildren,
   AdminProfileRoute: AdminProfileRoute,
   AdminReleasesRoute: AdminReleasesRouteWithChildren,
-  AdminRevenueRoute: AdminRevenueRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 

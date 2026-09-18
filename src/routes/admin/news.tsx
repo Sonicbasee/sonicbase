@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { DashboardPage, SectionCard, StatusBadge } from "@/components/dashboard";
@@ -11,12 +11,15 @@ export const Route = createFileRoute("/admin/news")({
 });
 
 function AdminNewsPage() {
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
   const queryClient = useQueryClient();
   const { data: newsItems = [], isLoading } = useQuery({ queryKey: ["news"], queryFn: fetchNews });
   const deleteMutation = useMutation({
     mutationFn: deleteNews,
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["news"] }),
   });
+
+  if (pathname !== "/admin/news") return <Outlet />;
 
   return (
     <DashboardPage title="News" subtitle="Create, review and publish editorial content for the public website." actions={<Link to="/admin/news/new"><Button size="sm">New article</Button></Link>}>

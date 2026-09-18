@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { DashboardPage, SectionCard, StatusBadge, TableCard } from "@/components/dashboard";
@@ -11,12 +11,15 @@ export const Route = createFileRoute("/admin/artists")({
 });
 
 function AdminArtistsPage() {
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
   const queryClient = useQueryClient();
   const { data: artists = [], isLoading } = useQuery({ queryKey: ["artists"], queryFn: fetchArtists });
   const deleteMutation = useMutation({
     mutationFn: deleteArtist,
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["artists"] }),
   });
+
+  if (pathname !== "/admin/artists") return <Outlet />;
 
   return (
     <DashboardPage title="Artists" subtitle="Manage the active roster and artist relationships." actions={<Link to="/admin/artists/new"><Button size="sm">Add artist</Button></Link>}>

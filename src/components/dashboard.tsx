@@ -18,7 +18,7 @@ import {
   Users,
   type LucideIcon,
 } from "lucide-react";
-import { type ReactNode, useMemo, useState } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -201,8 +201,23 @@ function DashboardShell({
   children: ReactNode;
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const role = useMemo(() => (typeof window === "undefined" ? "artist" : (localStorage.getItem("sonicbase-session") ? JSON.parse(localStorage.getItem("sonicbase-session") ?? "{}").role : "artist")), []);
-  const nav = getDashboardNav(role as UserRole);
+  const [role, setRole] = useState<UserRole>("artist");
+
+  useEffect(() => {
+    const rawSession = localStorage.getItem("sonicbase-session");
+    if (!rawSession) return;
+
+    try {
+      const session = JSON.parse(rawSession) as { role?: UserRole };
+      if (session.role === "admin" || session.role === "artist") {
+        setRole(session.role);
+      }
+    } catch {
+      localStorage.removeItem("sonicbase-session");
+    }
+  }, []);
+
+  const nav = getDashboardNav(role);
 
   return (
     <div className="flex min-h-screen">

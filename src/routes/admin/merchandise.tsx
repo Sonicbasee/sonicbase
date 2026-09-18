@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { DashboardPage, SectionCard, StatusBadge } from "@/components/dashboard";
@@ -11,12 +11,15 @@ export const Route = createFileRoute("/admin/merchandise")({
 });
 
 function AdminMerchPage() {
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
   const queryClient = useQueryClient();
   const { data: items = [], isLoading } = useQuery({ queryKey: ["merch"], queryFn: fetchMerch });
   const deleteMutation = useMutation({
     mutationFn: deleteMerch,
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["merch"] }),
   });
+
+  if (pathname !== "/admin/merchandise") return <Outlet />;
 
   return (
     <DashboardPage title="Merchandise" subtitle="Manage artist merchandise and published drops." actions={<Link to="/admin/merchandise/new"><Button size="sm">Add item</Button></Link>}>

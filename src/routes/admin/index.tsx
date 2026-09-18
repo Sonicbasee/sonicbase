@@ -102,7 +102,7 @@ function AdminOverviewPage() {
           </div>
         </SectionCard>
 
-        <SectionCard title="Platform mix" eyebrow="Streams"></SectionCard>
+        <SectionCard title="Platform mix" eyebrow="Streams">
           <div className="space-y-4">
             {platformData.map((item) => (
               <div key={item.name}>
