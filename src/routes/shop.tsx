@@ -9,13 +9,12 @@ export const Route = createFileRoute("/shop")({ head: () => ({ meta: [
   { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" },
 ] }), component: ShopPage });
 
-const filters = ["Trending", "Bestsellers", "Box Sets", "Merch", "Shop All"] as const;
+const filters = ["Trending", "Bestsellers", "Box Sets", "Merch"] as const;
 const filterTags: Record<string, string[]> = {
   Trending: [],
   Bestsellers: ["VINYL"],
   "Box Sets": ["VINYL", "PRINT"],
   Merch: ["T-SHIRT", "POSTER", "ZINE"],
-  "Shop All": [],
 };
 
 function ShopPage() {
@@ -35,7 +34,7 @@ function ShopPage() {
                 key={f}
                 type="button"
                 onClick={() => setFilter(f)}
-                className={`shrink-0 rounded-full border px-7 py-3 text-xl transition-colors md:text-2xl ${filter === f ? "border-foreground text-foreground" : "border-input text-muted-foreground hover:text-foreground"}`}
+                className={`shrink-0 rounded-full border px-5 py-2.5 text-sm transition-colors md:text-base ${filter === f ? "border-foreground text-foreground" : "border-input text-muted-foreground hover:text-foreground"}`}
               >
                 {f}
               </button>

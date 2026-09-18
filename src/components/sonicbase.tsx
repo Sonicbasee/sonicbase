@@ -19,7 +19,7 @@ export function Logo({ className = "h-11 w-11" }: { className?: string }) {
 }
 
 const nav = [
-  ["Home", "/"], ["Artists", "/artists"], ["Music", "/music"], ["Shop", "/shop"], ["News", "/news"], ["About", "/about"], ["Contact", "/contact"],
+  ["Home", "/"], ["Artists", "/artists"], ["Music", "/music"], ["Shop", "/shop"], ["Contact", "/contact"], ["About", "/about"],
 ] as const;
 
 /* ---------------------------------------------- shared primitives */
@@ -28,7 +28,7 @@ export function PillLink({ to, children, dark = true }: { to: string; children: 
   return (
     <Link
       to={to}
-      className={`inline-flex shrink-0 items-center rounded-full px-7 py-3.5 text-lg font-medium transition-opacity hover:opacity-80 md:px-9 md:py-4 md:text-2xl ${dark ? "bg-primary text-primary-foreground" : "border border-input bg-background text-foreground"}`}
+      className={`inline-flex shrink-0 items-center rounded-full px-5 py-2.5 text-sm font-medium transition-opacity hover:opacity-80 md:px-6 md:py-3 md:text-base ${dark ? "bg-primary text-primary-foreground" : "border border-input bg-background text-foreground"}`}
     >
       {children}
     </Link>
@@ -37,7 +37,7 @@ export function PillLink({ to, children, dark = true }: { to: string; children: 
 
 export function Tag({ children, pale = false }: { children: ReactNode; pale?: boolean }) {
   return (
-    <span className={`inline-flex rounded-full px-4 py-2 text-xs font-medium uppercase leading-none tracking-wide ${pale ? "bg-background text-foreground" : "bg-primary text-primary-foreground"}`}>
+    <span className={`inline-flex rounded-full px-3 py-1.5 text-[11px] font-medium uppercase leading-none tracking-wide ${pale ? "bg-background text-foreground" : "bg-primary text-primary-foreground"}`}>
       {children}
     </span>
   );
@@ -45,12 +45,12 @@ export function Tag({ children, pale = false }: { children: ReactNode; pale?: bo
 
 export function PageTitle({ children, action, intro }: { children: ReactNode; action?: ReactNode; intro?: string }) {
   return (
-    <section className="page-shell pb-10 pt-16 md:pb-14 md:pt-24">
+    <section className="page-shell pb-8 pt-12 md:pb-12 md:pt-20">
       <div className="flex flex-wrap items-center justify-between gap-6">
-        <h1 className="display-title text-5xl sm:text-7xl lg:text-8xl">{children}</h1>
+        <h1 className="display-title text-4xl sm:text-6xl lg:text-7xl">{children}</h1>
         {action}
       </div>
-      {intro && <p className="mt-7 max-w-2xl text-xl leading-tight text-muted-foreground md:text-2xl">{intro}</p>}
+      {intro && <p className="mt-5 max-w-2xl text-base leading-snug text-muted-foreground md:text-lg">{intro}</p>}
     </section>
   );
 }
@@ -58,7 +58,7 @@ export function PageTitle({ children, action, intro }: { children: ReactNode; ac
 export function SectionHeading({ children, action }: { children: ReactNode; action?: ReactNode }) {
   return (
     <div className="flex flex-wrap items-center justify-between gap-5">
-      <h2 className="display-title min-w-0 text-4xl sm:text-6xl lg:text-7xl">{children}</h2>
+      <h2 className="display-title min-w-0 text-3xl sm:text-5xl lg:text-6xl">{children}</h2>
       {action}
     </div>
   );
@@ -83,7 +83,7 @@ export function Header() {
   return (
     <>
       <header className={`page-shell z-40 grid h-[104px] grid-cols-[1fr_auto_1fr] items-center ${overlay ? "absolute inset-x-0 top-0 text-primary-foreground" : "relative bg-background text-foreground"}`}>
-        <nav className="hidden items-center gap-7 text-[17px] lg:flex" aria-label="Main navigation">
+        <nav className="hidden items-center gap-7 text-[15px] lg:flex" aria-label="Main navigation">
           {nav.slice(0, 5).map(([label, to]) => <Link key={to} to={to} activeProps={{ className: "font-bold" }}>{label}</Link>)}
         </nav>
         <div className="lg:hidden">
@@ -99,9 +99,9 @@ export function Header() {
         </div>
         <Link to="/" className="justify-self-center"><Logo /></Link>
         <div className="flex items-center justify-end gap-3 sm:gap-6">
-          <button type="button" className="hidden text-[17px] sm:inline" onClick={() => setSearchOpen(true)}>Search</button>
+          <Button type="button" variant="ghost" className="hidden h-auto p-0 text-[15px] hover:bg-transparent sm:inline-flex" onClick={() => setSearchOpen(true)}>Search</Button>
           <Button variant="ghost" size="icon" className="sm:hidden" onClick={() => setSearchOpen(true)} aria-label="Search"><Search /></Button>
-          <Link to="/shop" className="flex items-center gap-2 text-[17px]" aria-label="Shopping bag, 0 items"><ShoppingBag className="h-6 w-6" strokeWidth={1.7} /><span>0</span></Link>
+          <Link to="/shop" className="flex items-center gap-2 text-[15px]" aria-label="Shopping bag, 0 items"><ShoppingBag className="h-5 w-5" strokeWidth={1.7} /><span>0</span></Link>
         </div>
       </header>
       {searchOpen && (
@@ -156,11 +156,11 @@ export function HeroCarousel() {
       <button type="button" onClick={() => go(1)} aria-label="Next slide" className="absolute right-4 top-1/2 z-20 -translate-y-1/2 p-2 transition-opacity hover:opacity-70 md:right-8"><ArrowRight className="h-8 w-8" strokeWidth={1.6} /></button>
 
       <div className="page-shell absolute inset-x-0 bottom-10 z-10 text-center">
-        <h1 className="display-title text-[13vw] leading-[0.85] sm:text-[11vw] lg:text-[8.5rem]">{active.title}</h1>
-        <p className="mt-4 text-2xl font-medium uppercase tracking-tight md:text-[2.6rem]">{active.subtitle}</p>
-        <div className="mt-7 flex justify-center gap-4">
-          <Link to={active.primaryTo} className="inline-flex items-center rounded-full bg-background px-12 py-3.5 text-xl font-medium text-foreground transition-opacity hover:opacity-85 md:text-2xl">Listen</Link>
-          <Link to={active.secondaryTo} className="inline-flex items-center rounded-full bg-background px-12 py-3.5 text-xl font-medium text-foreground transition-opacity hover:opacity-85 md:text-2xl">Watch</Link>
+        <h1 className="display-title text-[11vw] leading-[0.85] sm:text-[9vw] lg:text-[7rem]">{active.title}</h1>
+        <p className="mt-3 text-lg font-medium uppercase md:text-2xl">{active.subtitle}</p>
+        <div className="mt-5 flex justify-center gap-3">
+          <Link to={active.primaryTo} className="inline-flex items-center rounded-full bg-background px-8 py-2.5 text-base font-medium text-foreground transition-opacity hover:opacity-85">Listen</Link>
+          <Link to={active.secondaryTo} className="inline-flex items-center rounded-full bg-background px-8 py-2.5 text-base font-medium text-foreground transition-opacity hover:opacity-85">Watch</Link>
         </div>
         <div className="mt-7 flex justify-center gap-2.5" role="tablist" aria-label="Hero slides">
           {heroSlides.map((slide, i) => (
@@ -189,8 +189,8 @@ function MediaCard({ to, params, image, alt, tag, title, meta, ratio = "aspect-s
         {tag && <span className="absolute left-4 top-4 z-10"><Tag>{tag}</Tag></span>}
         <img src={image} alt={alt} loading="lazy" width={1536} height={1536} className="image-reveal h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]" />
       </div>
-      <h3 className="mt-4 text-[17px] font-medium leading-snug">{title}</h3>
-      {meta && <p className="mt-1 text-[17px] text-muted-foreground">{meta}</p>}
+      <h3 className="mt-3 text-[15px] font-medium leading-snug">{title}</h3>
+      {meta && <p className="mt-1 text-sm text-muted-foreground">{meta}</p>}
     </>
   );
   return <Link to={to} params={params as never} className="group block">{inner}</Link>;
@@ -211,8 +211,8 @@ export function ProductCard({ product }: { product: { name: string; price: strin
         <span className="absolute left-4 top-4 z-10"><Tag>{product.tag}</Tag></span>
         <img src={product.image} alt={product.name} loading="lazy" width={1536} height={1536} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]" />
       </div>
-      <h2 className="mt-4 text-[17px] font-medium leading-snug">{product.name}</h2>
-      <p className="mt-1 text-[17px] text-muted-foreground">{product.price}</p>
+      <h2 className="mt-3 text-[15px] font-medium leading-snug">{product.name}</h2>
+      <p className="mt-1 text-sm text-muted-foreground">{product.price}</p>
     </article>
   );
 }
@@ -221,14 +221,14 @@ export function ProductCard({ product }: { product: { name: string; price: strin
 
 export function NewsFeature({ item }: { item: (typeof news)[number] }) {
   return (
-    <article className="grid gap-5 rounded-[10px] bg-muted p-4 sm:grid-cols-2 sm:items-center sm:gap-8">
-      <div className="aspect-[4/3] overflow-hidden rounded-[8px]">
+    <article className="grid gap-4 rounded-[10px] bg-muted p-3 sm:grid-cols-[1.15fr_1fr] sm:items-center sm:gap-6">
+      <div className="aspect-[16/10] overflow-hidden rounded-[8px]">
         <img src={item.image} alt="" loading="lazy" width={1536} height={1536} className="h-full w-full object-cover" />
       </div>
-      <div className="pb-2 pr-2 sm:pt-6">
+      <div className="pb-2 pr-2">
         <Tag>{item.tag}</Tag>
-        <h3 className="mt-16 text-2xl font-bold leading-tight sm:mt-24">{item.title}</h3>
-        <p className="mt-2 text-[17px] leading-snug text-muted-foreground">{item.excerpt}</p>
+        <h3 className="mt-8 text-xl font-bold leading-tight sm:mt-10">{item.title}</h3>
+        <p className="mt-2 text-sm leading-snug text-muted-foreground">{item.excerpt}</p>
       </div>
     </article>
   );
@@ -252,17 +252,20 @@ export function NewsGrid() {
 /* ---------------------------------------------- socials */
 
 export function Socials() {
+  const loop = [...socials, ...socials];
   return (
-    <section className="py-20 md:py-28">
+    <section className="overflow-hidden py-16 md:py-20">
       <div className="page-shell">
-        <SectionHeading action={<a href="https://instagram.com" target="_blank" rel="noreferrer" className="inline-flex shrink-0 items-center rounded-full bg-primary px-9 py-4 text-xl text-primary-foreground transition-opacity hover:opacity-85 md:text-2xl">Follow Us</a>}>Socials</SectionHeading>
+        <SectionHeading action={<a href="https://instagram.com" target="_blank" rel="noreferrer" className="inline-flex shrink-0 items-center rounded-full bg-primary px-6 py-3 text-base text-primary-foreground transition-opacity hover:opacity-85">Follow Us</a>}>Socials</SectionHeading>
       </div>
-      <div className="mt-12 flex gap-8 overflow-x-auto px-[clamp(1rem,2.7vw,3.25rem)] pb-4 md:gap-14">
-        {socials.map((item, i) => (
-          <div key={`${item.alt}-${i}`} className={`shrink-0 overflow-hidden rounded-[10px] bg-muted ${i % 3 === 1 ? "h-[330px] w-[330px]" : "h-[330px] w-[240px]"}`}>
+      <div className="mt-9 w-max animate-social-loop motion-reduce:animate-none">
+        <div className="flex gap-5 pr-5">
+        {loop.map((item, i) => (
+          <div key={`${item.alt}-${i}`} className={`shrink-0 overflow-hidden rounded-[10px] bg-muted ${i % 3 === 1 ? "h-[230px] w-[230px]" : "h-[230px] w-[170px]"}`}>
             <img src={item.image} alt={item.alt} loading="lazy" width={1536} height={1536} className="h-full w-full object-cover" />
           </div>
         ))}
+        </div>
       </div>
     </section>
   );
