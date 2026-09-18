@@ -1,6 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
 import { DashboardPage, SectionCard, StatusBadge } from "@/components/dashboard";
-import { contracts, type DashboardContract } from "@/lib/dashboard-data";
+import { fetchContract, deleteContract } from "@/lib/api";
 import { requireAuth } from "@/lib/route-access";
 
 export const Route = createFileRoute("/admin/contracts/id")({
@@ -10,10 +12,19 @@ export const Route = createFileRoute("/admin/contracts/id")({
 
 function ContractDetailPage() {
   const { id } = Route.useParams();
-  const item: DashboardContract = contracts.find((contract) => contract.id === id) || contracts[0] || { id: "C-401", artist: "Amara Vale", type: "Distribution", status: "Active", startDate: "2026-01-04", endDate: "2027-01-04", lastUpdated: "2026-08-12", admin: "Chinwe Adebayo" };
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { data: item, isLoading } = useQuery({ queryKey: ["contract", id], queryFn: () => fetchContract(id) });
+  const deleteMutation = useMutation({
+    mutationFn: deleteContract,
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["contracts"] }); navigate({ to: "/admin/contracts" }); },
+  });
+
+  if (isLoading) return <DashboardPage title="Loading..." subtitle=""><p className="text-sm text-muted-foreground">Loading...</p></DashboardPage>;
+  if (!item) return <DashboardPage title="Not found" subtitle=""><Link to="/admin/contracts"><Button>Back</Button></Link></DashboardPage>;
 
   return (
-    <DashboardPage title={item.type} subtitle="Contract review and internal notes.">
+    <DashboardPage title={item.type} subtitle="Contract review and internal notes." actions={<Button variant="destructive" size="sm" onClick={() => { if (confirm("Delete this contract?")) deleteMutation.mutate(id); }}>Delete</Button>}>
       <div className="grid gap-6 xl:grid-cols-[0.85fr_1.15fr]">
         <SectionCard title="Contract" eyebrow="Summary">
           <div className="space-y-3">
@@ -22,7 +33,6 @@ function ContractDetailPage() {
             <div className="mt-3"><StatusBadge status={item.status} /></div>
           </div>
         </SectionCard>
-
         <SectionCard title="Key dates" eyebrow="Management">
           <div className="grid gap-4 md:grid-cols-2">
             <div><p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">Start date</p><p className="mt-2">{item.startDate}</p></div>

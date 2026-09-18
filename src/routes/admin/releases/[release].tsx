@@ -1,6 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
 import { DashboardPage, SectionCard, StatusBadge } from "@/components/dashboard";
-import { dashboardReleases, type DashboardRelease } from "@/lib/dashboard-data";
+import { fetchRelease, deleteRelease } from "@/lib/api";
 import { requireAuth } from "@/lib/route-access";
 
 export const Route = createFileRoute("/admin/releases/release")({
@@ -9,16 +11,24 @@ export const Route = createFileRoute("/admin/releases/release")({
 });
 
 function AdminReleaseDetailPage() {
-  const { release } = Route.useParams();
-  const item: DashboardRelease = dashboardReleases.find((entry) => entry.id === release) || dashboardReleases[0] || { id: "afterlight", title: "Afterlight", artist: "Amara Vale", artistSlug: "amara-vale", image: "", type: "EP", status: "Published", date: "2026-09-18", description: "", streams: 0, revenue: 0, cover: "", platformBreakdown: [] };
+  const { release: releaseId } = Route.useParams();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { data: item, isLoading } = useQuery({ queryKey: ["release", releaseId], queryFn: () => fetchRelease(releaseId) });
+  const deleteMutation = useMutation({
+    mutationFn: deleteRelease,
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["releases"] }); navigate({ to: "/admin/releases" }); },
+  });
+
+  if (isLoading) return <DashboardPage title="Loading..." subtitle=""><p className="text-sm text-muted-foreground">Loading release...</p></DashboardPage>;
+  if (!item) return <DashboardPage title="Not found" subtitle="Release not found"><Link to="/admin/releases"><Button>Back to releases</Button></Link></DashboardPage>;
 
   return (
-    <DashboardPage title={item.title} subtitle="Release management and metadata overview.">
+    <DashboardPage title={item.title} subtitle="Release management and metadata overview." actions={<div className="flex gap-2"><Link to="/admin/releases/$release/edit" params={{ release: releaseId }}><Button variant="secondary" size="sm">Edit</Button></Link><Button variant="destructive" size="sm" onClick={() => { if (confirm("Delete this release?")) deleteMutation.mutate(releaseId); }}>Delete</Button></div>}>
       <div className="grid gap-6 xl:grid-cols-[0.8fr_1.2fr]">
         <SectionCard title="Cover artwork" eyebrow="Release">
-          <img src={item.cover} alt={item.title} className="h-72 w-full rounded-2xl object-cover" />
+          <img src={item.cover || "/placeholder.png"} alt={item.title} className="h-72 w-full rounded-2xl object-cover" />
         </SectionCard>
-
         <SectionCard title="Release information" eyebrow="Metadata">
           <div className="grid gap-4 md:grid-cols-2">
             <div><p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">Artist</p><p className="mt-2">{item.artist}</p></div>
