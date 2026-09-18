@@ -5,7 +5,7 @@ import { DashboardPage, SectionCard } from "@/components/dashboard";
 import { requireAuth } from "@/lib/route-access";
 
 export const Route = createFileRoute("/admin/merchandise/id/edit")({
-  beforeLoad: () => requireAuth("admin"),
+  beforeLoad: async () => { await requireAuth("admin"); },
   component: MerchEditPage,
 });
 

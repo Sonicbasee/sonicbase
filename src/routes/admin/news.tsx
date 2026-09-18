@@ -5,7 +5,7 @@ import { newsItems } from "@/lib/dashboard-data";
 import { requireAuth } from "@/lib/route-access";
 
 export const Route = createFileRoute("/admin/news")({
-  beforeLoad: () => requireAuth("admin"),
+  beforeLoad: async () => { await requireAuth("admin"); },
   component: AdminNewsPage,
 });
 

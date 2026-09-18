@@ -4,7 +4,7 @@ import { artistStreamSeries, dashboardReleases } from "@/lib/dashboard-data";
 import { requireAuth } from "@/lib/route-access";
 
 export const Route = createFileRoute("/artist/streams")({
-  beforeLoad: () => requireAuth("artist"),
+  beforeLoad: async () => { await requireAuth("artist"); },
   component: ArtistStreamsPage,
 });
 

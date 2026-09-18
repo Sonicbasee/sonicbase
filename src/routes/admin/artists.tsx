@@ -4,7 +4,7 @@ import { dashboardArtists } from "@/lib/dashboard-data";
 import { requireAuth } from "@/lib/route-access";
 
 export const Route = createFileRoute("/admin/artists")({
-  beforeLoad: () => requireAuth("admin"),
+  beforeLoad: async () => { await requireAuth("admin"); },
   component: AdminArtistsPage,
 });
 

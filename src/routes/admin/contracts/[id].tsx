@@ -4,7 +4,7 @@ import { contracts, type DashboardContract } from "@/lib/dashboard-data";
 import { requireAuth } from "@/lib/route-access";
 
 export const Route = createFileRoute("/admin/contracts/id")({
-  beforeLoad: () => requireAuth("admin"),
+  beforeLoad: async () => { await requireAuth("admin"); },
   component: ContractDetailPage,
 });
 

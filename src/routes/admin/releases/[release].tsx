@@ -4,7 +4,7 @@ import { dashboardReleases, type DashboardRelease } from "@/lib/dashboard-data";
 import { requireAuth } from "@/lib/route-access";
 
 export const Route = createFileRoute("/admin/releases/release")({
-  beforeLoad: () => requireAuth("admin"),
+  beforeLoad: async () => { await requireAuth("admin"); },
   component: AdminReleaseDetailPage,
 });
 

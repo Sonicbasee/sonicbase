@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { requireAuth } from "@/lib/route-access";
 
 export const Route = createFileRoute("/admin/profile")({
-  beforeLoad: () => requireAuth("admin"),
+  beforeLoad: async () => { await requireAuth("admin"); },
   component: AdminProfilePage,
 });
 

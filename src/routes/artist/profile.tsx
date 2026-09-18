@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { requireAuth } from "@/lib/route-access";
 
 export const Route = createFileRoute("/artist/profile")({
-  beforeLoad: () => requireAuth("artist"),
+  beforeLoad: async () => { await requireAuth("artist"); },
   component: ArtistProfilePage,
 });
 

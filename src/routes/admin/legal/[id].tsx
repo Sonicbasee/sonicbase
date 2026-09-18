@@ -4,7 +4,7 @@ import { legalMatters, type DashboardLegalMatter } from "@/lib/dashboard-data";
 import { requireAuth } from "@/lib/route-access";
 
 export const Route = createFileRoute("/admin/legal/id")({
-  beforeLoad: () => requireAuth("admin"),
+  beforeLoad: async () => { await requireAuth("admin"); },
   component: LegalDetailPage,
 });
 

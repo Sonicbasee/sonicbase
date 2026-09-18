@@ -5,7 +5,7 @@ import { formatMoney } from "@/components/dashboard";
 import { requireAuth } from "@/lib/route-access";
 
 export const Route = createFileRoute("/admin/revenue")({
-  beforeLoad: () => requireAuth("admin"),
+  beforeLoad: async () => { await requireAuth("admin"); },
   component: AdminRevenuePage,
 });
 

@@ -4,7 +4,7 @@ import { distributionRecords, type DashboardDistribution } from "@/lib/dashboard
 import { requireAuth } from "@/lib/route-access";
 
 export const Route = createFileRoute("/admin/distribution/id")({
-  beforeLoad: () => requireAuth("admin"),
+  beforeLoad: async () => { await requireAuth("admin"); },
   component: DistributionDetailPage,
 });
 
