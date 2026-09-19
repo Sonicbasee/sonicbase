@@ -53,8 +53,8 @@ function NewsDetailPage() {
         </header>
 
         <div className="page-shell">
-          <div className="aspect-[16/8] overflow-hidden rounded-[10px] bg-muted">
-            {item.image ? <img src={item.image} alt={item.title} width={1920} height={960} className="h-full w-full object-cover" /> : <div className="flex h-full items-center justify-center text-sm text-muted-foreground">No image</div>}
+          <div className="overflow-hidden rounded-[10px] bg-muted">
+            {item.image ? <img src={item.image} alt={item.title} className="block h-auto w-full" /> : <div className="flex min-h-56 items-center justify-center text-sm text-muted-foreground">No image</div>}
           </div>
         </div>
 
