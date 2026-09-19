@@ -96,7 +96,9 @@ export async function fetchPublicReleases(): Promise<PublicRelease[]> {
     attempt.error &&
     (String(attempt.error.message).includes("does not exist") ||
       String(attempt.error.message).includes("Could not find") ||
+      String(attempt.error.message).includes("infinite recursion") ||
       (attempt.error as any).code === "42P01" ||
+      (attempt.error as any).code === "42P17" ||
       (attempt.error as any).code === "PGRST200");
   if (isMissingTable) {
     const fallback = await supabase.from("releases").select("*, artists(name, id)").eq("status", "Published").order("release_date", { ascending: false });
