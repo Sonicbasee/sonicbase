@@ -22,7 +22,7 @@ export const Route = createFileRoute("/artists/$artist")({
 function ArtistPage() {
   const artist = Route.useLoaderData();
   const { data: releases = [] } = useQuery({ queryKey: ["public-releases"], queryFn: fetchPublicReleases, staleTime: 60_000 });
-  const artistReleases = releases.filter((r) => r.artistSlug === artist.slug);
+  const artistReleases = releases.filter((r) => r.artists?.some((a) => a.slug === artist.slug) || r.artistSlug === artist.slug);
 
   return (
     <>
