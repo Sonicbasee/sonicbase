@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import type { PublicArtist, PublicRelease, PublicNews, PublicMerch } from "@/lib/public-data";
-import { toInstagramEmbedUrl } from "@/lib/instagram";
+import { getInstagramPreview } from "@/lib/instagram-preview";
+import { useQuery } from "@tanstack/react-query";
 
 export function Logo({ className = "h-14 w-14" }: { className?: string }) {
   return (
@@ -321,19 +322,57 @@ export type SocialItem = {
   instagramUrl?: string;
 };
 
-function InstagramReelEmbed({ url, alt }: { url: string; alt: string }) {
-  const embedUrl = toInstagramEmbedUrl(url);
-  if (!embedUrl) return null;
+function InstagramReelCard({ url, alt, image }: { url: string; alt: string; image?: string }) {
+  // Video-only, same-size cards, no Instagram chrome or play button.
+  // Preview is the reel's cover image (og:image) fetched server-side, fills with object-cover.
+  // Whole card is a link to Instagram.
+  const [imgError, setImgError] = useState(false);
+
+  const { data: preview } = useQuery({
+    queryKey: ["ig-preview", url],
+    queryFn: () => getInstagramPreview({ data: { url } }),
+    enabled: !image,
+    staleTime: 1000 * 60 * 60 * 24,
+    gcTime: 1000 * 60 * 60 * 24,
+  });
+
+  const thumbnail = image || preview?.thumbnailUrl || undefined;
+  const showImage = thumbnail && !imgError;
+
   return (
-    <iframe
-      src={embedUrl}
-      title={alt}
-      loading="lazy"
-      allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-      allowFullScreen
-      scrolling="no"
-      className="h-full w-full border-0"
-    />
+    <a
+      href={url}
+      target="_blank"
+      rel="noreferrer"
+      aria-label={alt}
+      className="block h-full w-full bg-muted relative overflow-hidden"
+    >
+      {showImage ? (
+        <img
+          src={thumbnail}
+          alt={alt}
+          loading="lazy"
+          width={540}
+          height={960}
+          className="h-full w-full object-cover"
+          onError={() => setImgError(true)}
+        />
+      ) : preview?.videoUrl ? (
+        <video
+          src={preview.videoUrl}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          className="h-full w-full object-cover"
+        />
+      ) : (
+        <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900">
+          <span className="text-[11px] font-medium uppercase tracking-[0.18em] text-white/70">Reel</span>
+        </div>
+      )}
+    </a>
   );
 }
 
@@ -347,20 +386,20 @@ export function Socials({ images = [] }: { images?: SocialItem[] }) {
       </div>
       <div className="mt-9 w-max animate-social-loop motion-reduce:animate-none">
         <div className="flex gap-5 pr-5">
-        {loop.map((item, i) => {
-          const embedUrl = item.instagramUrl ? toInstagramEmbedUrl(item.instagramUrl) : null;
-          return (
-            <div key={`${item.alt}-${i}`} className={`shrink-0 overflow-hidden rounded-[10px] bg-muted ${i % 3 === 1 ? "h-[230px] w-[230px]" : "h-[230px] w-[170px]"}`}>
-              {embedUrl ? (
-                <InstagramReelEmbed url={item.instagramUrl!} alt={item.alt} />
-              ) : item.image ? (
-                <img src={item.image} alt={item.alt} loading="lazy" width={1536} height={1536} className="h-full w-full object-cover" />
-              ) : (
-                <div className="h-full w-full bg-muted-foreground/10" />
-              )}
-            </div>
-          );
-        })}
+        {loop.map((item, i) => (
+          <div
+            key={`${item.alt}-${i}`}
+            className="shrink-0 h-[320px] w-[220px] overflow-hidden rounded-[10px] bg-muted"
+          >
+            {item.instagramUrl ? (
+              <InstagramReelCard url={item.instagramUrl} alt={item.alt} image={item.image || undefined} />
+            ) : item.image ? (
+              <img src={item.image} alt={item.alt} loading="lazy" width={540} height={960} className="h-full w-full object-cover" />
+            ) : (
+              <div className="h-full w-full bg-muted-foreground/10" />
+            )}
+          </div>
+        ))}
         </div>
       </div>
     </section>
