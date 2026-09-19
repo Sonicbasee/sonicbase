@@ -24,7 +24,7 @@ function AdminArtistDetailPage() {
   if (!item) return <DashboardPage title="Not found" subtitle="Artist not found"><Link to="/admin/artists"><Button>Back to artists</Button></Link></DashboardPage>;
 
   return (
-    <DashboardPage title={item.name} subtitle="Artist management overview and profile details." actions={<div className="flex gap-2"><Link to="/admin/artists/$artist/edit" params={{ artist: artistId }}><Button variant="secondary" size="sm">Edit</Button></Link><Button variant="destructive" size="sm" onClick={() => { if (confirm("Delete this artist?")) deleteMutation.mutate(artistId); }}>Delete artist</Button></div>}>
+    <DashboardPage title={item.name} subtitle="Artist management overview and profile details." actions={<div className="flex gap-2"><Button asChild variant="secondary" size="sm"><Link to="/admin/artists/$artist/edit" params={{ artist: artistId }}>Edit</Link></Button><Button variant="destructive" size="sm" onClick={() => { if (confirm("Delete this artist?")) deleteMutation.mutate(artistId); }}>Delete artist</Button></div>}>
       <div className="grid gap-6 xl:grid-cols-[0.8fr_1.2fr]">
         <SectionCard title="Profile" eyebrow="Artist">
           <div className="flex flex-col items-center text-center">

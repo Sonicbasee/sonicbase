@@ -33,7 +33,7 @@ function AdminReleasesPage() {
             type: release.type,
             status: <StatusBadge status={release.status} />,
             
-            actions: <div className="flex gap-2"><Link to="/admin/releases/$release/edit" params={{ release: release.id }}><Button variant="secondary" size="sm">Edit</Button></Link><Button variant="destructive" size="sm" onClick={() => { if (confirm("Delete this release?")) deleteMutation.mutate(release.id); }}>Delete</Button></div>,
+            actions: <div className="flex gap-2"><Button asChild variant="secondary" size="sm"><Link to="/admin/releases/$release/edit" params={{ release: release.id }}>Edit</Link></Button><Button variant="destructive" size="sm" onClick={() => { if (confirm("Delete this release?")) deleteMutation.mutate(release.id); }}>Delete</Button></div>,
           }))}
         />
         )}
