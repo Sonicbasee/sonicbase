@@ -47,7 +47,20 @@ function Index() {
     secondaryLabel: "Watch",
   }));
 
-  const socialImages = artists.filter((a) => a.image).map((a) => ({ image: a.image, alt: a.name }));
+  const instagramReels = [
+    "https://www.instagram.com/reel/DG5SHA2NOnH/",
+    "https://www.instagram.com/reel/DITK_YRtuC5/",
+    "https://www.instagram.com/reel/Dck_1SZNDfK/",
+    "https://www.instagram.com/reel/DcVexTaN79i/",
+    "https://www.instagram.com/reel/DTIg5XXjZrX/",
+    "https://www.instagram.com/reel/DVsmRnojSlG/",
+  ];
+
+  const socialImages = instagramReels.map((url, i) => ({
+    image: "",
+    alt: `Instagram reel ${i + 1}`,
+    instagramUrl: url,
+  }));
 
   return (
     <>

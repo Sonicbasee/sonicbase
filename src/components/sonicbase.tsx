@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import type { PublicArtist, PublicRelease, PublicNews, PublicMerch } from "@/lib/public-data";
+import { toInstagramEmbedUrl } from "@/lib/instagram";
 
 export function Logo({ className = "h-14 w-14" }: { className?: string }) {
   return (
@@ -313,7 +314,30 @@ export function NewsGrid({ items = [] }: { items?: PublicNews[] }) {
 
 /* ---------------------------------------------- socials */
 
-export function Socials({ images = [] }: { images?: { image: string; alt: string }[] }) {
+export type SocialItem = {
+  image: string;
+  alt: string;
+  /** Public Instagram reel/post URL e.g. https://www.instagram.com/reel/ABC123/ — will render as embed preview */
+  instagramUrl?: string;
+};
+
+function InstagramReelEmbed({ url, alt }: { url: string; alt: string }) {
+  const embedUrl = toInstagramEmbedUrl(url);
+  if (!embedUrl) return null;
+  return (
+    <iframe
+      src={embedUrl}
+      title={alt}
+      loading="lazy"
+      allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+      allowFullScreen
+      scrolling="no"
+      className="h-full w-full border-0"
+    />
+  );
+}
+
+export function Socials({ images = [] }: { images?: SocialItem[] }) {
   if (images.length === 0) return null;
   const loop = [...images, ...images];
   return (
@@ -323,15 +347,20 @@ export function Socials({ images = [] }: { images?: { image: string; alt: string
       </div>
       <div className="mt-9 w-max animate-social-loop motion-reduce:animate-none">
         <div className="flex gap-5 pr-5">
-        {loop.map((item, i) => (
-          <div key={`${item.alt}-${i}`} className={`shrink-0 overflow-hidden rounded-[10px] bg-muted ${i % 3 === 1 ? "h-[230px] w-[230px]" : "h-[230px] w-[170px]"}`}>
-            {item.image ? (
-              <img src={item.image} alt={item.alt} loading="lazy" width={1536} height={1536} className="h-full w-full object-cover" />
-            ) : (
-              <div className="h-full w-full bg-muted-foreground/10" />
-            )}
-          </div>
-        ))}
+        {loop.map((item, i) => {
+          const embedUrl = item.instagramUrl ? toInstagramEmbedUrl(item.instagramUrl) : null;
+          return (
+            <div key={`${item.alt}-${i}`} className={`shrink-0 overflow-hidden rounded-[10px] bg-muted ${i % 3 === 1 ? "h-[230px] w-[230px]" : "h-[230px] w-[170px]"}`}>
+              {embedUrl ? (
+                <InstagramReelEmbed url={item.instagramUrl!} alt={item.alt} />
+              ) : item.image ? (
+                <img src={item.image} alt={item.alt} loading="lazy" width={1536} height={1536} className="h-full w-full object-cover" />
+              ) : (
+                <div className="h-full w-full bg-muted-foreground/10" />
+              )}
+            </div>
+          );
+        })}
         </div>
       </div>
     </section>
