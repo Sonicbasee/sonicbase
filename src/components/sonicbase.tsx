@@ -157,7 +157,7 @@ export function HeroCarousel({ slides = [] }: { slides?: { title: string; subtit
 
   useEffect(() => {
     if (count === 0) return;
-    const id = setInterval(() => setIndex((i) => (i + 1) % count), 12000);
+    const id = setInterval(() => setIndex((i) => (i + 1) % count), 4000);
     return () => clearInterval(id);
   }, [count]);
 
