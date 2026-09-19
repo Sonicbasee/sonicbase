@@ -35,10 +35,14 @@ serve(async (req) => {
     }
 
     const text = await file.text();
-    const lines = text.split("\n").map((l) => l.trim()).filter(Boolean);
-    const header = lines[0].toLowerCase();
-    const hasHeader = header.includes("release") && (header.includes("amount") || header.includes("revenue"));
-    const rows = hasHeader ? lines.slice(1) : lines;
+    const rawLines = text.split("\n").map((l) => l.trim()).filter(Boolean);
+    // Detect delimiter: tab or comma (support both, plus handle TSV from distributor)
+    const firstLine = rawLines[0] || "";
+    const delimiter = firstLine.includes("\t") ? "\t" : ",";
+    const headerCols = firstLine.split(delimiter).map((c) => c.trim().toLowerCase().replace(/^"|"$/g, ""));
+    const isDetailedReport = headerCols.includes("report_date") || headerCols.includes("sales_start_date") || headerCols.includes("royalty");
+    const hasHeader = headerCols.includes("release_title") || headerCols.includes("release") || isDetailedReport;
+    const rows = hasHeader ? rawLines.slice(1) : rawLines;
 
     const adminClient = createClient(supabaseUrl, serviceKey);
     const monthDate = monthStr.length === 7 ? `${monthStr}-01` : monthStr;
@@ -46,10 +50,7 @@ serve(async (req) => {
     let updated = 0;
     let errors: string[] = [];
 
-    // If artist_id provided, sheet is per-artist: release_title, amount, streams
-    // Otherwise, legacy: artist_email, release_title, amount, streams
     const isPerArtist = !!artistIdParam;
-
     let perArtistId = artistIdParam;
     if (isPerArtist) {
       const { data: artistCheck } = await adminClient.from("artists").select("id").eq("id", artistIdParam).single();
@@ -58,15 +59,72 @@ serve(async (req) => {
       }
     }
 
+    // For detailed distributor report (per-artist), aggregate by release_title
+    if (isPerArtist && isDetailedReport) {
+      const releaseIdx = headerCols.indexOf("release_title");
+      const unitsIdx = headerCols.indexOf("units");
+      const royaltyIdx = headerCols.indexOf("royalty") !== -1 ? headerCols.indexOf("royalty") : headerCols.indexOf("revenue");
+      // Fallback to last two columns if header not found
+      const agg: Record<string, { units: number; royalty: number }> = {};
+      for (const line of rows) {
+        const cols = line.split(delimiter).map((c) => c.trim().replace(/^"|"$/g, ""));
+        const releaseTitle = releaseIdx >= 0 ? cols[releaseIdx] : cols[3]; // 3 is release_title in detailed
+        const unitsStr = unitsIdx >= 0 ? cols[unitsIdx] : cols[cols.length - 2];
+        const royaltyStr = royaltyIdx >= 0 ? cols[royaltyIdx] : cols[cols.length - 1];
+        if (!releaseTitle) continue;
+        const units = parseInt(unitsStr?.replace(/[^0-9]/g, "") || "0", 10) || 0;
+        const royalty = parseFloat(royaltyStr || "0") || 0;
+        // Royalty is in USD, convert to NGN kobo? For now store as-is * 100 (kobo) or as float*100?
+        // We'll store royalty*100000 as amount to preserve decimals, but display as NGN
+        // Simpler: sum royalty and treat as amount (will be small, but we can sum)
+        if (!agg[releaseTitle]) agg[releaseTitle] = { units: 0, royalty: 0 };
+        agg[releaseTitle].units += units;
+        agg[releaseTitle].royalty += royalty;
+      }
+
+      for (const [releaseTitle, vals] of Object.entries(agg)) {
+        const artistId = perArtistId!;
+        const amount = Math.round(vals.royalty * 1500); // USD royalty to NGN (~1500 NGN/USD)
+        const streams = vals.units;
+
+        const { data: release } = await adminClient.from("releases").select("id").ilike("title", releaseTitle).limit(1).single();
+        if (!release) {
+          errors.push(`Release not found: ${releaseTitle}`);
+          continue;
+        }
+
+        const { error: upsertErr } = await adminClient.from("revenue_entries").upsert({
+          artist_id: artistId,
+          release_id: release.id,
+          amount,
+          streams,
+          month: monthDate,
+        }, { onConflict: "artist_id,release_id,month" });
+
+        if (upsertErr) {
+          errors.push(`DB error for ${releaseTitle}: ${upsertErr.message}`);
+          continue;
+        }
+
+        const { data: sums } = await adminClient.from("revenue_entries").select("amount, streams").eq("release_id", release.id);
+        const totalRevenue = (sums || []).reduce((a: number, r: any) => a + (r.amount || 0), 0);
+        const totalStreams = (sums || []).reduce((a: number, r: any) => a + (r.streams || 0), 0);
+        await adminClient.from("releases").update({ revenue: totalRevenue, streams: totalStreams, updated_at: new Date().toISOString() }).eq("id", release.id);
+        updated++;
+      }
+
+      return new Response(JSON.stringify({ success: true, updated, errors, month: monthDate, note: "Detailed report aggregated by release" }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
+    // Fallback simple per-artist or legacy handling
     for (const line of rows) {
-      const cols = line.split(",").map((c) => c.trim().replace(/^"|"$/g, ""));
+      const cols = line.split(delimiter).map((c) => c.trim().replace(/^"|"$/g, ""));
       let artistId: string | null = null;
       let releaseTitle: string;
       let amountStr: string;
       let streamsStr: string;
 
       if (isPerArtist) {
-        // release_title, amount, streams
         [releaseTitle, amountStr, streamsStr] = cols;
         artistId = perArtistId;
         if (!releaseTitle) {
@@ -74,7 +132,6 @@ serve(async (req) => {
           continue;
         }
       } else {
-        // legacy: artist_email, release_title, amount, streams
         const [artistEmail, rTitle, aStr, sStr] = cols;
         releaseTitle = rTitle;
         amountStr = aStr;

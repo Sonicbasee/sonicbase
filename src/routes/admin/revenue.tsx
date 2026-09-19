@@ -58,8 +58,8 @@ function AdminRevenuePage() {
       <SectionCard title="Upload revenue sheet" eyebrow="Monthly">
         <div className="space-y-4">
           <p className="text-sm text-muted-foreground">
-            Select an artist and upload their monthly sheet. CSV format: <code className="rounded bg-muted px-1">release_title, amount, streams</code> with header row.
-            Example: <code className="rounded bg-muted px-1">DUDUKE, 500000, 120000</code>
+            Select an artist and upload their monthly sheet. Supports <strong>distributor report</strong> (with <code>release_title, units, royalty</code> columns — tab or comma separated) or simple <code>release_title, amount, streams</code>.
+            Example simple: <code className="rounded bg-muted px-1">DUDUKE, 500000, 120000</code> • Distributor report will be auto-aggregated by release.
           </p>
           <div className="grid gap-4 md:grid-cols-3">
             <div className="space-y-2">
