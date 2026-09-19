@@ -294,12 +294,15 @@ export function NewsGrid({ items = [] }: { items?: PublicNews[] }) {
       </div>
     );
   }
+  const featuredItems = items.slice(0, 2);
+  const cardItems = items.slice(2, 6);
+
   return (
     <div className="grid gap-3 lg:grid-cols-[1.55fr_1fr]">
-      <div className="grid gap-3">{items.slice(0, 2).map((item) => <NewsFeature key={item.id} item={item} />)}</div>
+      <div className="grid gap-3">{featuredItems.map((item) => <NewsFeature key={item.id} item={item} />)}</div>
       <div className="grid grid-cols-2 gap-3">
-        {items.slice(2).concat(items.slice(0, 2)).slice(0, 4).map((item, i) => (
-          <Link key={`${item.id}-${i}`} to="/news/$news" params={{ news: item.slug }} className="group aspect-square overflow-hidden rounded-[10px] bg-muted">
+        {cardItems.map((item) => (
+          <Link key={item.id} to="/news/$news" params={{ news: item.slug }} className="group aspect-square overflow-hidden rounded-[10px] bg-muted">
             {item.image ? <img src={item.image} alt={item.title} loading="lazy" width={1536} height={1536} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]" /> : <div className="flex h-full w-full items-center justify-center bg-muted-foreground/10 text-sm text-muted-foreground">No image</div>}
           </Link>
         ))}
