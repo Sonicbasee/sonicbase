@@ -67,8 +67,17 @@ export function SectionHeading({ children, action }: { children: ReactNode; acti
 export function Header({ artists = [], releases = [] }: { artists?: PublicArtist[]; releases?: PublicRelease[] }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const overlay = pathname === "/";
+  const [scrolled, setScrolled] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
+
+  useEffect(() => {
+    if (!overlay) return;
+    const onScroll = () => setScrolled(window.scrollY > 80);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [overlay]);
   const results = useMemo(() => {
     if (!query.trim()) return [];
     const q = query.toLowerCase();
@@ -81,10 +90,12 @@ export function Header({ artists = [], releases = [] }: { artists?: PublicArtist
   return (
     <>
       <header
-        className={`sticky top-0 z-40 border-b backdrop-blur supports-[backdrop-filter]:bg-background/80 ${
+        className={`z-40 border-b backdrop-blur supports-[backdrop-filter]:bg-background/80 ${
           overlay
-            ? "border-transparent bg-foreground/10 text-primary-foreground supports-[backdrop-filter]:bg-foreground/5"
-            : "border-border bg-background/90 text-foreground"
+            ? scrolled
+              ? "fixed inset-x-0 top-0 border-border bg-background/90 text-foreground"
+              : "absolute inset-x-0 top-0 border-transparent bg-transparent text-primary-foreground supports-[backdrop-filter]:bg-transparent"
+            : "sticky top-0 border-border bg-background/90 text-foreground"
         }`}
       >
         <div className="page-shell grid h-[104px] grid-cols-[1fr_auto_1fr] items-center">
