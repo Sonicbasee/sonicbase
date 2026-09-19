@@ -1,11 +1,10 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { PageTitle } from "@/components/sonicbase";
 import { useCart } from "@/lib/cart";
-import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/checkout")({
   component: CheckoutPage,
@@ -13,7 +12,6 @@ export const Route = createFileRoute("/checkout")({
 
 function CheckoutPage() {
   const { items, subtotal, clear } = useCart();
-  const navigate = useNavigate();
   const [form, setForm] = useState({ name: "", email: "", phone: "", address: "", city: "", state: "", country: "Nigeria" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -42,31 +40,19 @@ function CheckoutPage() {
     setLoading(true);
     setError("");
     try {
-      const { data, error } = await supabase
-        .from("orders")
-        .insert({
-          email: form.email,
-          name: form.name,
-          phone: form.phone,
-          address: form.address,
-          city: form.city,
-          state: form.state,
-          country: form.country,
-          items: items,
-          subtotal,
-          shipping,
-          total,
-          status: "pending",
-        })
-        .select("id")
-        .single();
-
-      if (error) throw error;
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const anonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+      const res = await fetch(`${supabaseUrl}/functions/v1/create-flutterwave-payment`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", apikey: anonKey, Authorization: `Bearer ${anonKey}` },
+        body: JSON.stringify({ ...form, items, subtotal, shipping, total }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Could not create payment");
       clear();
-      navigate({ to: "/order/$orderId", params: { orderId: data.id } });
+      window.location.href = data.link;
     } catch (err: any) {
-      setError(err.message || "Could not place order. Try again.");
-    } finally {
+      setError(err.message || "Could not start payment. Try again.");
       setLoading(false);
     }
   };
@@ -112,19 +98,19 @@ function CheckoutPage() {
 
           <div className="rounded-2xl border border-border p-6">
             <h2 className="text-lg font-semibold">Payment</h2>
-            <p className="mt-2 text-sm text-muted-foreground">Pay on delivery or via bank transfer. Online payment (Paystack) coming soon.</p>
-            <div className="mt-4 flex items-center gap-2 rounded-xl bg-muted p-4 text-sm">
-              <span className="font-medium">Cash on delivery</span>
-              <span className="ml-auto text-muted-foreground">Pay when your order arrives</span>
+            <p className="mt-2 text-sm text-muted-foreground">Secure payment via Flutterwave. Your order is confirmed only after payment.</p>
+            <div className="mt-4 flex items-center gap-2 rounded-xl bg-primary text-primary-foreground p-4 text-sm">
+              <span className="font-medium">Flutterwave</span>
+              <span className="ml-auto text-primary-foreground/70">Cards · Bank · USSD</span>
             </div>
           </div>
 
           {error && <p className="text-sm text-destructive">{error}</p>}
 
           <Button type="submit" disabled={loading} className="w-full rounded-full py-6 text-base">
-            {loading ? "Placing order..." : `Place order — ₦${total.toLocaleString()}`}
+            {loading ? "Redirecting to Flutterwave..." : `Pay ₦${total.toLocaleString()} with Flutterwave`}
           </Button>
-          <p className="text-center text-xs text-muted-foreground">By placing your order, you agree to our terms.</p>
+          <p className="text-center text-xs text-muted-foreground">Payment confirms your order. No pay on delivery.</p>
         </form>
 
         <div className="h-fit rounded-2xl border border-border p-6">

@@ -47,6 +47,7 @@ const adminNav: DashboardNavItem[] = [
   { label: "Releases", path: "/admin/releases", icon: Music2 },
   { label: "Merchandise", path: "/admin/merchandise", icon: ShoppingBag },
   { label: "News", path: "/admin/news", icon: Newspaper },
+  { label: "Orders", path: "/admin/orders", icon: ShoppingBag },
   { label: "Profile", path: "/admin/profile", icon: Users },
   { label: "Logout", path: "/login", icon: LogOut },
 ];
