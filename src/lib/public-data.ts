@@ -87,6 +87,7 @@ export async function fetchPublicReleases(): Promise<PublicRelease[]> {
   const { data, error } = await supabase
     .from("releases")
     .select("*, artists(name, id)")
+    .eq("status", "Published")
     .order("release_date", { ascending: false });
   if (error) throw error;
   return (data || []).map((r: any) => {
