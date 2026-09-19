@@ -89,7 +89,7 @@ function ContactPage() {
             <Button type="submit" disabled={loading} className="mt-6 w-full bg-background text-foreground hover:bg-background/90">
               {loading ? "Sending..." : "Send message"}
             </Button>
-            <p className="mt-3 text-center text-xs text-primary-foreground/50">All messages are saved and routed to {`hello@sonicbase.music`}.</p>
+            <p className="mt-3 text-center text-xs text-primary-foreground/50">All messages are saved and routed to support@sonicbase.ink.</p>
           </form>
         )}
       </div>

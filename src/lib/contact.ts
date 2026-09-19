@@ -65,7 +65,7 @@ export const submitContact = createServerFn({ method: "POST" })
       throw new Error("Could not save your message. Please try again.");
     }
 
-    const contactEmail = process.env.CONTACT_EMAIL || process.env.VITE_CONTACT_EMAIL || "hello@sonicbase.music";
+    const contactEmail = process.env.CONTACT_EMAIL || process.env.VITE_CONTACT_EMAIL || "support@sonicbase.ink";
     const subject = `New contact: ${topic} — ${name}`;
     const html = `
       <h2>New contact submission</h2>
