@@ -44,7 +44,7 @@ import { Route as AdminReleasesChar91releaseChar93RouteImport } from './routes/a
 import { Route as ArtistReleasesReleaseRouteImport } from './routes/artist/releases/$release'
 import { Route as AdminArtistsArtistEditRouteImport } from './routes/admin/artists/$artist/edit'
 import { Route as AdminMerchandiseChar91idChar93EditRouteImport } from './routes/admin/merchandise/[id]/edit'
-import { Route as AdminNewsChar91idChar93EditRouteImport } from './routes/admin/news/[id]/edit'
+import { Route as AdminNewsIdEditRouteImport } from './routes/admin/news/$id/edit'
 import { Route as AdminReleasesChar91releaseChar93EditRouteImport } from './routes/admin/releases/[release]/edit'
 
 const IndexRoute = IndexRouteImport.update({
@@ -224,12 +224,11 @@ const AdminMerchandiseChar91idChar93EditRoute =
     path: '/id/edit',
     getParentRoute: () => AdminMerchandiseRoute,
   } as any)
-const AdminNewsChar91idChar93EditRoute =
-  AdminNewsChar91idChar93EditRouteImport.update({
-    id: '/id/edit',
-    path: '/id/edit',
-    getParentRoute: () => AdminNewsRoute,
-  } as any)
+const AdminNewsIdEditRoute = AdminNewsIdEditRouteImport.update({
+  id: '/$id/edit',
+  path: '/$id/edit',
+  getParentRoute: () => AdminNewsRoute,
+} as any)
 const AdminReleasesChar91releaseChar93EditRoute =
   AdminReleasesChar91releaseChar93EditRouteImport.update({
     id: '/edit',
@@ -273,7 +272,7 @@ export interface FileRoutesByFullPath {
   '/artist/releases/$release': typeof ArtistReleasesReleaseRoute
   '/admin/artists/$artist/edit': typeof AdminArtistsArtistEditRoute
   '/admin/merchandise/id/edit': typeof AdminMerchandiseChar91idChar93EditRoute
-  '/admin/news/id/edit': typeof AdminNewsChar91idChar93EditRoute
+  '/admin/news/$id/edit': typeof AdminNewsIdEditRoute
   '/admin/releases/release/edit': typeof AdminReleasesChar91releaseChar93EditRoute
 }
 export interface FileRoutesByTo {
@@ -310,7 +309,7 @@ export interface FileRoutesByTo {
   '/artist/releases/$release': typeof ArtistReleasesReleaseRoute
   '/admin/artists/$artist/edit': typeof AdminArtistsArtistEditRoute
   '/admin/merchandise/id/edit': typeof AdminMerchandiseChar91idChar93EditRoute
-  '/admin/news/id/edit': typeof AdminNewsChar91idChar93EditRoute
+  '/admin/news/$id/edit': typeof AdminNewsIdEditRoute
   '/admin/releases/release/edit': typeof AdminReleasesChar91releaseChar93EditRoute
 }
 export interface FileRoutesById {
@@ -350,7 +349,7 @@ export interface FileRoutesById {
   '/artist/releases/$release': typeof ArtistReleasesReleaseRoute
   '/admin/artists/$artist/edit': typeof AdminArtistsArtistEditRoute
   '/admin/merchandise/id/edit': typeof AdminMerchandiseChar91idChar93EditRoute
-  '/admin/news/id/edit': typeof AdminNewsChar91idChar93EditRoute
+  '/admin/news/$id/edit': typeof AdminNewsIdEditRoute
   '/admin/releases/release/edit': typeof AdminReleasesChar91releaseChar93EditRoute
 }
 export interface FileRouteTypes {
@@ -391,7 +390,7 @@ export interface FileRouteTypes {
     | '/artist/releases/$release'
     | '/admin/artists/$artist/edit'
     | '/admin/merchandise/id/edit'
-    | '/admin/news/id/edit'
+    | '/admin/news/$id/edit'
     | '/admin/releases/release/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -428,7 +427,7 @@ export interface FileRouteTypes {
     | '/artist/releases/$release'
     | '/admin/artists/$artist/edit'
     | '/admin/merchandise/id/edit'
-    | '/admin/news/id/edit'
+    | '/admin/news/$id/edit'
     | '/admin/releases/release/edit'
   id:
     | '__root__'
@@ -467,7 +466,7 @@ export interface FileRouteTypes {
     | '/artist/releases/$release'
     | '/admin/artists/$artist/edit'
     | '/admin/merchandise/id/edit'
-    | '/admin/news/id/edit'
+    | '/admin/news/$id/edit'
     | '/admin/releases/release/edit'
   fileRoutesById: FileRoutesById
 }
@@ -733,11 +732,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminMerchandiseChar91idChar93EditRouteImport
       parentRoute: typeof AdminMerchandiseRoute
     }
-    '/admin/news/id/edit': {
-      id: '/admin/news/id/edit'
-      path: '/id/edit'
-      fullPath: '/admin/news/id/edit'
-      preLoaderRoute: typeof AdminNewsChar91idChar93EditRouteImport
+    '/admin/news/$id/edit': {
+      id: '/admin/news/$id/edit'
+      path: '/$id/edit'
+      fullPath: '/admin/news/$id/edit'
+      preLoaderRoute: typeof AdminNewsIdEditRouteImport
       parentRoute: typeof AdminNewsRoute
     }
     '/admin/releases/release/edit': {
@@ -791,12 +790,12 @@ const AdminMerchandiseRouteWithChildren =
 
 interface AdminNewsRouteChildren {
   AdminNewsNewRoute: typeof AdminNewsNewRoute
-  AdminNewsChar91idChar93EditRoute: typeof AdminNewsChar91idChar93EditRoute
+  AdminNewsIdEditRoute: typeof AdminNewsIdEditRoute
 }
 
 const AdminNewsRouteChildren: AdminNewsRouteChildren = {
   AdminNewsNewRoute: AdminNewsNewRoute,
-  AdminNewsChar91idChar93EditRoute: AdminNewsChar91idChar93EditRoute,
+  AdminNewsIdEditRoute: AdminNewsIdEditRoute,
 }
 
 const AdminNewsRouteWithChildren = AdminNewsRoute._addFileChildren(
