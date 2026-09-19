@@ -32,12 +32,19 @@ export type PublicRelease = {
 
 export type PublicNews = {
   id: string;
+  slug: string;
   title: string;
   category: string;
   excerpt: string;
+  content: string;
+  createdAt: string;
   image: string;
   author: string;
 };
+
+function newsSlug(title: string) {
+  return title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
 
 export type PublicMerch = {
   id: string;
@@ -117,12 +124,20 @@ export async function fetchPublishedNews(): Promise<PublicNews[]> {
   if (error) throw error;
   return (data || []).map((n: any) => ({
     id: n.id,
+    slug: newsSlug(n.title),
     title: n.title,
     category: n.category || "",
     excerpt: n.excerpt || "",
+    content: n.content || "",
+    createdAt: n.created_at || "",
     image: n.image || "",
     author: n.author || "",
   }));
+}
+
+export async function fetchPublishedNewsItem(slug: string): Promise<PublicNews | null> {
+  const news = await fetchPublishedNews();
+  return news.find((item) => item.slug === slug) || null;
 }
 
 export async function fetchPublishedMerch(): Promise<PublicMerch[]> {

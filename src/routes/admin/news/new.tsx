@@ -20,13 +20,14 @@ function AdminNewNewsPage() {
   const [status, setStatus] = useState("Draft");
   const [author, setAuthor] = useState("");
   const [excerpt, setExcerpt] = useState("");
+  const [content, setContent] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
 
   const createMutation = useMutation({
     mutationFn: async () => {
       if (!imageFile) throw new Error("Choose an article image before saving.");
       const image = await uploadContentImage("news", imageFile);
-      return createNews({ title, category, status, author, excerpt, content: "", image });
+      return createNews({ title, category, status, author, excerpt, content, image });
     },
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["news"] }); navigate({ to: "/admin/news" }); },
   });
@@ -62,6 +63,10 @@ function AdminNewNewsPage() {
           <div className="space-y-2 md:col-span-2">
             <label className="text-sm font-medium">Excerpt</label>
             <textarea className="min-h-24 w-full rounded-xl border border-border bg-background px-3 py-2 text-sm" placeholder="Short description" value={excerpt} onChange={(e) => setExcerpt(e.target.value)} />
+          </div>
+          <div className="space-y-2 md:col-span-2">
+            <label className="text-sm font-medium">Article body</label>
+            <textarea className="min-h-56 w-full rounded-xl border border-border bg-background px-3 py-2 text-sm leading-relaxed" placeholder="Write the full story. Use a blank line between paragraphs." value={content} onChange={(e) => setContent(e.target.value)} />
           </div>
           <div className="space-y-2 md:col-span-2 flex justify-end gap-3 pt-4">
             <Link to="/admin/news"><Button variant="secondary">Cancel</Button></Link>

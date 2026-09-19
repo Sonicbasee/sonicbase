@@ -34,6 +34,7 @@ import { Route as ArtistRevenueRouteImport } from './routes/artist/revenue'
 import { Route as ArtistStreamsRouteImport } from './routes/artist/streams'
 import { Route as ArtistsArtistRouteImport } from './routes/artists.$artist'
 import { Route as MusicReleaseRouteImport } from './routes/music.$release'
+import { Route as NewsNewsRouteImport } from './routes/news.$news'
 import { Route as AdminArtistsArtistRouteImport } from './routes/admin/artists/$artist'
 import { Route as AdminArtistsNewRouteImport } from './routes/admin/artists/new'
 import { Route as AdminMerchandiseNewRouteImport } from './routes/admin/merchandise/new'
@@ -170,6 +171,11 @@ const MusicReleaseRoute = MusicReleaseRouteImport.update({
   path: '/$release',
   getParentRoute: () => MusicRoute,
 } as any)
+const NewsNewsRoute = NewsNewsRouteImport.update({
+  id: '/$news',
+  path: '/$news',
+  getParentRoute: () => NewsRoute,
+} as any)
 const AdminArtistsArtistRoute = AdminArtistsArtistRouteImport.update({
   id: '/$artist',
   path: '/$artist',
@@ -235,7 +241,7 @@ export interface FileRoutesByFullPath {
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/music': typeof MusicRouteWithChildren
-  '/news': typeof NewsRoute
+  '/news': typeof NewsRouteWithChildren
   '/reset-password': typeof ResetPasswordRoute
   '/shop': typeof ShopRoute
   '/admin/artists': typeof AdminArtistsRouteWithChildren
@@ -249,6 +255,7 @@ export interface FileRoutesByFullPath {
   '/artist/streams': typeof ArtistStreamsRoute
   '/artists/$artist': typeof ArtistsArtistRoute
   '/music/$release': typeof MusicReleaseRoute
+  '/news/$news': typeof NewsNewsRoute
   '/admin/': typeof AdminIndexRoute
   '/artist/': typeof ArtistIndexRoute
   '/admin/artists/$artist': typeof AdminArtistsArtistRoute
@@ -270,7 +277,7 @@ export interface FileRoutesByTo {
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/music': typeof MusicRouteWithChildren
-  '/news': typeof NewsRoute
+  '/news': typeof NewsRouteWithChildren
   '/reset-password': typeof ResetPasswordRoute
   '/shop': typeof ShopRoute
   '/admin/artists': typeof AdminArtistsRouteWithChildren
@@ -284,6 +291,7 @@ export interface FileRoutesByTo {
   '/artist/streams': typeof ArtistStreamsRoute
   '/artists/$artist': typeof ArtistsArtistRoute
   '/music/$release': typeof MusicReleaseRoute
+  '/news/$news': typeof NewsNewsRoute
   '/admin': typeof AdminIndexRoute
   '/artist': typeof ArtistIndexRoute
   '/admin/artists/$artist': typeof AdminArtistsArtistRoute
@@ -308,7 +316,7 @@ export interface FileRoutesById {
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/music': typeof MusicRouteWithChildren
-  '/news': typeof NewsRoute
+  '/news': typeof NewsRouteWithChildren
   '/reset-password': typeof ResetPasswordRoute
   '/shop': typeof ShopRoute
   '/admin/artists': typeof AdminArtistsRouteWithChildren
@@ -322,6 +330,7 @@ export interface FileRoutesById {
   '/artist/streams': typeof ArtistStreamsRoute
   '/artists/$artist': typeof ArtistsArtistRoute
   '/music/$release': typeof MusicReleaseRoute
+  '/news/$news': typeof NewsNewsRoute
   '/admin/': typeof AdminIndexRoute
   '/artist/': typeof ArtistIndexRoute
   '/admin/artists/$artist': typeof AdminArtistsArtistRoute
@@ -361,6 +370,7 @@ export interface FileRouteTypes {
     | '/artist/streams'
     | '/artists/$artist'
     | '/music/$release'
+    | '/news/$news'
     | '/admin/'
     | '/artist/'
     | '/admin/artists/$artist'
@@ -396,6 +406,7 @@ export interface FileRouteTypes {
     | '/artist/streams'
     | '/artists/$artist'
     | '/music/$release'
+    | '/news/$news'
     | '/admin'
     | '/artist'
     | '/admin/artists/$artist'
@@ -433,6 +444,7 @@ export interface FileRouteTypes {
     | '/artist/streams'
     | '/artists/$artist'
     | '/music/$release'
+    | '/news/$news'
     | '/admin/'
     | '/artist/'
     | '/admin/artists/$artist'
@@ -457,7 +469,7 @@ export interface RootRouteChildren {
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   LoginRoute: typeof LoginRoute
   MusicRoute: typeof MusicRouteWithChildren
-  NewsRoute: typeof NewsRoute
+  NewsRoute: typeof NewsRouteWithChildren
   ResetPasswordRoute: typeof ResetPasswordRoute
   ShopRoute: typeof ShopRoute
 }
@@ -638,6 +650,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/music/$release'
       preLoaderRoute: typeof MusicReleaseRouteImport
       parentRoute: typeof MusicRoute
+    }
+    '/news/$news': {
+      id: '/news/$news'
+      path: '/$news'
+      fullPath: '/news/$news'
+      preLoaderRoute: typeof NewsNewsRouteImport
+      parentRoute: typeof NewsRoute
     }
     '/admin/artists/$artist': {
       id: '/admin/artists/$artist'
@@ -856,6 +875,16 @@ const MusicRouteChildren: MusicRouteChildren = {
 
 const MusicRouteWithChildren = MusicRoute._addFileChildren(MusicRouteChildren)
 
+interface NewsRouteChildren {
+  NewsNewsRoute: typeof NewsNewsRoute
+}
+
+const NewsRouteChildren: NewsRouteChildren = {
+  NewsNewsRoute: NewsNewsRoute,
+}
+
+const NewsRouteWithChildren = NewsRoute._addFileChildren(NewsRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
@@ -866,7 +895,7 @@ const rootRouteChildren: RootRouteChildren = {
   ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
   MusicRoute: MusicRouteWithChildren,
-  NewsRoute: NewsRoute,
+  NewsRoute: NewsRouteWithChildren,
   ResetPasswordRoute: ResetPasswordRoute,
   ShopRoute: ShopRoute,
 }

@@ -269,7 +269,7 @@ export function ProductCard({ product }: { product: PublicMerch }) {
 
 export function NewsFeature({ item }: { item: PublicNews }) {
   return (
-    <article className="grid gap-4 rounded-[10px] bg-muted p-3 sm:grid-cols-[1.15fr_1fr] sm:items-center sm:gap-6">
+    <Link to="/news/$news" params={{ news: item.slug }} className="group grid gap-4 rounded-[10px] bg-muted p-3 sm:grid-cols-[1.15fr_1fr] sm:items-center sm:gap-6">
       <div className="aspect-[16/10] overflow-hidden rounded-[8px]">
         {item.image ? (
           <img src={item.image} alt="" loading="lazy" width={1536} height={1536} className="h-full w-full object-cover" />
@@ -279,10 +279,11 @@ export function NewsFeature({ item }: { item: PublicNews }) {
       </div>
       <div className="pb-2 pr-2">
         <Tag>{item.category}</Tag>
-        <h3 className="mt-8 text-xl font-bold leading-tight sm:mt-10">{item.title}</h3>
-        <p className="mt-2 text-sm leading-snug text-muted-foreground">{item.excerpt}</p>
+        <h3 className="mt-8 text-xl font-bold leading-tight transition-opacity group-hover:opacity-70 sm:mt-10">{item.title}</h3>
+        <p className="mt-2 line-clamp-4 whitespace-pre-line text-sm leading-relaxed text-muted-foreground">{item.excerpt}</p>
+        <span className="mt-5 inline-flex text-sm font-medium">Read story <span aria-hidden="true" className="ml-2">→</span></span>
       </div>
-    </article>
+    </Link>
   );
 }
 
@@ -299,13 +300,9 @@ export function NewsGrid({ items = [] }: { items?: PublicNews[] }) {
       <div className="grid gap-3">{items.slice(0, 2).map((item) => <NewsFeature key={item.id} item={item} />)}</div>
       <div className="grid grid-cols-2 gap-3">
         {items.slice(2).concat(items.slice(0, 2)).slice(0, 4).map((item, i) => (
-          <div key={`${item.id}-${i}`} className="aspect-square overflow-hidden rounded-[10px] bg-muted">
-            {item.image ? (
-              <img src={item.image} alt="" loading="lazy" width={1536} height={1536} className="h-full w-full object-cover" />
-            ) : (
-              <div className="h-full w-full bg-muted-foreground/10 flex items-center justify-center text-muted-foreground text-sm">No image</div>
-            )}
-          </div>
+          <Link key={`${item.id}-${i}`} to="/news/$news" params={{ news: item.slug }} className="group aspect-square overflow-hidden rounded-[10px] bg-muted">
+            {item.image ? <img src={item.image} alt={item.title} loading="lazy" width={1536} height={1536} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]" /> : <div className="flex h-full w-full items-center justify-center bg-muted-foreground/10 text-sm text-muted-foreground">No image</div>}
+          </Link>
         ))}
       </div>
     </div>

@@ -64,6 +64,7 @@ export type DashboardNews = {
   status: StatusType;
   author: string;
   excerpt: string;
+  content?: string;
   image: string;
 };
 

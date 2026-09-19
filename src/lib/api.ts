@@ -326,6 +326,7 @@ export async function fetchNews(): Promise<DashboardNews[]> {
     status: n.status as StatusType,
     author: n.author,
     excerpt: n.excerpt,
+    content: n.content || "",
     image: n.image,
   }));
 }
@@ -344,6 +345,7 @@ export async function fetchNewsItem(id: string): Promise<DashboardNews | null> {
     status: data.status as StatusType,
     author: data.author,
     excerpt: data.excerpt,
+    content: data.content || "",
     image: data.image,
   };
 }
