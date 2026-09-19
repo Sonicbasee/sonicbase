@@ -15,7 +15,7 @@ async function sendEmailViaResend(to: string, subject: string, html: string, rep
   const apiKey = Deno.env.get("RESEND_API_KEY");
   if (!apiKey) return { skipped: true, reason: "RESEND_API_KEY not set" };
 
-  const fromEmail = Deno.env.get("CONTACT_FROM_EMAIL") || "Sonicbase <onboarding@resend.dev>";
+  const fromEmail = Deno.env.get("CONTACT_FROM_EMAIL") || "Sonicbase <support@sonicbase.ink>";
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
