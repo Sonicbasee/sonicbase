@@ -6,11 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import type { PublicArtist, PublicRelease, PublicNews, PublicMerch } from "@/lib/public-data";
 
-export function Logo({ className = "h-11 w-11" }: { className?: string }) {
+export function Logo({ className = "h-14 w-14" }: { className?: string }) {
   return (
-    <span className="inline-flex flex-col items-center gap-0.5" aria-label="Sonicbase">
+    <span className="inline-flex items-center" aria-label="Sonicbase">
       <span className={`sonicbase-logo-mark block ${className}`} aria-hidden="true" />
-      <span className="text-[8px] font-bold uppercase tracking-[0.24em]">Sonicbase</span>
     </span>
   );
 }
