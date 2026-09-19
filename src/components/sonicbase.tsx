@@ -7,6 +7,7 @@ import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from "@/com
 import type { PublicArtist, PublicRelease, PublicNews, PublicMerch } from "@/lib/public-data";
 import { getInstagramPreview } from "@/lib/instagram-preview";
 import { useQuery } from "@tanstack/react-query";
+import { useCart } from "@/lib/cart";
 
 export function Logo({ className = "h-14 w-14" }: { className?: string }) {
   return (
@@ -142,28 +143,88 @@ export function Header({ artists = [], releases = [] }: { artists?: PublicArtist
 }
 
 function CartPanel() {
+  const { items, count, subtotal, updateQty, removeItem } = useCart();
+  const shipping = count > 0 ? 3500 : 0;
+  const total = subtotal + shipping;
+
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="ghost" className="h-auto gap-2 p-0 text-[15px] hover:bg-transparent" aria-label="Open shopping bag, 0 items">
+        <Button variant="ghost" className="h-auto gap-2 p-0 text-[15px] hover:bg-transparent" aria-label={`Open shopping bag, ${count} items`}>
           <ShoppingBag className="h-5 w-5" strokeWidth={1.7} />
-          <span>0</span>
+          <span>{count}</span>
         </Button>
       </SheetTrigger>
       <SheetContent side="right" className="flex w-full flex-col gap-0 rounded-l-[18px] border-l bg-background p-0 sm:max-w-[460px] [&>button]:hidden">
         <div className="flex h-16 shrink-0 items-center justify-between border-b px-5">
-          <SheetTitle className="text-base font-bold">Your cart is empty</SheetTitle>
+          <SheetTitle className="text-base font-bold">{count === 0 ? "Your cart is empty" : `Cart (${count})`}</SheetTitle>
           <SheetClose asChild>
-            <Button variant="ghost" size="icon" aria-label="Close shopping bag"><X className="h-5 w-5" /></Button>
+            <Button variant="ghost" size="icon" aria-label="Close shopping bag">
+              <X className="h-5 w-5" />
+            </Button>
           </SheetClose>
         </div>
-        <div className="flex min-h-0 flex-1 flex-col items-center justify-center px-5 pb-5">
-          <ShoppingBag className="h-12 w-12 text-muted-foreground/40" />
-          <p className="mt-4 text-sm text-muted-foreground">Browse the shop to find something you love.</p>
-          <SheetClose asChild>
-            <Link to="/shop" className="mt-4 inline-flex items-center gap-2 font-medium">Go to Shop <ArrowRight className="h-4 w-4" /></Link>
-          </SheetClose>
-        </div>
+        {count === 0 ? (
+          <div className="flex min-h-0 flex-1 flex-col items-center justify-center px-5 pb-5">
+            <ShoppingBag className="h-12 w-12 text-muted-foreground/40" />
+            <p className="mt-4 text-sm text-muted-foreground">Browse the shop to find something you love.</p>
+            <SheetClose asChild>
+              <Link to="/shop" className="mt-4 inline-flex items-center gap-2 font-medium">
+                Go to Shop <ArrowRight className="h-4 w-4" />
+              </Link>
+            </SheetClose>
+          </div>
+        ) : (
+          <>
+            <div className="flex-1 overflow-y-auto px-5 py-4">
+              <div className="space-y-4">
+                {items.map((item) => (
+                  <div key={item.id} className="flex gap-3 border-b border-border pb-4">
+                    <img src={item.image || "/placeholder.png"} alt={item.title} className="h-20 w-20 rounded-lg object-cover" />
+                    <div className="flex-1">
+                      <p className="text-sm font-medium">{item.title}</p>
+                      <p className="text-xs text-muted-foreground">{item.artist}</p>
+                      <p className="mt-1 text-sm font-semibold">₦{item.price.toLocaleString()}</p>
+                      <div className="mt-2 flex items-center gap-2">
+                        <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => updateQty(item.id, item.quantity - 1)}>
+                          -
+                        </Button>
+                        <span className="w-6 text-center text-sm">{item.quantity}</span>
+                        <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => updateQty(item.id, item.quantity + 1)}>
+                          +
+                        </Button>
+                        <Button variant="ghost" size="sm" className="ml-auto text-xs" onClick={() => removeItem(item.id)}>
+                          Remove
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="border-t bg-muted/30 p-5">
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Subtotal</span>
+                  <span className="font-medium">₦{subtotal.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Shipping</span>
+                  <span className="font-medium">₦{shipping.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between border-t border-border pt-2 text-base font-bold">
+                  <span>Total</span>
+                  <span>₦{total.toLocaleString()}</span>
+                </div>
+              </div>
+              <SheetClose asChild>
+                <Link to="/checkout" className="mt-4 flex w-full items-center justify-center rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground hover:bg-primary/90">
+                  Checkout
+                </Link>
+              </SheetClose>
+            </div>
+          </>
+        )}
       </SheetContent>
     </Sheet>
   );
@@ -261,18 +322,29 @@ export function ReleaseCard({ release }: { release: PublicRelease }) {
 }
 
 export function ProductCard({ product }: { product: PublicMerch }) {
+  const { addItem } = useCart();
+
   return (
-    <article className="group">
-      <div className="relative aspect-square overflow-hidden rounded-[10px] bg-muted">
-        <span className="absolute left-4 top-4 z-10"><Tag>{product.tag}</Tag></span>
-        {product.image ? (
-          <img src={product.image} alt={product.title} loading="lazy" width={1536} height={1536} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]" />
-        ) : (
-          <div className="h-full w-full bg-muted flex items-center justify-center text-muted-foreground text-sm">No image</div>
-        )}
-      </div>
-      <h2 className="mt-3 text-[15px] font-medium leading-snug">{product.title}</h2>
-      <p className="mt-1 text-sm text-muted-foreground">₦{product.price.toLocaleString()}</p>
+    <article className="group flex flex-col">
+      <Link to="/shop/$productId" params={{ productId: product.id }} className="block">
+        <div className="relative aspect-square overflow-hidden rounded-[10px] bg-muted">
+          <span className="absolute left-4 top-4 z-10"><Tag>{product.tag}</Tag></span>
+          {product.image ? (
+            <img src={product.image} alt={product.title} loading="lazy" width={1536} height={1536} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]" />
+          ) : (
+            <div className="h-full w-full bg-muted flex items-center justify-center text-muted-foreground text-sm">No image</div>
+          )}
+        </div>
+        <h2 className="mt-3 text-[15px] font-medium leading-snug">{product.title}</h2>
+        <p className="mt-1 text-sm text-muted-foreground">₦{product.price.toLocaleString()}</p>
+      </Link>
+      <Button
+        size="sm"
+        className="mt-3 w-full rounded-full"
+        onClick={() => addItem(product, 1)}
+      >
+        Add to cart
+      </Button>
     </article>
   );
 }

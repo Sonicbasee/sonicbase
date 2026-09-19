@@ -14,6 +14,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as ArtistRouteImport } from './routes/artist'
 import { Route as ArtistsRouteImport } from './routes/artists'
+import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as LoginRouteImport } from './routes/login'
@@ -35,6 +36,8 @@ import { Route as ArtistStreamsRouteImport } from './routes/artist/streams'
 import { Route as ArtistsArtistRouteImport } from './routes/artists.$artist'
 import { Route as MusicReleaseRouteImport } from './routes/music.$release'
 import { Route as NewsNewsRouteImport } from './routes/news.$news'
+import { Route as OrderOrderIdRouteImport } from './routes/order.$orderId'
+import { Route as ShopProductIdRouteImport } from './routes/shop.$productId'
 import { Route as AdminArtistsArtistRouteImport } from './routes/admin/artists/$artist'
 import { Route as AdminArtistsNewRouteImport } from './routes/admin/artists/new'
 import { Route as AdminMerchandiseNewRouteImport } from './routes/admin/merchandise/new'
@@ -70,6 +73,11 @@ const ArtistRoute = ArtistRouteImport.update({
 const ArtistsRoute = ArtistsRouteImport.update({
   id: '/artists',
   path: '/artists',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CheckoutRoute = CheckoutRouteImport.update({
+  id: '/checkout',
+  path: '/checkout',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -177,6 +185,16 @@ const NewsNewsRoute = NewsNewsRouteImport.update({
   path: '/$news',
   getParentRoute: () => NewsRoute,
 } as any)
+const OrderOrderIdRoute = OrderOrderIdRouteImport.update({
+  id: '/order/$orderId',
+  path: '/order/$orderId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShopProductIdRoute = ShopProductIdRouteImport.update({
+  id: '/$productId',
+  path: '/$productId',
+  getParentRoute: () => ShopRoute,
+} as any)
 const AdminArtistsArtistRoute = AdminArtistsArtistRouteImport.update({
   id: '/$artist',
   path: '/$artist',
@@ -241,13 +259,14 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteWithChildren
   '/artist': typeof ArtistRouteWithChildren
   '/artists': typeof ArtistsRouteWithChildren
+  '/checkout': typeof CheckoutRoute
   '/contact': typeof ContactRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/music': typeof MusicRouteWithChildren
   '/news': typeof NewsRouteWithChildren
   '/reset-password': typeof ResetPasswordRoute
-  '/shop': typeof ShopRoute
+  '/shop': typeof ShopRouteWithChildren
   '/admin/artists': typeof AdminArtistsRouteWithChildren
   '/admin/merchandise': typeof AdminMerchandiseRouteWithChildren
   '/admin/news': typeof AdminNewsRouteWithChildren
@@ -260,6 +279,8 @@ export interface FileRoutesByFullPath {
   '/artists/$artist': typeof ArtistsArtistRoute
   '/music/$release': typeof MusicReleaseRoute
   '/news/$news': typeof NewsNewsRoute
+  '/order/$orderId': typeof OrderOrderIdRoute
+  '/shop/$productId': typeof ShopProductIdRoute
   '/admin/': typeof AdminIndexRoute
   '/artist/': typeof ArtistIndexRoute
   '/admin/artists/$artist': typeof AdminArtistsArtistRouteWithChildren
@@ -278,13 +299,14 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/artists': typeof ArtistsRouteWithChildren
+  '/checkout': typeof CheckoutRoute
   '/contact': typeof ContactRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/music': typeof MusicRouteWithChildren
   '/news': typeof NewsRouteWithChildren
   '/reset-password': typeof ResetPasswordRoute
-  '/shop': typeof ShopRoute
+  '/shop': typeof ShopRouteWithChildren
   '/admin/artists': typeof AdminArtistsRouteWithChildren
   '/admin/merchandise': typeof AdminMerchandiseRouteWithChildren
   '/admin/news': typeof AdminNewsRouteWithChildren
@@ -297,6 +319,8 @@ export interface FileRoutesByTo {
   '/artists/$artist': typeof ArtistsArtistRoute
   '/music/$release': typeof MusicReleaseRoute
   '/news/$news': typeof NewsNewsRoute
+  '/order/$orderId': typeof OrderOrderIdRoute
+  '/shop/$productId': typeof ShopProductIdRoute
   '/admin': typeof AdminIndexRoute
   '/artist': typeof ArtistIndexRoute
   '/admin/artists/$artist': typeof AdminArtistsArtistRouteWithChildren
@@ -318,13 +342,14 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/artist': typeof ArtistRouteWithChildren
   '/artists': typeof ArtistsRouteWithChildren
+  '/checkout': typeof CheckoutRoute
   '/contact': typeof ContactRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/music': typeof MusicRouteWithChildren
   '/news': typeof NewsRouteWithChildren
   '/reset-password': typeof ResetPasswordRoute
-  '/shop': typeof ShopRoute
+  '/shop': typeof ShopRouteWithChildren
   '/admin/artists': typeof AdminArtistsRouteWithChildren
   '/admin/merchandise': typeof AdminMerchandiseRouteWithChildren
   '/admin/news': typeof AdminNewsRouteWithChildren
@@ -337,6 +362,8 @@ export interface FileRoutesById {
   '/artists/$artist': typeof ArtistsArtistRoute
   '/music/$release': typeof MusicReleaseRoute
   '/news/$news': typeof NewsNewsRoute
+  '/order/$orderId': typeof OrderOrderIdRoute
+  '/shop/$productId': typeof ShopProductIdRoute
   '/admin/': typeof AdminIndexRoute
   '/artist/': typeof ArtistIndexRoute
   '/admin/artists/$artist': typeof AdminArtistsArtistRouteWithChildren
@@ -359,6 +386,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/artist'
     | '/artists'
+    | '/checkout'
     | '/contact'
     | '/forgot-password'
     | '/login'
@@ -378,6 +406,8 @@ export interface FileRouteTypes {
     | '/artists/$artist'
     | '/music/$release'
     | '/news/$news'
+    | '/order/$orderId'
+    | '/shop/$productId'
     | '/admin/'
     | '/artist/'
     | '/admin/artists/$artist'
@@ -396,6 +426,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/artists'
+    | '/checkout'
     | '/contact'
     | '/forgot-password'
     | '/login'
@@ -415,6 +446,8 @@ export interface FileRouteTypes {
     | '/artists/$artist'
     | '/music/$release'
     | '/news/$news'
+    | '/order/$orderId'
+    | '/shop/$productId'
     | '/admin'
     | '/artist'
     | '/admin/artists/$artist'
@@ -435,6 +468,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/artist'
     | '/artists'
+    | '/checkout'
     | '/contact'
     | '/forgot-password'
     | '/login'
@@ -454,6 +488,8 @@ export interface FileRouteTypes {
     | '/artists/$artist'
     | '/music/$release'
     | '/news/$news'
+    | '/order/$orderId'
+    | '/shop/$productId'
     | '/admin/'
     | '/artist/'
     | '/admin/artists/$artist'
@@ -475,13 +511,15 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRouteWithChildren
   ArtistRoute: typeof ArtistRouteWithChildren
   ArtistsRoute: typeof ArtistsRouteWithChildren
+  CheckoutRoute: typeof CheckoutRoute
   ContactRoute: typeof ContactRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   LoginRoute: typeof LoginRoute
   MusicRoute: typeof MusicRouteWithChildren
   NewsRoute: typeof NewsRouteWithChildren
   ResetPasswordRoute: typeof ResetPasswordRoute
-  ShopRoute: typeof ShopRoute
+  ShopRoute: typeof ShopRouteWithChildren
+  OrderOrderIdRoute: typeof OrderOrderIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -519,6 +557,13 @@ declare module '@tanstack/react-router' {
       path: '/artists'
       fullPath: '/artists'
       preLoaderRoute: typeof ArtistsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/checkout': {
+      id: '/checkout'
+      path: '/checkout'
+      fullPath: '/checkout'
+      preLoaderRoute: typeof CheckoutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -667,6 +712,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/news/$news'
       preLoaderRoute: typeof NewsNewsRouteImport
       parentRoute: typeof NewsRoute
+    }
+    '/order/$orderId': {
+      id: '/order/$orderId'
+      path: '/order/$orderId'
+      fullPath: '/order/$orderId'
+      preLoaderRoute: typeof OrderOrderIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/shop/$productId': {
+      id: '/shop/$productId'
+      path: '/$productId'
+      fullPath: '/shop/$productId'
+      preLoaderRoute: typeof ShopProductIdRouteImport
+      parentRoute: typeof ShopRoute
     }
     '/admin/artists/$artist': {
       id: '/admin/artists/$artist'
@@ -908,19 +967,31 @@ const NewsRouteChildren: NewsRouteChildren = {
 
 const NewsRouteWithChildren = NewsRoute._addFileChildren(NewsRouteChildren)
 
+interface ShopRouteChildren {
+  ShopProductIdRoute: typeof ShopProductIdRoute
+}
+
+const ShopRouteChildren: ShopRouteChildren = {
+  ShopProductIdRoute: ShopProductIdRoute,
+}
+
+const ShopRouteWithChildren = ShopRoute._addFileChildren(ShopRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   AdminRoute: AdminRouteWithChildren,
   ArtistRoute: ArtistRouteWithChildren,
   ArtistsRoute: ArtistsRouteWithChildren,
+  CheckoutRoute: CheckoutRoute,
   ContactRoute: ContactRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
   MusicRoute: MusicRouteWithChildren,
   NewsRoute: NewsRouteWithChildren,
   ResetPasswordRoute: ResetPasswordRoute,
-  ShopRoute: ShopRoute,
+  ShopRoute: ShopRouteWithChildren,
+  OrderOrderIdRoute: OrderOrderIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

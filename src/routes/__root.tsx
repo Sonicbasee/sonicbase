@@ -14,6 +14,7 @@ import appCss from "../styles.css?url";
 
 import { Footer, Header } from "@/components/sonicbase";
 import { fetchPublicArtists, fetchPublicReleases } from "@/lib/public-data";
+import { CartProvider } from "@/lib/cart";
 
 function NotFoundComponent() {
   return (
@@ -129,9 +130,11 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {!isDashboardRoute && <HeaderWithData />}
-      <main>{isDashboardRoute ? <Outlet /> : <Outlet />}</main>
-      {!isDashboardRoute && <Footer />}
+      <CartProvider>
+        {!isDashboardRoute && <HeaderWithData />}
+        <main>{isDashboardRoute ? <Outlet /> : <Outlet />}</main>
+        {!isDashboardRoute && <Footer />}
+      </CartProvider>
     </QueryClientProvider>
   );
 }
