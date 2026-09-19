@@ -33,10 +33,7 @@ export type DashboardNavItem = {
 };
 
 const artistNav: DashboardNavItem[] = [
-  { label: "Overview", path: "/artist", icon: LayoutDashboard },
   { label: "Revenue", path: "/artist/revenue", icon: CreditCard },
-  { label: "Streams", path: "/artist/streams", icon: TrendingUp },
-  { label: "Releases", path: "/artist/releases", icon: Music2 },
   { label: "Profile", path: "/artist/profile", icon: Users },
   { label: "Logout", path: "/login", icon: LogOut },
 ];

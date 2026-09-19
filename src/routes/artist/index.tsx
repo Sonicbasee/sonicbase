@@ -1,11 +1,10 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
-import { DashboardPage, PanelGrid, SectionCard, StatCard, StatusBadge, TableCard, formatMoney } from "@/components/dashboard";
-import { fetchReleases, fetchArtists } from "@/lib/api";
-import { getStoredSession } from "@/lib/auth";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/artist/")({
-  component: ArtistOverviewPage,
+  beforeLoad: () => {
+    throw redirect({ to: "/artist/revenue" });
+  },
+  component: () => null,
 });
 
 function ArtistOverviewPage() {
