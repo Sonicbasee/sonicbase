@@ -3,10 +3,96 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { submitContact } from "@/lib/contact";
 
-export const Route = createFileRoute("/contact")({ head: () => ({ meta: [
-  { title: "Contact — Sonicbase" }, { name: "description", content: "Contact Sonicbase about music, partnerships, press or licensing." },
-  { property: "og:title", content: "Contact Sonicbase" }, { property: "og:description", content: "Start a conversation with the Sonicbase team." },
-  { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" },
-] }), component: ContactPage });
-function ContactPage() { const [topic,setTopic]=useState<string|null>(null); const [sent,setSent]=useState(false); const [error,setError]=useState(""); function submit(e:React.FormEvent<HTMLFormElement>){e.preventDefault(); const data=new FormData(e.currentTarget); if(!topic||!data.get("name")||!data.get("email")||!data.get("message")){setError("Please complete every field and choose a topic.");return;} setError("");setSent(true);} return <section className="min-h-[680px] bg-primary px-4 py-16 text-primary-foreground md:py-20"><div className="mx-auto max-w-3xl"><h1 className="display-title text-center text-4xl sm:text-6xl">Get in touch</h1>{sent?<div className="mt-10 rounded-[7px] border border-primary-foreground/25 p-10 text-center"><h2 className="text-2xl font-bold">Message received.</h2><p className="mt-3 text-primary-foreground/65">Our team will get back to you soon.</p><Button variant="secondary" className="mt-6" onClick={()=>setSent(false)}>Send another</Button></div>:<form onSubmit={submit} className="mt-10 rounded-[7px] border border-primary-foreground/25 p-5 sm:p-8"><fieldset><legend className="mb-4 text-lg">What do you need?</legend><div className="grid gap-2">{["General","Artist submissions","Press & partnerships","Licensing request"].map((x)=><Button key={x} type="button" variant={topic===x?"secondary":"outline"} className={topic===x?"justify-start":"justify-start border-primary-foreground/25 bg-primary text-primary-foreground hover:bg-primary-foreground hover:text-primary"} onClick={()=>setTopic(x)}>{x}</Button>)}</div></fieldset><div className="mt-6 grid gap-3"><Input name="name" placeholder="Name" aria-label="Name" className="h-10 border-primary-foreground/25 text-primary-foreground placeholder:text-primary-foreground/50" /><Input name="email" type="email" placeholder="Email" aria-label="Email" className="h-10 border-primary-foreground/25 text-primary-foreground placeholder:text-primary-foreground/50" /><Textarea name="message" placeholder="Tell us a little more" aria-label="Message" className="min-h-32 border-primary-foreground/25 text-primary-foreground placeholder:text-primary-foreground/50" /></div>{error&&<p className="mt-4 text-sm" role="alert">{error}</p>}<Button variant="secondary" className="mt-5 w-full">Send inquiry</Button></form>}</div></section>; }
+export const Route = createFileRoute("/contact")({
+  head: () => ({
+    meta: [
+      { title: "Contact — Sonicbase" },
+      { name: "description", content: "Contact Sonicbase about music, partnerships, press or licensing." },
+      { property: "og:title", content: "Contact Sonicbase" },
+      { property: "og:description", content: "Start a conversation with the Sonicbase team." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
+  component: ContactPage,
+});
+
+function ContactPage() {
+  const [topic, setTopic] = useState<string | null>(null);
+  const [sent, setSent] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  async function submit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const data = new FormData(e.currentTarget);
+    const name = String(data.get("name") || "").trim();
+    const email = String(data.get("email") || "").trim();
+    const message = String(data.get("message") || "").trim();
+
+    if (!topic || !name || !email || !message) {
+      setError("Please complete every field and choose a topic.");
+      return;
+    }
+
+    setError("");
+    setLoading(true);
+    try {
+      await submitContact({ data: { topic, name, email, message } });
+      setSent(true);
+      (e.target as HTMLFormElement).reset();
+    } catch (err: any) {
+      setError(err?.message || "Could not send message. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <section className="min-h-[680px] bg-primary px-4 py-16 text-primary-foreground md:py-20">
+      <div className="mx-auto max-w-3xl">
+        <h1 className="display-title text-center text-4xl sm:text-6xl">Get in touch</h1>
+        {sent ? (
+          <div className="mt-10 rounded-[7px] border border-primary-foreground/25 p-10 text-center">
+            <h2 className="text-2xl font-bold">Message received.</h2>
+            <p className="mt-3 text-primary-foreground/65">Our team will get back to you soon.</p>
+            <Button variant="secondary" className="mt-6" onClick={() => setSent(false)}>
+              Send another
+            </Button>
+          </div>
+        ) : (
+          <form onSubmit={submit} className="mt-10 rounded-[7px] border border-primary-foreground/25 p-5 sm:p-8">
+            <fieldset>
+              <legend className="mb-4 text-lg">What do you need?</legend>
+              <div className="grid gap-2">
+                {["General", "Artist submissions", "Press & partnerships", "Licensing request"].map((x) => (
+                  <Button
+                    key={x}
+                    type="button"
+                    variant={topic === x ? "secondary" : "outline"}
+                    className={topic === x ? "justify-start" : "justify-start border-primary-foreground/25 bg-primary text-primary-foreground hover:bg-primary-foreground hover:text-primary"}
+                    onClick={() => setTopic(x)}
+                  >
+                    {x}
+                  </Button>
+                ))}
+              </div>
+            </fieldset>
+            <div className="mt-6 grid gap-3">
+              <Input name="name" placeholder="Name" aria-label="Name" className="h-10 border-primary-foreground/25 text-primary-foreground placeholder:text-primary-foreground/50" />
+              <Input name="email" type="email" placeholder="Email" aria-label="Email" className="h-10 border-primary-foreground/25 text-primary-foreground placeholder:text-primary-foreground/50" />
+              <Textarea name="message" placeholder="Tell us about your project, enquiry or idea..." aria-label="Message" className="min-h-24 border-primary-foreground/25 text-primary-foreground placeholder:text-primary-foreground/50" />
+            </div>
+            {error && <p className="mt-4 text-sm text-red-300">{error}</p>}
+            <Button type="submit" disabled={loading} className="mt-6 w-full bg-background text-foreground hover:bg-background/90">
+              {loading ? "Sending..." : "Send message"}
+            </Button>
+            <p className="mt-3 text-center text-xs text-primary-foreground/50">All messages are saved and routed to {`hello@sonicbase.music`}.</p>
+          </form>
+        )}
+      </div>
+    </section>
+  );
+}
