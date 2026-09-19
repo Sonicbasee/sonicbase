@@ -51,13 +51,14 @@ function Index() {
   // Provide videoUrl (hosted mp4) for each reel to play video-only inside the card (no chrome, no play button).
   // If videoUrl is absent, it falls back to cover image via og:image.
   const SUPABASE_URL = "https://rwgjngmypmfnmmydlwve.supabase.co";
+  // Aligned per your mapping: 1→Dck_1SZNDfK, 2→DTIg5XXjZrX, 3→DVsmRnojSlG, 4→DG5SHA2NOnH, 5→DcVexTaN79i, 6→DITK_YRtuC5
   const instagramReels: { url: string; videoUrl?: string }[] = [
-    { url: "https://www.instagram.com/reel/DG5SHA2NOnH/", videoUrl: `${SUPABASE_URL}/storage/v1/object/public/videos/1.mp4` },
-    { url: "https://www.instagram.com/reel/DITK_YRtuC5/", videoUrl: `${SUPABASE_URL}/storage/v1/object/public/videos/2.mp4` },
-    { url: "https://www.instagram.com/reel/Dck_1SZNDfK/", videoUrl: `${SUPABASE_URL}/storage/v1/object/public/videos/3.mp4` },
-    { url: "https://www.instagram.com/reel/DcVexTaN79i/", videoUrl: `${SUPABASE_URL}/storage/v1/object/public/videos/4.mp4` },
-    { url: "https://www.instagram.com/reel/DTIg5XXjZrX/", videoUrl: `${SUPABASE_URL}/storage/v1/object/public/videos/5.mp4` },
-    { url: "https://www.instagram.com/reel/DVsmRnojSlG/", videoUrl: `${SUPABASE_URL}/storage/v1/object/public/videos/6.mp4` },
+    { url: "https://www.instagram.com/reel/Dck_1SZNDfK/", videoUrl: `${SUPABASE_URL}/storage/v1/object/public/videos/1.mp4` },
+    { url: "https://www.instagram.com/reel/DTIg5XXjZrX/", videoUrl: `${SUPABASE_URL}/storage/v1/object/public/videos/2.mp4` },
+    { url: "https://www.instagram.com/reel/DVsmRnojSlG/", videoUrl: `${SUPABASE_URL}/storage/v1/object/public/videos/3.mp4` },
+    { url: "https://www.instagram.com/reel/DG5SHA2NOnH/", videoUrl: `${SUPABASE_URL}/storage/v1/object/public/videos/4.mp4` },
+    { url: "https://www.instagram.com/reel/DcVexTaN79i/", videoUrl: `${SUPABASE_URL}/storage/v1/object/public/videos/5.mp4` },
+    { url: "https://www.instagram.com/reel/DITK_YRtuC5/", videoUrl: `${SUPABASE_URL}/storage/v1/object/public/videos/6.mp4` },
   ];
 
   const socialImages = instagramReels.map((r, i) => ({
