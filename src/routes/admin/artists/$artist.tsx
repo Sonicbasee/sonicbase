@@ -1,6 +1,8 @@
 import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 import { DashboardPage, SectionCard, StatusBadge } from "@/components/dashboard";
 import { fetchArtist, deleteArtist } from "@/lib/api";
 import { requireAuth } from "@/lib/route-access";
@@ -15,6 +17,7 @@ function AdminArtistDetailPage() {
   const pathname = useRouterState({ select: (state) => state.location.pathname });
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const { data: item, isLoading } = useQuery({ queryKey: ["artist", artistId], queryFn: () => fetchArtist(artistId) });
   const deleteMutation = useMutation({
     mutationFn: deleteArtist,
@@ -27,7 +30,8 @@ function AdminArtistDetailPage() {
   if (!item) return <DashboardPage title="Not found" subtitle="Artist not found"><Link to="/admin/artists"><Button>Back to artists</Button></Link></DashboardPage>;
 
   return (
-    <DashboardPage title={item.name} subtitle="Artist management overview and profile details." actions={<div className="flex gap-2"><Button asChild variant="secondary" size="sm"><Link to="/admin/artists/$artist/edit" params={{ artist: artistId }}>Edit</Link></Button><Button variant="destructive" size="sm" onClick={() => { if (confirm("Delete this artist?")) deleteMutation.mutate(artistId); }}>Delete artist</Button></div>}>
+    <>
+      <DashboardPage title={item.name} subtitle="Artist management overview and profile details." actions={<div className="flex gap-2"><Button asChild variant="secondary" size="sm"><Link to="/admin/artists/$artist/edit" params={{ artist: artistId }}>Edit</Link></Button><Button variant="destructive" size="sm" onClick={() => setShowDeleteDialog(true)}>Delete artist</Button></div>}>
       <div className="grid gap-6 xl:grid-cols-[0.8fr_1.2fr]">
         <SectionCard title="Profile" eyebrow="Artist">
           <div className="flex flex-col items-center text-center">
@@ -46,5 +50,16 @@ function AdminArtistDetailPage() {
         </SectionCard>
       </div>
     </DashboardPage>
+      <ConfirmDialog
+        open={showDeleteDialog}
+        onOpenChange={setShowDeleteDialog}
+        title="Delete artist?"
+        description={`This will permanently delete "${item.name}". This action cannot be undone.`}
+        confirmLabel={deleteMutation.isPending ? "Deleting..." : "Delete artist"}
+        variant="destructive"
+        onConfirm={() => deleteMutation.mutate(artistId)}
+        isLoading={deleteMutation.isPending}
+      />
+    </>
   );
 }

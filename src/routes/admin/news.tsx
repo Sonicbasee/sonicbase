@@ -1,6 +1,8 @@
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 import { DashboardPage, SectionCard, StatusBadge } from "@/components/dashboard";
 import { fetchNews, deleteNews } from "@/lib/api";
 import { requireAuth } from "@/lib/route-access";
@@ -13,20 +15,25 @@ export const Route = createFileRoute("/admin/news")({
 function AdminNewsPage() {
   const pathname = useRouterState({ select: (state) => state.location.pathname });
   const queryClient = useQueryClient();
+  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
   const { data: newsItems = [], isLoading } = useQuery({ queryKey: ["news"], queryFn: fetchNews });
   const deleteMutation = useMutation({
     mutationFn: deleteNews,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["news"] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["news"] });
+      setDeleteTarget(null);
+    },
   });
 
   if (pathname !== "/admin/news") return <Outlet />;
 
   return (
-    <DashboardPage title="News" subtitle="Create, review and publish editorial content for the public website." actions={<Link to="/admin/news/new"><Button size="sm">New article</Button></Link>}>
-      {isLoading ? <p className="text-sm text-muted-foreground py-8 text-center">Loading...</p> : (
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {newsItems.map((item) => (
-          <SectionCard key={item.id} title={item.title} eyebrow={item.category} action={<Button variant="destructive" size="sm" onClick={() => { if (confirm("Delete this article?")) deleteMutation.mutate(item.id); }}>Delete</Button>}>
+    <>
+      <DashboardPage title="News" subtitle="Create, review and publish editorial content for the public website." actions={<Link to="/admin/news/new"><Button size="sm">New article</Button></Link>}>
+        {isLoading ? <p className="text-sm text-muted-foreground py-8 text-center">Loading...</p> : (
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {newsItems.map((item) => (
+            <SectionCard key={item.id} title={item.title} eyebrow={item.category} action={<Button variant="destructive" size="sm" onClick={() => setDeleteTarget(item.id)}>Delete</Button>}>
             <img src={item.image || "/placeholder.png"} alt={item.title} className="h-44 w-full rounded-xl object-cover" />
             <p className="mt-4 text-sm text-muted-foreground">{item.excerpt}</p>
             <div className="mt-4 flex items-center justify-between">
@@ -40,5 +47,16 @@ function AdminNewsPage() {
       </div>
       )}
     </DashboardPage>
+      <ConfirmDialog
+        open={!!deleteTarget}
+        onOpenChange={(open) => !open && setDeleteTarget(null)}
+        title="Delete article?"
+        description="This will permanently delete the article. This action cannot be undone."
+        confirmLabel={deleteMutation.isPending ? "Deleting..." : "Delete article"}
+        variant="destructive"
+        onConfirm={() => deleteTarget && deleteMutation.mutate(deleteTarget)}
+        isLoading={deleteMutation.isPending}
+      />
+    </>
   );
 }

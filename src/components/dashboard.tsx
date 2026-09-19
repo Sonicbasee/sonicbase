@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { type ReactNode, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { logoutUser, type UserRole } from "@/lib/auth";
@@ -202,6 +203,7 @@ function DashboardShell({
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [role, setRole] = useState<UserRole>("artist");
+  const [showLogoutDialog, setShowLogoutDialog] = useState(false);
 
   useEffect(() => {
     const rawSession = localStorage.getItem("sonicbase-session");
@@ -231,23 +233,40 @@ function DashboardShell({
         </div>
 
         <nav className="flex-1 space-y-1 p-4">
-          {nav.map(({ label, path, icon: Icon }) => (
-<Link
-              key={path}
-              to={path}
-              className="flex items-center justify-between rounded-xl px-3 py-2.5 text-sm font-medium transition-colors hover:bg-muted hover:text-foreground"
-            >
-              <span className="flex items-center gap-3">
-                <Icon className="h-4 w-4" />
-                {label}
-              </span>
-              {label === "Logout" && <ChevronRight className="h-4 w-4" />}
-            </Link>
-          ))}
+          {nav.map(({ label, path, icon: Icon }) => {
+            if (label === "Logout") {
+              return (
+                <button
+                  key={path}
+                  type="button"
+                  onClick={() => setShowLogoutDialog(true)}
+                  className="flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-sm font-medium transition-colors hover:bg-muted hover:text-foreground text-left"
+                >
+                  <span className="flex items-center gap-3">
+                    <Icon className="h-4 w-4" />
+                    {label}
+                  </span>
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+              );
+            }
+            return (
+              <Link
+                key={path}
+                to={path}
+                className="flex items-center justify-between rounded-xl px-3 py-2.5 text-sm font-medium transition-colors hover:bg-muted hover:text-foreground"
+              >
+                <span className="flex items-center gap-3">
+                  <Icon className="h-4 w-4" />
+                  {label}
+                </span>
+              </Link>
+            );
+          })}
         </nav>
 
         <div className="border-t border-border p-4">
-          <Button type="button" variant="secondary" className="w-full justify-between" onClick={onLogout}>
+          <Button type="button" variant="secondary" className="w-full justify-between" onClick={() => setShowLogoutDialog(true)}>
             <span className="flex items-center gap-2"><LogOut className="h-4 w-4" /> Logout</span>
           </Button>
         </div>
@@ -273,17 +292,35 @@ function DashboardShell({
                     </div>
                   </div>
                   <nav className="space-y-1 p-4">
-                    {nav.map(({ label, path, icon: Icon }) => (
-<Link
-                        key={path}
-                        to={path}
-                        onClick={() => setSidebarOpen(false)}
-                        className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors hover:bg-muted hover:text-foreground"
-                      >
-                        <Icon className="h-4 w-4" />
-                        {label}
-                      </Link>
-                    ))}
+                    {nav.map(({ label, path, icon: Icon }) => {
+                      if (label === "Logout") {
+                        return (
+                          <button
+                            key={path}
+                            type="button"
+                            onClick={() => {
+                              setSidebarOpen(false);
+                              setShowLogoutDialog(true);
+                            }}
+                            className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors hover:bg-muted hover:text-foreground text-left"
+                          >
+                            <Icon className="h-4 w-4" />
+                            {label}
+                          </button>
+                        );
+                      }
+                      return (
+                        <Link
+                          key={path}
+                          to={path}
+                          onClick={() => setSidebarOpen(false)}
+                          className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors hover:bg-muted hover:text-foreground"
+                        >
+                          <Icon className="h-4 w-4" />
+                          {label}
+                        </Link>
+                      );
+                    })}
                   </nav>
                 </SheetContent>
               </Sheet>
@@ -301,7 +338,7 @@ function DashboardShell({
               <Button variant="ghost" size="icon" aria-label="Notifications">
                 <Bell className="h-4 w-4" />
               </Button>
-              <Button type="button" onClick={onLogout} variant="secondary" className="hidden md:inline-flex">
+              <Button type="button" onClick={() => setShowLogoutDialog(true)} variant="secondary" className="hidden md:inline-flex">
                 Logout
               </Button>
             </div>
@@ -317,6 +354,19 @@ function DashboardShell({
 
         <main className="flex-1 p-4 md:p-6">{children}</main>
       </div>
+      <ConfirmDialog
+        open={showLogoutDialog}
+        onOpenChange={setShowLogoutDialog}
+        title="Log out?"
+        description="You will be signed out of your dashboard and redirected to the login page. Are you sure you want to continue?"
+        confirmLabel="Log out"
+        cancelLabel="Cancel"
+        variant="destructive"
+        onConfirm={() => {
+          setShowLogoutDialog(false);
+          onLogout();
+        }}
+      />
     </div>
   );
 }
