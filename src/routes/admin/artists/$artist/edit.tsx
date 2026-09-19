@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DashboardPage, SectionCard } from "@/components/dashboard";
@@ -30,7 +30,8 @@ function EditArtistPage() {
   const [appleMusicUrl, setAppleMusicUrl] = useState("");
   const [instagramUrl, setInstagramUrl] = useState("");
 
-  if (item && !initialized) {
+  useEffect(() => {
+    if (!item || initialized) return;
     setName(item.name);
     setEmail(item.email);
     setCity(item.city);
@@ -42,7 +43,7 @@ function EditArtistPage() {
     setAppleMusicUrl(item.appleMusicUrl || "");
     setInstagramUrl(item.instagramUrl || "");
     setInitialized(true);
-  }
+  }, [item, initialized]);
 
   const saveMutation = useMutation({
     mutationFn: async () => {
@@ -73,6 +74,7 @@ function EditArtistPage() {
           <div className="space-y-2 md:col-span-2"><label className="text-sm font-medium">Instagram URL</label><Input type="url" value={instagramUrl} onChange={(e) => setInstagramUrl(e.target.value)} /></div>
           <div className="space-y-2 md:col-span-2"><label className="text-sm font-medium">Bio</label><textarea className="min-h-24 w-full rounded-xl border border-border bg-background px-3 py-2 text-sm" value={bio} onChange={(e) => setBio(e.target.value)} /></div>
           <div className="space-y-2 md:col-span-2"><label className="text-sm font-medium">Artist statement</label><textarea className="min-h-20 w-full rounded-xl border border-border bg-background px-3 py-2 text-sm" value={statement} onChange={(e) => setStatement(e.target.value)} /></div>
+          {saveMutation.isError && <p className="text-sm text-destructive md:col-span-2">Unable to save this artist. Please try again.</p>}
           <div className="flex justify-end gap-3 pt-4 md:col-span-2"><Link to="/admin/artists/$artist" params={{ artist: artistId }}><Button variant="secondary">Cancel</Button></Link><Button onClick={() => saveMutation.mutate()} disabled={!name || !email || saveMutation.isPending}>{saveMutation.isPending ? "Saving..." : "Save artist"}</Button></div>
         </div>
       </SectionCard>

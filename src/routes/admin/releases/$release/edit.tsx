@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DashboardPage, SectionCard } from "@/components/dashboard";
@@ -29,16 +29,25 @@ function EditReleasePage() {
   const [watchUrl, setWatchUrl] = useState("");
   const [initialized, setInitialized] = useState(false);
 
-  if (item && !initialized) {
-    setTitle(item.title); setArtistId(item.artistId || ""); setType(item.type); setStatus(item.status); setDate(item.date); setCover(item.cover); setListenUrl(item.listenUrl || ""); setWatchUrl(item.watchUrl || ""); setInitialized(true);
-  }
+  useEffect(() => {
+    if (!item || initialized) return;
+    setTitle(item.title);
+    setArtistId(item.artistId || "");
+    setType(item.type);
+    setStatus(item.status);
+    setDate(item.date);
+    setCover(item.cover);
+    setListenUrl(item.listenUrl || "");
+    setWatchUrl(item.watchUrl || "");
+    setInitialized(true);
+  }, [item, initialized]);
 
   const saveMutation = useMutation({
     mutationFn: async () => {
       const nextCover = coverFile ? await uploadContentImage("releases", coverFile) : cover;
       return updateRelease(releaseId, { title, artist_id: artistId, type, status, release_date: date, cover: nextCover, listen_url: listenUrl, watch_url: watchUrl });
     },
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["releases"] }); navigate({ to: "/admin/releases/$release", params: { release: releaseId } }); },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["releases"] }); queryClient.invalidateQueries({ queryKey: ["release", releaseId] }); navigate({ to: "/admin/releases/$release", params: { release: releaseId } }); },
   });
 
   if (isLoading) return <DashboardPage title="Loading..." subtitle=""><p className="text-sm text-muted-foreground">Loading...</p></DashboardPage>;
@@ -55,6 +64,7 @@ function EditReleasePage() {
         <div className="space-y-2 md:col-span-2"><label className="text-sm font-medium">Release artwork</label><Input type="file" accept="image/*" onChange={(e) => setCoverFile(e.target.files?.[0] ?? null)} />{cover && <p className="text-xs text-muted-foreground">Current artwork is saved. Choose a file to replace it.</p>}</div>
         <div className="space-y-2"><label className="text-sm font-medium">Listen URL</label><Input type="url" value={listenUrl} onChange={(e) => setListenUrl(e.target.value)} placeholder="https://open.spotify.com/..." /></div>
         <div className="space-y-2"><label className="text-sm font-medium">Watch URL</label><Input type="url" value={watchUrl} onChange={(e) => setWatchUrl(e.target.value)} placeholder="https://youtube.com/watch?..." /></div>
+        {saveMutation.isError && <p className="text-sm text-destructive md:col-span-2">Unable to save this release. Please try again.</p>}
         <div className="flex justify-end gap-3 pt-4 md:col-span-2"><Link to="/admin/releases/$release" params={{ release: releaseId }}><Button variant="secondary">Cancel</Button></Link><Button onClick={() => saveMutation.mutate()} disabled={saveMutation.isPending}>{saveMutation.isPending ? "Saving..." : "Save changes"}</Button></div>
       </div></SectionCard>
     </DashboardPage>

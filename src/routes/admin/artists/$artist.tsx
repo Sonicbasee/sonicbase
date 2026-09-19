@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { DashboardPage, SectionCard, StatusBadge } from "@/components/dashboard";
@@ -12,6 +12,7 @@ export const Route = createFileRoute("/admin/artists/$artist")({
 
 function AdminArtistDetailPage() {
   const { artist: artistId } = Route.useParams();
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { data: item, isLoading } = useQuery({ queryKey: ["artist", artistId], queryFn: () => fetchArtist(artistId) });
@@ -19,6 +20,8 @@ function AdminArtistDetailPage() {
     mutationFn: deleteArtist,
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["artists"] }); navigate({ to: "/admin/artists" }); },
   });
+
+  if (pathname !== `/admin/artists/${artistId}`) return <Outlet />;
 
   if (isLoading) return <DashboardPage title="Loading..." subtitle=""><p className="text-sm text-muted-foreground">Loading...</p></DashboardPage>;
   if (!item) return <DashboardPage title="Not found" subtitle="Artist not found"><Link to="/admin/artists"><Button>Back to artists</Button></Link></DashboardPage>;

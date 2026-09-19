@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { DashboardPage, SectionCard, StatusBadge } from "@/components/dashboard";
@@ -12,6 +12,7 @@ export const Route = createFileRoute("/admin/releases/$release")({
 
 function AdminReleaseDetailPage() {
   const { release: releaseId } = Route.useParams();
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { data: item, isLoading } = useQuery({ queryKey: ["release", releaseId], queryFn: () => fetchRelease(releaseId) });
@@ -19,6 +20,8 @@ function AdminReleaseDetailPage() {
     mutationFn: deleteRelease,
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["releases"] }); navigate({ to: "/admin/releases" }); },
   });
+
+  if (pathname !== `/admin/releases/${releaseId}`) return <Outlet />;
 
   if (isLoading) return <DashboardPage title="Loading..." subtitle=""><p className="text-sm text-muted-foreground">Loading release...</p></DashboardPage>;
   if (!item) return <DashboardPage title="Not found" subtitle="Release not found"><Link to="/admin/releases"><Button>Back to releases</Button></Link></DashboardPage>;
