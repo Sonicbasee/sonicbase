@@ -27,12 +27,17 @@ serve(async (req) => {
     const formData = await req.formData();
     const file = formData.get("file") as File;
     const monthStr = formData.get("month") as string; // YYYY-MM
+    const artistIdParam = formData.get("artist_id") as string | null;
     if (!file || !monthStr) return new Response(JSON.stringify({ error: "file and month required" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    if (!artistIdParam) {
+      // For backward compat, still allow sheet with artist_email column, but new flow requires artist selection
+      // We will handle both, but prefer artist_id
+    }
 
     const text = await file.text();
     const lines = text.split("\n").map((l) => l.trim()).filter(Boolean);
     const header = lines[0].toLowerCase();
-    const hasHeader = header.includes("artist") && header.includes("release");
+    const hasHeader = header.includes("release") && (header.includes("amount") || header.includes("revenue"));
     const rows = hasHeader ? lines.slice(1) : lines;
 
     const adminClient = createClient(supabaseUrl, serviceKey);
@@ -41,22 +46,53 @@ serve(async (req) => {
     let updated = 0;
     let errors: string[] = [];
 
+    // If artist_id provided, sheet is per-artist: release_title, amount, streams
+    // Otherwise, legacy: artist_email, release_title, amount, streams
+    const isPerArtist = !!artistIdParam;
+
+    let perArtistId = artistIdParam;
+    if (isPerArtist) {
+      const { data: artistCheck } = await adminClient.from("artists").select("id").eq("id", artistIdParam).single();
+      if (!artistCheck) {
+        return new Response(JSON.stringify({ error: "Selected artist not found" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+    }
+
     for (const line of rows) {
       const cols = line.split(",").map((c) => c.trim().replace(/^"|"$/g, ""));
-      // Expected: artist_email, release_title, amount, streams
-      const [artistEmail, releaseTitle, amountStr, streamsStr] = cols;
-      if (!artistEmail || !releaseTitle) {
-        errors.push(`Skipped: ${line}`);
-        continue;
+      let artistId: string | null = null;
+      let releaseTitle: string;
+      let amountStr: string;
+      let streamsStr: string;
+
+      if (isPerArtist) {
+        // release_title, amount, streams
+        [releaseTitle, amountStr, streamsStr] = cols;
+        artistId = perArtistId;
+        if (!releaseTitle) {
+          errors.push(`Skipped: ${line}`);
+          continue;
+        }
+      } else {
+        // legacy: artist_email, release_title, amount, streams
+        const [artistEmail, rTitle, aStr, sStr] = cols;
+        releaseTitle = rTitle;
+        amountStr = aStr;
+        streamsStr = sStr;
+        if (!artistEmail || !releaseTitle) {
+          errors.push(`Skipped: ${line}`);
+          continue;
+        }
+        const { data: artist } = await adminClient.from("artists").select("id").eq("email", artistEmail).single();
+        if (!artist) {
+          errors.push(`Artist not found: ${artistEmail}`);
+          continue;
+        }
+        artistId = artist.id;
       }
       const amount = parseInt(amountStr?.replace(/[^0-9]/g, "") || "0", 10);
       const streams = parseInt(streamsStr?.replace(/[^0-9]/g, "") || "0", 10);
 
-      const { data: artist } = await adminClient.from("artists").select("id").eq("email", artistEmail).single();
-      if (!artist) {
-        errors.push(`Artist not found: ${artistEmail}`);
-        continue;
-      }
       const { data: release } = await adminClient.from("releases").select("id").ilike("title", releaseTitle).limit(1).single();
       if (!release) {
         errors.push(`Release not found: ${releaseTitle}`);
@@ -65,7 +101,7 @@ serve(async (req) => {
 
       // Upsert revenue_entries
       const { error: upsertErr } = await adminClient.from("revenue_entries").upsert({
-        artist_id: artist.id,
+        artist_id: artistId,
         release_id: release.id,
         amount,
         streams,
@@ -73,7 +109,7 @@ serve(async (req) => {
       }, { onConflict: "artist_id,release_id,month" });
 
       if (upsertErr) {
-        errors.push(`DB error for ${artistEmail}/${releaseTitle}: ${upsertErr.message}`);
+        errors.push(`DB error for ${artistId}/${releaseTitle}: ${upsertErr.message}`);
         continue;
       }
 

@@ -1,9 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DashboardPage, SectionCard } from "@/components/dashboard";
 import { supabase } from "@/lib/supabase";
+import { fetchArtists } from "@/lib/api";
 import { requireAuth } from "@/lib/route-access";
 
 export const Route = createFileRoute("/admin/revenue")({
@@ -12,6 +14,8 @@ export const Route = createFileRoute("/admin/revenue")({
 });
 
 function AdminRevenuePage() {
+  const { data: artists = [] } = useQuery({ queryKey: ["artists"], queryFn: fetchArtists });
+  const [artistId, setArtistId] = useState("");
   const [month, setMonth] = useState(new Date().toISOString().slice(0, 7));
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
@@ -19,8 +23,8 @@ function AdminRevenuePage() {
   const [error, setError] = useState("");
 
   const handleUpload = async () => {
-    if (!file || !month) {
-      setError("Select month and file");
+    if (!artistId || !file || !month) {
+      setError("Select artist, month and file");
       return;
     }
     setLoading(true);
@@ -33,6 +37,7 @@ function AdminRevenuePage() {
       const formData = new FormData();
       formData.append("file", file);
       formData.append("month", month);
+      formData.append("artist_id", artistId);
       const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/upload-revenue`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}`, apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY },
@@ -53,10 +58,21 @@ function AdminRevenuePage() {
       <SectionCard title="Upload revenue sheet" eyebrow="Monthly">
         <div className="space-y-4">
           <p className="text-sm text-muted-foreground">
-            CSV format: <code className="rounded bg-muted px-1">artist_email, release_title, amount, streams</code> with header row. Amount in NGN, streams as number.
-            Example: <code className="rounded bg-muted px-1">artist@sonicbase.com, DUDUKE, 500000, 120000</code>
+            Select an artist and upload their monthly sheet. CSV format: <code className="rounded bg-muted px-1">release_title, amount, streams</code> with header row.
+            Example: <code className="rounded bg-muted px-1">DUDUKE, 500000, 120000</code>
           </p>
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-4 md:grid-cols-3">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Artist *</label>
+              <select value={artistId} onChange={(e) => setArtistId(e.target.value)} className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm">
+                <option value="">Select artist</option>
+                {artists.map((a) => (
+                  <option key={a.id} value={a.id}>
+                    {a.name} — {a.email}
+                  </option>
+                ))}
+              </select>
+            </div>
             <div className="space-y-2">
               <label className="text-sm font-medium">Month</label>
               <Input type="month" value={month} onChange={(e) => setMonth(e.target.value)} />
