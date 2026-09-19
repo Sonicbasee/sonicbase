@@ -16,7 +16,7 @@ async function sendEmailViaResend(to: string, subject: string, html: string, rep
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) return { skipped: true as const, reason: "RESEND_API_KEY not set" };
 
-  const fromEmail = process.env.CONTACT_FROM_EMAIL || "Sonicbase <support@sonicbase.ink>";
+  const fromEmail = process.env.CONTACT_FROM_EMAIL || "Sonicbase <onboarding@resend.dev>";
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
@@ -66,7 +66,6 @@ export const submitContact = createServerFn({ method: "POST" })
     }
 
     const contactEmail = process.env.CONTACT_EMAIL || process.env.VITE_CONTACT_EMAIL || "support@sonicbase.ink";
-  const fromEmail = process.env.CONTACT_FROM_EMAIL || "Sonicbase <onboarding@resend.dev>";
 
     // Email 1: to support@sonicbase.ink with original message
     const adminSubject = `New contact: ${topic} — ${name}`;
