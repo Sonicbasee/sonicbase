@@ -7,7 +7,7 @@ import { DashboardPage, SectionCard } from "@/components/dashboard";
 import { fetchMerchItem, updateMerch, fetchArtists, uploadContentImage } from "@/lib/api";
 import { requireAuth } from "@/lib/route-access";
 
-export const Route = createFileRoute("/admin/merchandise/id/edit")({
+export const Route = createFileRoute("/admin/merchandise/$id/edit")({
   beforeLoad: async () => {
     await requireAuth("admin");
   },
@@ -60,6 +60,16 @@ function MerchEditPage() {
     return (
       <DashboardPage title="Loading..." subtitle="">
         <p className="text-sm text-muted-foreground">Loading...</p>
+      </DashboardPage>
+    );
+  }
+
+  if (!item) {
+    return (
+      <DashboardPage title="Not found" subtitle="Merchandise item not found">
+        <Link to="/admin/merchandise">
+          <Button>Back to merchandise</Button>
+        </Link>
       </DashboardPage>
     );
   }
