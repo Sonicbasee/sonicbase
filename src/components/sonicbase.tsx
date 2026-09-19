@@ -80,26 +80,54 @@ export function Header({ artists = [], releases = [] }: { artists?: PublicArtist
 
   return (
     <>
-      <header className={`page-shell z-40 grid h-[104px] grid-cols-[1fr_auto_1fr] items-center ${overlay ? "absolute inset-x-0 top-0 text-primary-foreground" : "relative bg-background text-foreground"}`}>
-        <nav className="hidden items-center gap-7 text-[15px] lg:flex" aria-label="Main navigation">
-          {nav.slice(0, 5).map(([label, to]) => <Link key={to} to={to} activeProps={{ className: "font-bold" }}>{label}</Link>)}
-        </nav>
-        <div className="lg:hidden">
-          <Sheet>
-            <SheetTrigger asChild><Button variant="ghost" size="icon" aria-label="Open menu"><Menu /></Button></SheetTrigger>
-            <SheetContent side="left" className="w-full border-none p-6 sm:max-w-md">
-              <SheetTitle className="sr-only">Navigation</SheetTitle>
-              <div className="mt-16 flex flex-col gap-5">
-                {nav.map(([label, to]) => <Link key={to} to={to} className="display-title text-4xl">{label}</Link>)}
-              </div>
-            </SheetContent>
-          </Sheet>
-        </div>
-        <Link to="/" className="justify-self-center"><Logo /></Link>
-        <div className="flex items-center justify-end gap-3 sm:gap-6">
-          <Button type="button" variant="ghost" className="hidden h-auto p-0 text-[15px] hover:bg-transparent sm:inline-flex" onClick={() => setSearchOpen(true)}>Search</Button>
-          <Button variant="ghost" size="icon" className="sm:hidden" onClick={() => setSearchOpen(true)} aria-label="Search"><Search /></Button>
-          <CartPanel />
+      <header
+        className={`sticky top-0 z-40 border-b backdrop-blur supports-[backdrop-filter]:bg-background/80 ${
+          overlay
+            ? "border-transparent bg-foreground/10 text-primary-foreground supports-[backdrop-filter]:bg-foreground/5"
+            : "border-border bg-background/90 text-foreground"
+        }`}
+      >
+        <div className="page-shell grid h-[104px] grid-cols-[1fr_auto_1fr] items-center">
+          <nav className="hidden items-center gap-7 text-[15px] lg:flex" aria-label="Main navigation">
+            {nav.map(([label, to]) => (
+              <Link key={to} to={to} activeProps={{ className: "font-bold" }}>
+                {label}
+              </Link>
+            ))}
+          </nav>
+          <div className="lg:hidden">
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" aria-label="Open menu">
+                  <Menu />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-full border-none p-6 sm:max-w-md">
+                <SheetTitle className="sr-only">Navigation</SheetTitle>
+                <div className="mt-16 flex flex-col gap-5">
+                  {nav.map(([label, to]) => (
+                    <SheetClose asChild key={to}>
+                      <Link to={to} className="display-title text-4xl">
+                        {label}
+                      </Link>
+                    </SheetClose>
+                  ))}
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
+          <Link to="/" className="justify-self-center">
+            <Logo />
+          </Link>
+          <div className="flex items-center justify-end gap-3 sm:gap-6">
+            <Button type="button" variant="ghost" className="hidden h-auto p-0 text-[15px] hover:bg-transparent sm:inline-flex" onClick={() => setSearchOpen(true)}>
+              Search
+            </Button>
+            <Button variant="ghost" size="icon" className="sm:hidden" onClick={() => setSearchOpen(true)} aria-label="Search">
+              <Search />
+            </Button>
+            <CartPanel />
+          </div>
         </div>
       </header>
       {searchOpen && (
