@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Outlet, useRouterState } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { NewsGrid, PageTitle, Socials } from "@/components/sonicbase";
 import { fetchPublishedNews, fetchPublicArtists } from "@/lib/public-data";
@@ -10,9 +10,12 @@ export const Route = createFileRoute("/news")({ head: () => ({ meta: [
 ] }), component: NewsPage });
 
 function NewsPage() {
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
   const { data: newsItems = [], isLoading } = useQuery({ queryKey: ["public-news"], queryFn: fetchPublishedNews, staleTime: 60_000 });
   const { data: artists = [] } = useQuery({ queryKey: ["public-artists"], queryFn: fetchPublicArtists, staleTime: 60_000 });
   const socialImages = artists.filter((a) => a.image).map((a) => ({ image: a.image, alt: a.name }));
+
+  if (pathname !== "/news") return <Outlet />;
 
   return (
     <>

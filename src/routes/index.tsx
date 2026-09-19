@@ -44,7 +44,7 @@ function Index() {
     secondaryHref: release.watchUrl,
     secondaryTo: "/music/$release",
     secondaryParams: { release: release.slug },
-    secondaryLabel: release.watchUrl ? "Watch" : "Details",
+    secondaryLabel: "Watch",
   }));
 
   const socialImages = artists.filter((a) => a.image).map((a) => ({ image: a.image, alt: a.name }));
