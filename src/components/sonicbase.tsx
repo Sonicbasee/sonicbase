@@ -318,55 +318,55 @@ export function NewsGrid({ items = [] }: { items?: PublicNews[] }) {
 export type SocialItem = {
   image: string;
   alt: string;
-  /** Public Instagram reel/post URL e.g. https://www.instagram.com/reel/ABC123/ — will render as embed preview */
+  /** Public Instagram reel/post URL — card links there */
   instagramUrl?: string;
+  /** Direct mp4 URL for inline autoplay preview (no Instagram chrome). Preferred for playing video inside card. */
+  videoUrl?: string;
 };
 
-function InstagramReelCard({ url, alt, image }: { url: string; alt: string; image?: string }) {
-  // Video-only, same-size cards, no Instagram chrome or play button.
-  // Preview is the reel's cover image (og:image) fetched server-side, fills with object-cover.
-  // Whole card is a link to Instagram.
+function InstagramReelCard({ url, alt, image, videoUrl }: { url: string; alt: string; image?: string; videoUrl?: string }) {
+  // Workaround for Instagram antibot: Instagram HTML no longer contains mp4, so direct videoUrl must be hosted.
+  // Priority: 1) explicit videoUrl (hosted mp4) → <video autoplay muted loop> no controls, no play button
+  //           2) explicit image → <img>
+  //           3) server-fetched og:image thumbnail → <img>
+  // All fill uniformly with object-cover, same card size, whole card links to Instagram.
   const [imgError, setImgError] = useState(false);
 
   const { data: preview } = useQuery({
     queryKey: ["ig-preview", url],
     queryFn: () => getInstagramPreview({ data: { url } }),
-    enabled: !image,
+    enabled: !image && !videoUrl,
     staleTime: 1000 * 60 * 60 * 24,
     gcTime: 1000 * 60 * 60 * 24,
   });
 
-  const thumbnail = image || preview?.thumbnailUrl || undefined;
-  const showImage = thumbnail && !imgError;
-
-  return (
-    <a
-      href={url}
-      target="_blank"
-      rel="noreferrer"
-      aria-label={alt}
-      className="block h-full w-full bg-muted relative overflow-hidden"
-    >
-      {showImage ? (
-        <img
-          src={thumbnail}
-          alt={alt}
-          loading="lazy"
-          width={540}
-          height={960}
-          className="h-full w-full object-cover"
-          onError={() => setImgError(true)}
-        />
-      ) : preview?.videoUrl ? (
+  // Direct hosted video takes precedence — plays inline without Instagram chrome
+  if (videoUrl) {
+    return (
+      <a href={url} target="_blank" rel="noreferrer" aria-label={alt} className="block h-full w-full bg-black relative overflow-hidden">
         <video
-          src={preview.videoUrl}
+          src={videoUrl}
           autoPlay
           muted
           loop
           playsInline
           preload="metadata"
+          poster={image || preview?.thumbnailUrl || undefined}
           className="h-full w-full object-cover"
         />
+      </a>
+    );
+  }
+
+  const thumbnail = image || preview?.thumbnailUrl || undefined;
+  const showImage = thumbnail && !imgError;
+
+  return (
+    <a href={url} target="_blank" rel="noreferrer" aria-label={alt} className="block h-full w-full bg-muted relative overflow-hidden">
+      {showImage ? (
+        <img src={thumbnail} alt={alt} loading="lazy" width={540} height={960} className="h-full w-full object-cover" onError={() => setImgError(true)} />
+      ) : preview?.videoUrl ? (
+        <video src={preview.videoUrl} autoPlay muted loop playsInline preload="metadata" className="h-full w-full object-cover" />
       ) : (
         <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900">
           <span className="text-[11px] font-medium uppercase tracking-[0.18em] text-white/70">Reel</span>
@@ -387,12 +387,9 @@ export function Socials({ images = [] }: { images?: SocialItem[] }) {
       <div className="mt-9 w-max animate-social-loop motion-reduce:animate-none">
         <div className="flex gap-5 pr-5">
         {loop.map((item, i) => (
-          <div
-            key={`${item.alt}-${i}`}
-            className="shrink-0 h-[320px] w-[220px] overflow-hidden rounded-[10px] bg-muted"
-          >
+          <div key={`${item.alt}-${i}`} className="shrink-0 h-[320px] w-[220px] overflow-hidden rounded-[10px] bg-muted">
             {item.instagramUrl ? (
-              <InstagramReelCard url={item.instagramUrl} alt={item.alt} image={item.image || undefined} />
+              <InstagramReelCard url={item.instagramUrl} alt={item.alt} image={item.image || undefined} videoUrl={item.videoUrl} />
             ) : item.image ? (
               <img src={item.image} alt={item.alt} loading="lazy" width={540} height={960} className="h-full w-full object-cover" />
             ) : (

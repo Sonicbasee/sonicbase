@@ -47,19 +47,24 @@ function Index() {
     secondaryLabel: "Watch",
   }));
 
-  const instagramReels = [
-    "https://www.instagram.com/reel/DG5SHA2NOnH/",
-    "https://www.instagram.com/reel/DITK_YRtuC5/",
-    "https://www.instagram.com/reel/Dck_1SZNDfK/",
-    "https://www.instagram.com/reel/DcVexTaN79i/",
-    "https://www.instagram.com/reel/DTIg5XXjZrX/",
-    "https://www.instagram.com/reel/DVsmRnojSlG/",
+  // WORKAROUND: Instagram blocks direct mp4 scraping, so for inline autoplay we host the mp4.
+  // Provide videoUrl (hosted mp4) for each reel to play video-only inside the card (no chrome, no play button).
+  // If videoUrl is absent, it falls back to cover image via og:image.
+  const instagramReels: { url: string; videoUrl?: string }[] = [
+    { url: "https://www.instagram.com/reel/DG5SHA2NOnH/" },
+    { url: "https://www.instagram.com/reel/DITK_YRtuC5/" },
+    { url: "https://www.instagram.com/reel/Dck_1SZNDfK/" },
+    { url: "https://www.instagram.com/reel/DcVexTaN79i/" },
+    { url: "https://www.instagram.com/reel/DTIg5XXjZrX/" },
+    { url: "https://www.instagram.com/reel/DVsmRnojSlG/" },
+    // Example with hosted video: { url: "https://www.instagram.com/reel/DG5SHA2NOnH/", videoUrl: "https://xxx.supabase.co/storage/v1/object/public/videos/reel1.mp4" },
   ];
 
-  const socialImages = instagramReels.map((url, i) => ({
+  const socialImages = instagramReels.map((r, i) => ({
     image: "",
     alt: `Instagram reel ${i + 1}`,
-    instagramUrl: url,
+    instagramUrl: r.url,
+    videoUrl: r.videoUrl,
   }));
 
   return (
