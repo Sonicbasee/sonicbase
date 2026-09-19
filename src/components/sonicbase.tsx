@@ -67,17 +67,8 @@ export function SectionHeading({ children, action }: { children: ReactNode; acti
 export function Header({ artists = [], releases = [] }: { artists?: PublicArtist[]; releases?: PublicRelease[] }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const overlay = pathname === "/";
-  const [scrolled, setScrolled] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
-
-  useEffect(() => {
-    if (!overlay) return;
-    const onScroll = () => setScrolled(window.scrollY > 80);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [overlay]);
   const results = useMemo(() => {
     if (!query.trim()) return [];
     const q = query.toLowerCase();
@@ -89,56 +80,46 @@ export function Header({ artists = [], releases = [] }: { artists?: PublicArtist
 
   return (
     <>
-      <header
-        className={`z-40 border-b backdrop-blur supports-[backdrop-filter]:bg-background/80 ${
-          overlay
-            ? scrolled
-              ? "fixed inset-x-0 top-0 border-border bg-background/90 text-foreground"
-              : "absolute inset-x-0 top-0 border-transparent bg-transparent text-primary-foreground supports-[backdrop-filter]:bg-transparent"
-            : "sticky top-0 border-border bg-background/90 text-foreground"
-        }`}
-      >
-        <div className="page-shell grid h-[104px] grid-cols-[1fr_auto_1fr] items-center">
-          <nav className="hidden items-center gap-7 text-[15px] lg:flex" aria-label="Main navigation">
-            {nav.map(([label, to]) => (
-              <Link key={to} to={to} activeProps={{ className: "font-bold" }}>
-                {label}
-              </Link>
-            ))}
-          </nav>
-          <div className="lg:hidden">
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" aria-label="Open menu">
-                  <Menu />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="left" className="w-full border-none p-6 sm:max-w-md">
-                <SheetTitle className="sr-only">Navigation</SheetTitle>
-                <div className="mt-16 flex flex-col gap-5">
-                  {nav.map(([label, to]) => (
-                    <SheetClose asChild key={to}>
-                      <Link to={to} className="display-title text-4xl">
-                        {label}
-                      </Link>
-                    </SheetClose>
-                  ))}
-                </div>
-              </SheetContent>
-            </Sheet>
-          </div>
-          <Link to="/" className="justify-self-center">
-            <Logo />
-          </Link>
-          <div className="flex items-center justify-end gap-3 sm:gap-6">
-            <Button type="button" variant="ghost" className="hidden h-auto p-0 text-[15px] hover:bg-transparent sm:inline-flex" onClick={() => setSearchOpen(true)}>
-              Search
-            </Button>
-            <Button variant="ghost" size="icon" className="sm:hidden" onClick={() => setSearchOpen(true)} aria-label="Search">
-              <Search />
-            </Button>
-            <CartPanel />
-          </div>
+      <header className={`page-shell z-40 grid h-[104px] grid-cols-[1fr_auto_1fr] items-center ${overlay ? "absolute inset-x-0 top-0 text-primary-foreground" : "relative bg-background text-foreground"}`}>
+        <nav className="hidden items-center gap-7 text-[15px] lg:flex" aria-label="Main navigation">
+          {nav.map(([label, to]) => (
+            <Link key={to} to={to} activeProps={{ className: "font-bold" }}>
+              {label}
+            </Link>
+          ))}
+        </nav>
+        <div className="lg:hidden">
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" aria-label="Open menu">
+                <Menu />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-full border-none p-6 sm:max-w-md">
+              <SheetTitle className="sr-only">Navigation</SheetTitle>
+              <div className="mt-16 flex flex-col gap-5">
+                {nav.map(([label, to]) => (
+                  <SheetClose asChild key={to}>
+                    <Link to={to} className="display-title text-4xl">
+                      {label}
+                    </Link>
+                  </SheetClose>
+                ))}
+              </div>
+            </SheetContent>
+          </Sheet>
+        </div>
+        <Link to="/" className="justify-self-center">
+          <Logo />
+        </Link>
+        <div className="flex items-center justify-end gap-3 sm:gap-6">
+          <Button type="button" variant="ghost" className="hidden h-auto p-0 text-[15px] hover:bg-transparent sm:inline-flex" onClick={() => setSearchOpen(true)}>
+            Search
+          </Button>
+          <Button variant="ghost" size="icon" className="sm:hidden" onClick={() => setSearchOpen(true)} aria-label="Search">
+            <Search />
+          </Button>
+          <CartPanel />
         </div>
       </header>
       {searchOpen && (
