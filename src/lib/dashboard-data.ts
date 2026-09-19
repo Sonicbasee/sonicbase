@@ -31,12 +31,21 @@ export type DashboardArtist = {
   status: StatusType;
 };
 
+export type ReleaseArtistRole = "Main Artist" | "Lead Artist" | "Featured" | "Collaborator" | "Producer";
+
+export type ReleaseArtist = {
+  id: string;
+  name: string;
+  role: ReleaseArtistRole;
+};
+
 export type DashboardRelease = {
   id: string;
   title: string;
   artist: string;
   artistId?: string;
   artistSlug?: string;
+  artists: ReleaseArtist[];
   type: "Album" | "EP" | "Single";
   status: StatusType;
   streams: number;
@@ -113,6 +122,7 @@ export const dashboardReleases: DashboardRelease[] = [
     title: "Afterlight",
     artist: "Amara Vale",
     artistId: "amara",
+    artists: [{ id: "amara", name: "Amara Vale", role: "Main Artist" }],
     type: "EP",
     status: "Published",
     streams: 2400000,
@@ -132,6 +142,7 @@ export const dashboardReleases: DashboardRelease[] = [
     title: "Open Water",
     artist: "Kairo North",
     artistId: "kairo",
+    artists: [{ id: "kairo", name: "Kairo North", role: "Main Artist" }],
     type: "Album",
     status: "Published",
     streams: 4100000,
@@ -151,6 +162,10 @@ export const dashboardReleases: DashboardRelease[] = [
     title: "Static Bloom",
     artist: "Nova Eze",
     artistId: "nova",
+    artists: [
+      { id: "nova", name: "Nova Eze", role: "Main Artist" },
+      { id: "kairo", name: "Kairo North", role: "Featured" },
+    ],
     type: "Single",
     status: "Processing",
     streams: 980000,

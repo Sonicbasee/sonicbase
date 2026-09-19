@@ -35,7 +35,11 @@ function ReleasePage() {
         <div className="pb-3">
           <Tag>{release.type}</Tag>
           <h1 className="display-title mt-5 text-5xl sm:text-7xl">{release.title}</h1>
-          <Link to="/artists/$artist" params={{ artist: release.artistSlug }} className="mt-3 block text-xl font-bold">{release.artist}</Link>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {(release.artists?.length ? release.artists : [{ name: release.artist, slug: release.artistSlug, role: "Main Artist" }]).map((a: any) => (
+              <Link key={a.id || a.slug} to="/artists/$artist" params={{ artist: a.slug }} className="inline-flex items-center rounded-full bg-muted px-3 py-1 text-sm font-medium hover:bg-muted/80">{a.name} <span className="ml-1 text-xs text-muted-foreground">· {a.role}</span></Link>
+            ))}
+          </div>
           <p className="mt-6 max-w-lg text-base text-muted-foreground">{release.description}</p>
           <p className="mt-5 text-xs">{release.date}</p>
           <div className="mt-7 flex flex-wrap gap-2">

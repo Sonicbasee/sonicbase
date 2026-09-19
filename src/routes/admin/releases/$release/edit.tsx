@@ -12,6 +12,8 @@ export const Route = createFileRoute("/admin/releases/$release/edit")({
   component: EditReleasePage,
 });
 
+const ARTIST_ROLES = ["Main Artist", "Lead Artist", "Featured", "Collaborator", "Producer"] as const;
+
 function EditReleasePage() {
   const { release: releaseId } = Route.useParams();
   const navigate = useNavigate();
@@ -19,7 +21,7 @@ function EditReleasePage() {
   const { data: item, isLoading } = useQuery({ queryKey: ["release", releaseId], queryFn: () => fetchRelease(releaseId) });
   const { data: artists = [] } = useQuery({ queryKey: ["artists"], queryFn: fetchArtists });
   const [title, setTitle] = useState("");
-  const [artistId, setArtistId] = useState("");
+  const [selectedArtists, setSelectedArtists] = useState<{ artist_id: string; role: string }[]>([{ artist_id: "", role: "Main Artist" }]);
   const [type, setType] = useState("");
   const [status, setStatus] = useState("");
   const [date, setDate] = useState("");
@@ -32,7 +34,13 @@ function EditReleasePage() {
   useEffect(() => {
     if (!item || initialized) return;
     setTitle(item.title);
-    setArtistId(item.artistId || "");
+    setSelectedArtists(
+      item.artists?.length
+        ? item.artists.map((a) => ({ artist_id: a.id, role: a.role }))
+        : item.artistId
+          ? [{ artist_id: item.artistId, role: "Main Artist" }]
+          : [{ artist_id: "", role: "Main Artist" }]
+    );
     setType(item.type);
     setStatus(item.status);
     setDate(item.date);
@@ -45,7 +53,8 @@ function EditReleasePage() {
   const saveMutation = useMutation({
     mutationFn: async () => {
       const nextCover = coverFile ? await uploadContentImage("releases", coverFile) : cover;
-      return updateRelease(releaseId, { title, artist_id: artistId, type, status, release_date: date, cover: nextCover, listen_url: listenUrl, watch_url: watchUrl });
+      const validArtists = selectedArtists.filter((a) => a.artist_id);
+      return updateRelease(releaseId, { title, artists: validArtists, type, status, release_date: date, cover: nextCover, listen_url: listenUrl, watch_url: watchUrl });
     },
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["releases"] }); queryClient.invalidateQueries({ queryKey: ["release", releaseId] }); navigate({ to: "/admin/releases/$release", params: { release: releaseId } }); },
   });
@@ -57,7 +66,22 @@ function EditReleasePage() {
     <DashboardPage title="Edit release" subtitle="Update metadata, artwork and release status.">
       <SectionCard title="Release update" eyebrow="Edit"><div className="grid gap-4 md:grid-cols-2">
         <div className="space-y-2 md:col-span-2"><label className="text-sm font-medium">Title</label><Input value={title} onChange={(e) => setTitle(e.target.value)} /></div>
-        <div className="space-y-2"><label className="text-sm font-medium">Artist</label><select className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm" value={artistId} onChange={(e) => setArtistId(e.target.value)}><option value="">Select artist</option>{artists.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}</select></div>
+        <div className="space-y-2 md:col-span-2"><label className="text-sm font-medium">Artists — manage all contributors</label>
+          <div className="space-y-3">
+            {selectedArtists.map((entry, idx) => (
+              <div key={idx} className="flex gap-2">
+                <select className="flex-1 rounded-xl border border-border bg-background px-3 py-2 text-sm" value={entry.artist_id} onChange={(e) => { const next = [...selectedArtists]; next[idx] = { ...next[idx], artist_id: e.target.value }; setSelectedArtists(next); }}>
+                  <option value="">Select artist</option>{artists.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
+                </select>
+                <select className="w-40 rounded-xl border border-border bg-background px-3 py-2 text-sm" value={entry.role} onChange={(e) => { const next = [...selectedArtists]; next[idx] = { ...next[idx], role: e.target.value }; setSelectedArtists(next); }}>
+                  {ARTIST_ROLES.map((r) => <option key={r} value={r}>{r}</option>)}
+                </select>
+                <Button type="button" variant="ghost" size="sm" onClick={() => setSelectedArtists(selectedArtists.filter((_, i) => i !== idx))} disabled={selectedArtists.length === 1}>Remove</Button>
+              </div>
+            ))}
+            <Button type="button" variant="secondary" size="sm" onClick={() => setSelectedArtists([...selectedArtists, { artist_id: "", role: "Featured" }])}>+ Add artist</Button>
+          </div>
+        </div>
         <div className="space-y-2"><label className="text-sm font-medium">Type</label><select className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm" value={type} onChange={(e) => setType(e.target.value)}><option value="Single">Single</option><option value="EP">EP</option><option value="Album">Album</option></select></div>
         <div className="space-y-2"><label className="text-sm font-medium">Status</label><select className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm" value={status} onChange={(e) => setStatus(e.target.value)}><option value="Draft">Draft</option><option value="Pending">Pending</option><option value="Published">Published</option><option value="Processing">Processing</option><option value="Archived">Archived</option></select></div>
         <div className="space-y-2"><label className="text-sm font-medium">Release date</label><Input type="date" value={date} onChange={(e) => setDate(e.target.value)} /></div>

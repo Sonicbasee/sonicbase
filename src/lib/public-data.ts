@@ -21,6 +21,7 @@ export type PublicRelease = {
   artist: string;
   artistId: string;
   artistSlug: string;
+  artists: { id: string; name: string; slug: string; role: string }[];
   image: string;
   type: string;
   date: string;
@@ -84,22 +85,46 @@ export async function fetchPublicArtist(slug: string): Promise<PublicArtist | nu
 }
 
 export async function fetchPublicReleases(): Promise<PublicRelease[]> {
-  const { data, error } = await supabase
+  let data: any[] | null = null;
+  let error: any = null;
+  const attempt = await supabase
     .from("releases")
-    .select("*, artists(name, id)")
+    .select("*, artists(name, id), release_artists(artist_id, role, artists(name, id))")
     .eq("status", "Published")
     .order("release_date", { ascending: false });
+  if (attempt.error && String(attempt.error.message).includes("release_artists")) {
+    const fallback = await supabase.from("releases").select("*, artists(name, id)").eq("status", "Published").order("release_date", { ascending: false });
+    data = fallback.data as any[];
+    error = fallback.error;
+  } else {
+    data = attempt.data as any[];
+    error = attempt.error;
+  }
   if (error) throw error;
   return (data || []).map((r: any) => {
     const artistName = r.artists?.name || "Unknown";
     const artistSlug = artistName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    // Prefer junction table, fallback to legacy artist_id
+    const junction: any[] = r.release_artists || [];
+    const artists = junction.length
+      ? junction.map((j: any) => ({
+          id: j.artist_id,
+          name: j.artists?.name || "Unknown",
+          slug: (j.artists?.name || "Unknown").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""),
+          role: j.role || "Main Artist",
+        }))
+      : artistName !== "Unknown"
+        ? [{ id: r.artist_id, name: artistName, slug: artistSlug, role: "Main Artist" }]
+        : [];
+    const displayArtist = artists.map((a) => a.name).join(", ") || artistName;
     return {
       id: r.id,
       slug: r.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""),
       title: r.title,
-      artist: artistName,
-      artistId: r.artist_id || "",
+      artist: displayArtist,
+      artistId: r.artist_id || artists[0]?.id || "",
       artistSlug,
+      artists,
       image: r.cover || "",
       type: r.type || "Single",
       date: r.release_date || "",
