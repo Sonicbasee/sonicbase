@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DashboardPage, SectionCard } from "@/components/dashboard";
+import { ArticleEditor } from "@/components/article-editor";
 import { createNews, uploadContentImage } from "@/lib/api";
 import { requireAuth } from "@/lib/route-access";
 
@@ -66,7 +67,7 @@ function AdminNewNewsPage() {
           </div>
           <div className="space-y-2 md:col-span-2">
             <label className="text-sm font-medium">Article body</label>
-            <textarea className="min-h-56 w-full rounded-xl border border-border bg-background px-3 py-2 text-sm leading-relaxed" placeholder="Write the full story. Use a blank line between paragraphs." value={content} onChange={(e) => setContent(e.target.value)} />
+            <ArticleEditor value={content} onChange={setContent} />
           </div>
           <div className="space-y-2 md:col-span-2 flex justify-end gap-3 pt-4">
             <Link to="/admin/news"><Button variant="secondary">Cancel</Button></Link>

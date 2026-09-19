@@ -2,6 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft } from "lucide-react";
 import { NewsGrid, Tag } from "@/components/sonicbase";
+import { FormattedArticle } from "@/components/article-editor";
 import { fetchPublishedNews, fetchPublishedNewsItem } from "@/lib/public-data";
 
 export const Route = createFileRoute("/news/$news")({
@@ -57,10 +58,12 @@ function NewsDetailPage() {
           </div>
         </div>
 
-        <div className="page-shell grid gap-10 py-14 md:py-20 lg:grid-cols-[minmax(0,0.7fr)_minmax(0,1.3fr)]">
-          <p className="text-xl font-medium leading-relaxed md:text-2xl">{item.excerpt}</p>
-          <div className="max-w-2xl text-base leading-[1.8] text-foreground/80">
-            {paragraphs.length > 0 ? paragraphs.map((paragraph) => <p key={paragraph} className="mb-6 last:mb-0">{paragraph}</p>) : <p>{item.excerpt}</p>}
+        <div className="page-shell py-14 md:py-20">
+          <div className="mx-auto max-w-3xl">
+            <p className="mb-10 text-xl font-medium leading-relaxed md:text-2xl">{item.excerpt}</p>
+            <div className="text-base leading-[1.8] text-foreground/80">
+              {paragraphs.length > 0 ? <FormattedArticle content={item.content} /> : <p>{item.excerpt}</p>}
+            </div>
           </div>
         </div>
       </article>
