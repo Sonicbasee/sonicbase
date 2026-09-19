@@ -40,9 +40,33 @@ function ContactPage() {
     setError("");
     setLoading(true);
     try {
-      await submitContact({ data: { topic, name, email, message } });
-      setSent(true);
-      (e.target as HTMLFormElement).reset();
+      // Prefer Supabase Edge Function (handles email routing at the edge)
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const anonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+      let edgeOk = false;
+      try {
+        const edgeRes = await fetch(`${supabaseUrl}/functions/v1/contact`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            apikey: anonKey,
+            Authorization: `Bearer ${anonKey}`,
+          },
+          body: JSON.stringify({ topic, name, email, message }),
+        });
+        const edgeData = await edgeRes.json().catch(() => ({}));
+        if (edgeRes.ok) edgeOk = true;
+        else throw new Error(edgeData.error || `Edge ${edgeRes.status}`);
+      } catch (edgeErr: any) {
+        // Fallback to TanStack serverFn if edge not deployed yet
+        console.warn("Edge contact failed, falling back to serverFn:", edgeErr?.message);
+        await submitContact({ data: { topic, name, email, message } });
+        edgeOk = true;
+      }
+      if (edgeOk) {
+        setSent(true);
+        (e.target as HTMLFormElement).reset();
+      }
     } catch (err: any) {
       setError(err?.message || "Could not send message. Please try again.");
     } finally {

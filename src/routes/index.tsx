@@ -32,7 +32,7 @@ function Index() {
     return merchItems.slice(0, 5);
   }, [shopCategory, merchItems]);
 
-  const heroSlides = releases.slice(0, 3).map((release) => ({
+  const heroSlides = releases.map((release) => ({
     title: release.title,
     subtitle: `${release.artist} · ${release.type}`,
     image: release.image || "",
