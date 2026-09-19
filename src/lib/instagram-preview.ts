@@ -14,13 +14,24 @@ export const getInstagramPreview = createServerFn({ method: "GET" })
         headers: {
           "User-Agent":
             "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
-          Accept: "text/html,application/xhtml+xml",
+          Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+          "Accept-Language": "en-US,en;q=0.9",
+          "Sec-Fetch-Dest": "document",
+          "Sec-Fetch-Mode": "navigate",
+          "Sec-Fetch-Site": "none",
+          "Sec-Fetch-User": "?1",
+          "Cache-Control": "no-cache",
+          Pragma: "no-cache",
         },
       });
       if (!res.ok) return null;
       const html = await res.text();
-      const ogImageMatch = html.match(/<meta[^>]+property="og:image"[^>]+content="([^"]+)"/);
-      const ogVideoMatch = html.match(/<meta[^>]+property="og:video"[^>]+content="([^"]+)"/);
+      const ogImageMatch =
+        html.match(/<meta[^>]+property="og:image"[^>]+content="([^"]+)"/) ||
+        html.match(/<meta[^>]+name="twitter:image"[^>]+content="([^"]+)"/);
+      const ogVideoMatch =
+        html.match(/<meta[^>]+property="og:video:secure_url"[^>]+content="([^"]+)"/) ||
+        html.match(/<meta[^>]+property="og:video"[^>]+content="([^"]+)"/);
       const ogImage = ogImageMatch ? decodeHtml(ogImageMatch[1]) : null;
       const ogVideo = ogVideoMatch ? decodeHtml(ogVideoMatch[1]) : null;
       if (!ogImage && !ogVideo) return null;
