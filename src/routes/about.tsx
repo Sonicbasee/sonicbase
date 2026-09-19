@@ -125,11 +125,11 @@ function AboutPage() {
               t: "Artist Growth",
               d: "We help artists evolve — creatively, visually, strategically, culturally. Not just dropping songs. Building identity.",
             },
-          ].map(([n, t, d]) => (
-            <div key={n as string} className="bg-card p-8 md:p-10">
-              <p className="text-xs font-medium tracking-[0.18em] text-muted-foreground">{n as string}</p>
-              <h3 className="mt-6 text-xl font-bold">{t as string}</h3>
-              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{d as string}</p>
+          ].map(({ n, t, d }) => (
+            <div key={n} className="bg-card p-8 md:p-10">
+              <p className="text-xs font-medium tracking-[0.18em] text-muted-foreground">{n}</p>
+              <h3 className="mt-6 text-xl font-bold">{t}</h3>
+              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{d}</p>
             </div>
           ))}
         </div>
