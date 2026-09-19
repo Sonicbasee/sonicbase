@@ -47,6 +47,13 @@ function newsSlug(title: string) {
   return title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
 
+function formatArtists(names: string[]): string {
+  if (names.length === 0) return "";
+  if (names.length === 1) return names[0];
+  if (names.length === 2) return `${names[0]} and ${names[1]}`;
+  return `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}`;
+}
+
 export type PublicMerch = {
   id: string;
   title: string;
@@ -124,7 +131,7 @@ export async function fetchPublicReleases(): Promise<PublicRelease[]> {
       : artistName !== "Unknown"
         ? [{ id: r.artist_id, name: artistName, slug: artistSlug, role: "Main Artist" }]
         : [];
-    const displayArtist = artists.map((a) => a.name).join(", ") || artistName;
+    const displayArtist = formatArtists(artists.map((a) => a.name)) || artistName;
     return {
       id: r.id,
       slug: r.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""),

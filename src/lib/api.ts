@@ -7,6 +7,13 @@ import type {
   StatusType,
 } from "@/lib/dashboard-data";
 
+function formatArtists(names: string[]): string {
+  if (names.length === 0) return "";
+  if (names.length === 1) return names[0];
+  if (names.length === 2) return `${names[0]} and ${names[1]}`;
+  return `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}`;
+}
+
 // ============================================
 // Artists
 // ============================================
@@ -151,7 +158,7 @@ export async function fetchReleases(): Promise<DashboardRelease[]> {
       : r.artists
         ? [{ id: r.artist_id, name: r.artists.name, role: "Main Artist" as const }]
         : [];
-    const displayArtist = artists.map((a: any) => a.name).join(", ") || r.artists?.name || "Unknown";
+    const displayArtist = formatArtists(artists.map((a: any) => a.name)) || r.artists?.name || "Unknown";
     return {
       id: r.id,
       title: r.title,
@@ -202,7 +209,7 @@ export async function fetchRelease(id: string): Promise<DashboardRelease | null>
     : (data as any).artists
       ? [{ id: (data as any).artist_id, name: (data as any).artists.name, role: "Main Artist" as const }]
       : [];
-  const displayArtist = artists.map((a: any) => a.name).join(", ") || (data as any).artists?.name || "Unknown";
+  const displayArtist = formatArtists(artists.map((a: any) => a.name)) || (data as any).artists?.name || "Unknown";
   return {
     id: data.id,
     title: data.title,
