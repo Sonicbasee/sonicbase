@@ -127,7 +127,13 @@ export async function fetchReleases(): Promise<DashboardRelease[]> {
     .from("releases")
     .select("*, artists(name, id), release_artists(artist_id, role, artists(name, id))")
     .order("created_at", { ascending: false });
-  if (attempt.error && String(attempt.error.message).includes("release_artists")) {
+  const isMissingTable =
+    attempt.error &&
+    (String(attempt.error.message).includes("does not exist") ||
+      String(attempt.error.message).includes("Could not find") ||
+      (attempt.error as any).code === "42P01" ||
+      (attempt.error as any).code === "PGRST200");
+  if (isMissingTable) {
     const fallback = await supabase.from("releases").select("*, artists(name, id)").order("created_at", { ascending: false });
     data = fallback.data as any[];
     error = fallback.error;
@@ -170,7 +176,13 @@ export async function fetchRelease(id: string): Promise<DashboardRelease | null>
   let data: any = null;
   let error: any = null;
   const attempt = await supabase.from("releases").select("*, artists(name, id), release_artists(artist_id, role, artists(name, id))").eq("id", id).single();
-  if (attempt.error && String(attempt.error.message).includes("release_artists")) {
+  const isMissingTable =
+    attempt.error &&
+    (String(attempt.error.message).includes("does not exist") ||
+      String(attempt.error.message).includes("Could not find") ||
+      (attempt.error as any).code === "42P01" ||
+      (attempt.error as any).code === "PGRST200");
+  if (isMissingTable) {
     const fallback = await supabase.from("releases").select("*, artists(name, id)").eq("id", id).single();
     data = fallback.data;
     error = fallback.error;
@@ -239,14 +251,18 @@ export async function createRelease(release: {
     .single();
   if (error) throw error;
 
-  // Sync junction table for multi-artist — ignore if table not yet migrated
+  // Sync junction table for multi-artist
   const allArtists = release.artists?.length ? release.artists : [{ artist_id: release.artist_id, role: "Main Artist" }];
   const valid = allArtists.filter((a) => a.artist_id);
   if (valid.length) {
     const { error: jError } = await supabase.from("release_artists").insert(
       valid.map((a) => ({ release_id: data.id, artist_id: a.artist_id, role: a.role }))
     );
-    if (jError && !String(jError.message).includes("release_artists")) throw jError;
+    if (jError) {
+      // Surface RLS/missing-table errors clearly
+      console.error("release_artists insert failed:", jError.message);
+      throw jError;
+    }
   }
 
   return {
@@ -293,15 +309,20 @@ export async function updateRelease(
   if (error) throw error;
 
   if (artists !== undefined) {
-    // Replace junction entries — ignore if table not yet migrated
     const { error: delErr } = await supabase.from("release_artists").delete().eq("release_id", id);
-    if (delErr && !String(delErr.message).includes("release_artists")) throw delErr;
+    if (delErr) {
+      console.error("release_artists delete failed:", delErr.message);
+      throw delErr;
+    }
     const valid = (artists as { artist_id: string; role: string }[]).filter((a) => a.artist_id);
     if (valid.length) {
       const { error: jError } = await supabase.from("release_artists").insert(
         valid.map((a) => ({ release_id: id, artist_id: a.artist_id, role: a.role }))
       );
-      if (jError && !String(jError.message).includes("release_artists")) throw jError;
+      if (jError) {
+        console.error("release_artists insert failed:", jError.message);
+        throw jError;
+      }
     }
   }
 }

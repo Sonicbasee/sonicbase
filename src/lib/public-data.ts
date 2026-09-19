@@ -92,7 +92,13 @@ export async function fetchPublicReleases(): Promise<PublicRelease[]> {
     .select("*, artists(name, id), release_artists(artist_id, role, artists(name, id))")
     .eq("status", "Published")
     .order("release_date", { ascending: false });
-  if (attempt.error && String(attempt.error.message).includes("release_artists")) {
+  const isMissingTable =
+    attempt.error &&
+    (String(attempt.error.message).includes("does not exist") ||
+      String(attempt.error.message).includes("Could not find") ||
+      (attempt.error as any).code === "42P01" ||
+      (attempt.error as any).code === "PGRST200");
+  if (isMissingTable) {
     const fallback = await supabase.from("releases").select("*, artists(name, id)").eq("status", "Published").order("release_date", { ascending: false });
     data = fallback.data as any[];
     error = fallback.error;
