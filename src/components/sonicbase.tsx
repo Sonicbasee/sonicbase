@@ -406,7 +406,7 @@ export function Socials({ images = [] }: { images?: SocialItem[] }) {
 /* ---------------------------------------------- marquee + footer */
 
 export function Marquee() {
-  const unit = <><span>DEFINING INDEPENDENCE</span><Logo className="h-9 w-9" /></>;
+  const unit = <><span>amplifying yute pop culture beyond boundaries</span><Logo className="h-9 w-9" /></>;
   return <div className="overflow-hidden bg-primary py-6 text-primary-foreground"><div className="marquee-track flex w-max items-center gap-10 whitespace-nowrap font-display text-3xl uppercase md:text-5xl">{unit}{unit}{unit}{unit}{unit}{unit}{unit}{unit}</div></div>;
 }
 
