@@ -50,14 +50,14 @@ function Index() {
   // WORKAROUND: Instagram blocks direct mp4 scraping, so for inline autoplay we host the mp4.
   // Provide videoUrl (hosted mp4) for each reel to play video-only inside the card (no chrome, no play button).
   // If videoUrl is absent, it falls back to cover image via og:image.
+  const SUPABASE_URL = "https://rwgjngmypmfnmmydlwve.supabase.co";
   const instagramReels: { url: string; videoUrl?: string }[] = [
-    { url: "https://www.instagram.com/reel/DG5SHA2NOnH/" },
-    { url: "https://www.instagram.com/reel/DITK_YRtuC5/" },
-    { url: "https://www.instagram.com/reel/Dck_1SZNDfK/" },
-    { url: "https://www.instagram.com/reel/DcVexTaN79i/" },
-    { url: "https://www.instagram.com/reel/DTIg5XXjZrX/" },
-    { url: "https://www.instagram.com/reel/DVsmRnojSlG/" },
-    // Example with hosted video: { url: "https://www.instagram.com/reel/DG5SHA2NOnH/", videoUrl: "https://xxx.supabase.co/storage/v1/object/public/videos/reel1.mp4" },
+    { url: "https://www.instagram.com/reel/DG5SHA2NOnH/", videoUrl: `${SUPABASE_URL}/storage/v1/object/public/videos/1.mp4` },
+    { url: "https://www.instagram.com/reel/DITK_YRtuC5/", videoUrl: `${SUPABASE_URL}/storage/v1/object/public/videos/2.mp4` },
+    { url: "https://www.instagram.com/reel/Dck_1SZNDfK/", videoUrl: `${SUPABASE_URL}/storage/v1/object/public/videos/3.mp4` },
+    { url: "https://www.instagram.com/reel/DcVexTaN79i/", videoUrl: `${SUPABASE_URL}/storage/v1/object/public/videos/4.mp4` },
+    { url: "https://www.instagram.com/reel/DTIg5XXjZrX/", videoUrl: `${SUPABASE_URL}/storage/v1/object/public/videos/5.mp4` },
+    { url: "https://www.instagram.com/reel/DVsmRnojSlG/", videoUrl: `${SUPABASE_URL}/storage/v1/object/public/videos/6.mp4` },
   ];
 
   const socialImages = instagramReels.map((r, i) => ({
