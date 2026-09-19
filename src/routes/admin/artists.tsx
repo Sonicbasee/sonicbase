@@ -32,7 +32,7 @@ function AdminArtistsPage() {
             genre: artist.genre,
             city: artist.city,
             status: <StatusBadge status={artist.status} />,
-            actions: <Button variant="destructive" size="sm" onClick={() => { if (confirm("Delete this artist?")) deleteMutation.mutate(artist.id); }}>Delete</Button>,
+            actions: <div className="flex gap-2"><Link to="/admin/artists/$artist/edit" params={{ artist: artist.id }}><Button variant="secondary" size="sm">Edit</Button></Link><Button variant="destructive" size="sm" onClick={() => { if (confirm("Delete this artist?")) deleteMutation.mutate(artist.id); }}>Delete</Button></div>,
           }))}
         />
         )}

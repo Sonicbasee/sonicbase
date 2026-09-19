@@ -39,7 +39,8 @@ export async function fetchArtist(id: string): Promise<DashboardArtist | null> {
     .select("*")
     .eq("id", id)
     .single();
-  if (error || !data) return null;
+  if (error && error.code !== "PGRST116") throw error;
+  if (!data) return null;
   return {
     id: data.id,
     name: data.name,
@@ -150,7 +151,8 @@ export async function fetchRelease(id: string): Promise<DashboardRelease | null>
     .select("*, artists(name, id)")
     .eq("id", id)
     .single();
-  if (error || !data) return null;
+  if (error && error.code !== "PGRST116") throw error;
+  if (!data) return null;
   return {
     id: data.id,
     title: data.title,
