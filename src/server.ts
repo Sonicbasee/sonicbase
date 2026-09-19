@@ -44,9 +44,33 @@ function isH3SwallowedErrorBody(body: string): boolean {
   }
 }
 
+function isArtistSubdomain(request: Request): boolean {
+  const host = request.headers.get("host") || request.headers.get("x-forwarded-host") || "";
+  const hostname = host.split(":")[0].toLowerCase();
+  return hostname === "artist.sonicbase.ink" || hostname.startsWith("artist.") && hostname.endsWith("sonicbase.ink") || hostname === "artist.localhost" || hostname.startsWith("artist.localhost:");
+}
+
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {
+      // Subdomain routing: artist.sonicbase.ink/* -> /artist/* (keep path, but map root to /artist)
+      if (isArtistSubdomain(request)) {
+        const url = new URL(request.url);
+        // If on artist subdomain and path is / or not starting with /artist, rewrite to /artist
+        // Keep /login, /forgot-password etc. as is for auth flow
+        const publicAuthPaths = ["/login", "/forgot-password", "/reset-password"];
+        const isPublicAuth = publicAuthPaths.some((p) => url.pathname === p || url.pathname.startsWith(p + "/"));
+        if (url.pathname === "/") {
+          url.pathname = "/artist";
+          request = new Request(url.toString(), request);
+        } else if (!url.pathname.startsWith("/artist") && !url.pathname.startsWith("/api") && !url.pathname.startsWith("/_") && !isPublicAuth && !url.pathname.match(/\.(js|css|png|jpg|jpeg|svg|ico|woff2?)$/)) {
+          // For artist subdomain, treat any non-artist path as artist dashboard path
+          // e.g., artist.sonicbase.ink/streams -> /artist/streams
+          // But keep public site paths accessible via full URL if needed
+          // For now, only rewrite root; other paths stay as is to allow explicit /artist/* links
+        }
+      }
+
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
       return await normalizeCatastrophicSsrResponse(response);

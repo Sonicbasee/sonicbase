@@ -12,8 +12,13 @@ export const supabase = createClient(
   auth: {
     persistSession: true,
     autoRefreshToken: true,
-    detectSessionInUrl: false,
+    detectSessionInUrl: true,
+    flowType: "pkce",
     storage: typeof window !== "undefined" ? window.localStorage : undefined,
+    // Share session across sonicbase.ink subdomains (artist.sonicbase.ink)
+    ...(typeof window !== "undefined" && window.location.hostname.endsWith("sonicbase.ink")
+      ? { cookieOptions: { domain: ".sonicbase.ink", sameSite: "lax" as const } }
+      : {}),
   },
   },
 );
