@@ -39,13 +39,13 @@ import { Route as AdminArtistsArtistRouteImport } from './routes/admin/artists/$
 import { Route as AdminArtistsNewRouteImport } from './routes/admin/artists/new'
 import { Route as AdminMerchandiseNewRouteImport } from './routes/admin/merchandise/new'
 import { Route as AdminNewsNewRouteImport } from './routes/admin/news/new'
+import { Route as AdminReleasesReleaseRouteImport } from './routes/admin/releases/$release'
 import { Route as AdminReleasesNewRouteImport } from './routes/admin/releases/new'
-import { Route as AdminReleasesChar91releaseChar93RouteImport } from './routes/admin/releases/[release]'
 import { Route as ArtistReleasesReleaseRouteImport } from './routes/artist/releases/$release'
 import { Route as AdminArtistsArtistEditRouteImport } from './routes/admin/artists/$artist/edit'
 import { Route as AdminMerchandiseChar91idChar93EditRouteImport } from './routes/admin/merchandise/[id]/edit'
 import { Route as AdminNewsIdEditRouteImport } from './routes/admin/news/$id/edit'
-import { Route as AdminReleasesChar91releaseChar93EditRouteImport } from './routes/admin/releases/[release]/edit'
+import { Route as AdminReleasesReleaseEditRouteImport } from './routes/admin/releases/$release/edit'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -197,17 +197,16 @@ const AdminNewsNewRoute = AdminNewsNewRouteImport.update({
   path: '/new',
   getParentRoute: () => AdminNewsRoute,
 } as any)
+const AdminReleasesReleaseRoute = AdminReleasesReleaseRouteImport.update({
+  id: '/$release',
+  path: '/$release',
+  getParentRoute: () => AdminReleasesRoute,
+} as any)
 const AdminReleasesNewRoute = AdminReleasesNewRouteImport.update({
   id: '/new',
   path: '/new',
   getParentRoute: () => AdminReleasesRoute,
 } as any)
-const AdminReleasesChar91releaseChar93Route =
-  AdminReleasesChar91releaseChar93RouteImport.update({
-    id: '/release',
-    path: '/release',
-    getParentRoute: () => AdminReleasesRoute,
-  } as any)
 const ArtistReleasesReleaseRoute = ArtistReleasesReleaseRouteImport.update({
   id: '/$release',
   path: '/$release',
@@ -229,11 +228,11 @@ const AdminNewsIdEditRoute = AdminNewsIdEditRouteImport.update({
   path: '/$id/edit',
   getParentRoute: () => AdminNewsRoute,
 } as any)
-const AdminReleasesChar91releaseChar93EditRoute =
-  AdminReleasesChar91releaseChar93EditRouteImport.update({
+const AdminReleasesReleaseEditRoute =
+  AdminReleasesReleaseEditRouteImport.update({
     id: '/edit',
     path: '/edit',
-    getParentRoute: () => AdminReleasesChar91releaseChar93Route,
+    getParentRoute: () => AdminReleasesReleaseRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -267,13 +266,13 @@ export interface FileRoutesByFullPath {
   '/admin/artists/new': typeof AdminArtistsNewRoute
   '/admin/merchandise/new': typeof AdminMerchandiseNewRoute
   '/admin/news/new': typeof AdminNewsNewRoute
+  '/admin/releases/$release': typeof AdminReleasesReleaseRouteWithChildren
   '/admin/releases/new': typeof AdminReleasesNewRoute
-  '/admin/releases/release': typeof AdminReleasesChar91releaseChar93RouteWithChildren
   '/artist/releases/$release': typeof ArtistReleasesReleaseRoute
   '/admin/artists/$artist/edit': typeof AdminArtistsArtistEditRoute
   '/admin/merchandise/id/edit': typeof AdminMerchandiseChar91idChar93EditRoute
   '/admin/news/$id/edit': typeof AdminNewsIdEditRoute
-  '/admin/releases/release/edit': typeof AdminReleasesChar91releaseChar93EditRoute
+  '/admin/releases/$release/edit': typeof AdminReleasesReleaseEditRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -304,13 +303,13 @@ export interface FileRoutesByTo {
   '/admin/artists/new': typeof AdminArtistsNewRoute
   '/admin/merchandise/new': typeof AdminMerchandiseNewRoute
   '/admin/news/new': typeof AdminNewsNewRoute
+  '/admin/releases/$release': typeof AdminReleasesReleaseRouteWithChildren
   '/admin/releases/new': typeof AdminReleasesNewRoute
-  '/admin/releases/release': typeof AdminReleasesChar91releaseChar93RouteWithChildren
   '/artist/releases/$release': typeof ArtistReleasesReleaseRoute
   '/admin/artists/$artist/edit': typeof AdminArtistsArtistEditRoute
   '/admin/merchandise/id/edit': typeof AdminMerchandiseChar91idChar93EditRoute
   '/admin/news/$id/edit': typeof AdminNewsIdEditRoute
-  '/admin/releases/release/edit': typeof AdminReleasesChar91releaseChar93EditRoute
+  '/admin/releases/$release/edit': typeof AdminReleasesReleaseEditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -344,13 +343,13 @@ export interface FileRoutesById {
   '/admin/artists/new': typeof AdminArtistsNewRoute
   '/admin/merchandise/new': typeof AdminMerchandiseNewRoute
   '/admin/news/new': typeof AdminNewsNewRoute
+  '/admin/releases/$release': typeof AdminReleasesReleaseRouteWithChildren
   '/admin/releases/new': typeof AdminReleasesNewRoute
-  '/admin/releases/release': typeof AdminReleasesChar91releaseChar93RouteWithChildren
   '/artist/releases/$release': typeof ArtistReleasesReleaseRoute
   '/admin/artists/$artist/edit': typeof AdminArtistsArtistEditRoute
   '/admin/merchandise/id/edit': typeof AdminMerchandiseChar91idChar93EditRoute
   '/admin/news/$id/edit': typeof AdminNewsIdEditRoute
-  '/admin/releases/release/edit': typeof AdminReleasesChar91releaseChar93EditRoute
+  '/admin/releases/$release/edit': typeof AdminReleasesReleaseEditRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -385,13 +384,13 @@ export interface FileRouteTypes {
     | '/admin/artists/new'
     | '/admin/merchandise/new'
     | '/admin/news/new'
+    | '/admin/releases/$release'
     | '/admin/releases/new'
-    | '/admin/releases/release'
     | '/artist/releases/$release'
     | '/admin/artists/$artist/edit'
     | '/admin/merchandise/id/edit'
     | '/admin/news/$id/edit'
-    | '/admin/releases/release/edit'
+    | '/admin/releases/$release/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -422,13 +421,13 @@ export interface FileRouteTypes {
     | '/admin/artists/new'
     | '/admin/merchandise/new'
     | '/admin/news/new'
+    | '/admin/releases/$release'
     | '/admin/releases/new'
-    | '/admin/releases/release'
     | '/artist/releases/$release'
     | '/admin/artists/$artist/edit'
     | '/admin/merchandise/id/edit'
     | '/admin/news/$id/edit'
-    | '/admin/releases/release/edit'
+    | '/admin/releases/$release/edit'
   id:
     | '__root__'
     | '/'
@@ -461,13 +460,13 @@ export interface FileRouteTypes {
     | '/admin/artists/new'
     | '/admin/merchandise/new'
     | '/admin/news/new'
+    | '/admin/releases/$release'
     | '/admin/releases/new'
-    | '/admin/releases/release'
     | '/artist/releases/$release'
     | '/admin/artists/$artist/edit'
     | '/admin/merchandise/id/edit'
     | '/admin/news/$id/edit'
-    | '/admin/releases/release/edit'
+    | '/admin/releases/$release/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -697,18 +696,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminNewsNewRouteImport
       parentRoute: typeof AdminNewsRoute
     }
+    '/admin/releases/$release': {
+      id: '/admin/releases/$release'
+      path: '/$release'
+      fullPath: '/admin/releases/$release'
+      preLoaderRoute: typeof AdminReleasesReleaseRouteImport
+      parentRoute: typeof AdminReleasesRoute
+    }
     '/admin/releases/new': {
       id: '/admin/releases/new'
       path: '/new'
       fullPath: '/admin/releases/new'
       preLoaderRoute: typeof AdminReleasesNewRouteImport
-      parentRoute: typeof AdminReleasesRoute
-    }
-    '/admin/releases/release': {
-      id: '/admin/releases/release'
-      path: '/release'
-      fullPath: '/admin/releases/release'
-      preLoaderRoute: typeof AdminReleasesChar91releaseChar93RouteImport
       parentRoute: typeof AdminReleasesRoute
     }
     '/artist/releases/$release': {
@@ -739,12 +738,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminNewsIdEditRouteImport
       parentRoute: typeof AdminNewsRoute
     }
-    '/admin/releases/release/edit': {
-      id: '/admin/releases/release/edit'
+    '/admin/releases/$release/edit': {
+      id: '/admin/releases/$release/edit'
       path: '/edit'
-      fullPath: '/admin/releases/release/edit'
-      preLoaderRoute: typeof AdminReleasesChar91releaseChar93EditRouteImport
-      parentRoute: typeof AdminReleasesChar91releaseChar93Route
+      fullPath: '/admin/releases/$release/edit'
+      preLoaderRoute: typeof AdminReleasesReleaseEditRouteImport
+      parentRoute: typeof AdminReleasesReleaseRoute
     }
   }
 }
@@ -802,30 +801,25 @@ const AdminNewsRouteWithChildren = AdminNewsRoute._addFileChildren(
   AdminNewsRouteChildren,
 )
 
-interface AdminReleasesChar91releaseChar93RouteChildren {
-  AdminReleasesChar91releaseChar93EditRoute: typeof AdminReleasesChar91releaseChar93EditRoute
+interface AdminReleasesReleaseRouteChildren {
+  AdminReleasesReleaseEditRoute: typeof AdminReleasesReleaseEditRoute
 }
 
-const AdminReleasesChar91releaseChar93RouteChildren: AdminReleasesChar91releaseChar93RouteChildren =
-  {
-    AdminReleasesChar91releaseChar93EditRoute:
-      AdminReleasesChar91releaseChar93EditRoute,
-  }
+const AdminReleasesReleaseRouteChildren: AdminReleasesReleaseRouteChildren = {
+  AdminReleasesReleaseEditRoute: AdminReleasesReleaseEditRoute,
+}
 
-const AdminReleasesChar91releaseChar93RouteWithChildren =
-  AdminReleasesChar91releaseChar93Route._addFileChildren(
-    AdminReleasesChar91releaseChar93RouteChildren,
-  )
+const AdminReleasesReleaseRouteWithChildren =
+  AdminReleasesReleaseRoute._addFileChildren(AdminReleasesReleaseRouteChildren)
 
 interface AdminReleasesRouteChildren {
+  AdminReleasesReleaseRoute: typeof AdminReleasesReleaseRouteWithChildren
   AdminReleasesNewRoute: typeof AdminReleasesNewRoute
-  AdminReleasesChar91releaseChar93Route: typeof AdminReleasesChar91releaseChar93RouteWithChildren
 }
 
 const AdminReleasesRouteChildren: AdminReleasesRouteChildren = {
+  AdminReleasesReleaseRoute: AdminReleasesReleaseRouteWithChildren,
   AdminReleasesNewRoute: AdminReleasesNewRoute,
-  AdminReleasesChar91releaseChar93Route:
-    AdminReleasesChar91releaseChar93RouteWithChildren,
 }
 
 const AdminReleasesRouteWithChildren = AdminReleasesRoute._addFileChildren(
