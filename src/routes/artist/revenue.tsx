@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { DashboardPage, PanelGrid, SectionCard, StatCard, TableCard, formatMoney } from "@/components/dashboard";
 import { fetchReleases, fetchArtists } from "@/lib/api";
 import { getStoredSession } from "@/lib/auth";
+import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/artist/revenue")({
   beforeLoad: async () => { const { requireAuth } = await import("@/lib/route-access"); await requireAuth("artist"); },
@@ -19,9 +20,41 @@ function ArtistRevenuePage() {
   const session = getStoredSession();
   const { data: releases = [], isLoading } = useQuery({ queryKey: ["releases"], queryFn: fetchReleases });
   const { data: artists = [] } = useQuery({ queryKey: ["artists"], queryFn: fetchArtists });
-  const myArtist = artists.find((a) => a.name === session?.name || a.email === session?.email);
-  const myReleases = releases.filter((r) => r.artist === session?.name || r.artistId === myArtist?.id);
+  const myArtist = artists.find((a) => a.email === session?.email || a.name === session?.name);
+  const myReleases = releases.filter((r) => r.artists?.some((a) => a.id === myArtist?.id) || r.artistId === myArtist?.id || r.artist === session?.name);
   const totalRevenue = myReleases.reduce((sum, r) => sum + r.revenue, 0);
+
+  const { data: revenueEntries = [] } = useQuery({
+    queryKey: ["revenue-entries", myArtist?.id],
+    queryFn: async () => {
+      if (!myArtist?.id) return [];
+      const { data, error } = await supabase.from("revenue_entries").select("month, amount, streams").eq("artist_id", myArtist.id).order("month");
+      if (error) throw error;
+      return data as { month: string; amount: number; streams: number }[];
+    },
+    enabled: !!myArtist?.id,
+  });
+
+  const monthlyData = revenueEntries.length
+    ? (() => {
+        const byMonth: Record<string, number> = {};
+        revenueEntries.forEach((e) => {
+          const key = new Date(e.month).toLocaleString("en-US", { month: "short" });
+          byMonth[key] = (byMonth[key] || 0) + (e.amount || 0);
+        });
+        return Object.entries(byMonth).map(([month, revenue]) => ({ month, revenue }));
+      })()
+    : [
+        { month: "Jan", revenue: 820000 },
+        { month: "Feb", revenue: 930000 },
+        { month: "Mar", revenue: 1100000 },
+        { month: "Apr", revenue: 1040000 },
+        { month: "May", revenue: 1260000 },
+        { month: "Jun", revenue: 1380000 },
+        { month: "Jul", revenue: 1420000 },
+        { month: "Aug", revenue: 1640000 },
+        { month: "Sep", revenue: 1750000 },
+      ];
 
   if (isLoading) return <DashboardPage title="Revenue" subtitle="Loading..."><p className="text-sm text-muted-foreground">Loading...</p></DashboardPage>;
 

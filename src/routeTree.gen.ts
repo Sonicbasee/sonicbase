@@ -26,8 +26,10 @@ import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AdminArtistsRouteImport } from './routes/admin/artists'
 import { Route as AdminMerchandiseRouteImport } from './routes/admin/merchandise'
 import { Route as AdminNewsRouteImport } from './routes/admin/news'
+import { Route as AdminOrdersRouteImport } from './routes/admin/orders'
 import { Route as AdminProfileRouteImport } from './routes/admin/profile'
 import { Route as AdminReleasesRouteImport } from './routes/admin/releases'
+import { Route as AdminRevenueRouteImport } from './routes/admin/revenue'
 import { Route as ArtistIndexRouteImport } from './routes/artist/index'
 import { Route as ArtistProfileRouteImport } from './routes/artist/profile'
 import { Route as ArtistReleasesRouteImport } from './routes/artist/releases'
@@ -42,6 +44,7 @@ import { Route as AdminArtistsArtistRouteImport } from './routes/admin/artists/$
 import { Route as AdminArtistsNewRouteImport } from './routes/admin/artists/new'
 import { Route as AdminMerchandiseNewRouteImport } from './routes/admin/merchandise/new'
 import { Route as AdminNewsNewRouteImport } from './routes/admin/news/new'
+import { Route as AdminOrdersOrderIdRouteImport } from './routes/admin/orders.$orderId'
 import { Route as AdminReleasesReleaseRouteImport } from './routes/admin/releases/$release'
 import { Route as AdminReleasesNewRouteImport } from './routes/admin/releases/new'
 import { Route as ArtistReleasesReleaseRouteImport } from './routes/artist/releases/$release'
@@ -135,6 +138,11 @@ const AdminNewsRoute = AdminNewsRouteImport.update({
   path: '/news',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminOrdersRoute = AdminOrdersRouteImport.update({
+  id: '/orders',
+  path: '/orders',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminProfileRoute = AdminProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
@@ -143,6 +151,11 @@ const AdminProfileRoute = AdminProfileRouteImport.update({
 const AdminReleasesRoute = AdminReleasesRouteImport.update({
   id: '/releases',
   path: '/releases',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminRevenueRoute = AdminRevenueRouteImport.update({
+  id: '/revenue',
+  path: '/revenue',
   getParentRoute: () => AdminRoute,
 } as any)
 const ArtistIndexRoute = ArtistIndexRouteImport.update({
@@ -215,6 +228,11 @@ const AdminNewsNewRoute = AdminNewsNewRouteImport.update({
   path: '/new',
   getParentRoute: () => AdminNewsRoute,
 } as any)
+const AdminOrdersOrderIdRoute = AdminOrdersOrderIdRouteImport.update({
+  id: '/$orderId',
+  path: '/$orderId',
+  getParentRoute: () => AdminOrdersRoute,
+} as any)
 const AdminReleasesReleaseRoute = AdminReleasesReleaseRouteImport.update({
   id: '/$release',
   path: '/$release',
@@ -269,8 +287,10 @@ export interface FileRoutesByFullPath {
   '/admin/artists': typeof AdminArtistsRouteWithChildren
   '/admin/merchandise': typeof AdminMerchandiseRouteWithChildren
   '/admin/news': typeof AdminNewsRouteWithChildren
+  '/admin/orders': typeof AdminOrdersRouteWithChildren
   '/admin/profile': typeof AdminProfileRoute
   '/admin/releases': typeof AdminReleasesRouteWithChildren
+  '/admin/revenue': typeof AdminRevenueRoute
   '/artist/profile': typeof ArtistProfileRoute
   '/artist/releases': typeof ArtistReleasesRouteWithChildren
   '/artist/revenue': typeof ArtistRevenueRoute
@@ -286,6 +306,7 @@ export interface FileRoutesByFullPath {
   '/admin/artists/new': typeof AdminArtistsNewRoute
   '/admin/merchandise/new': typeof AdminMerchandiseNewRoute
   '/admin/news/new': typeof AdminNewsNewRoute
+  '/admin/orders/$orderId': typeof AdminOrdersOrderIdRoute
   '/admin/releases/$release': typeof AdminReleasesReleaseRouteWithChildren
   '/admin/releases/new': typeof AdminReleasesNewRoute
   '/artist/releases/$release': typeof ArtistReleasesReleaseRoute
@@ -309,8 +330,10 @@ export interface FileRoutesByTo {
   '/admin/artists': typeof AdminArtistsRouteWithChildren
   '/admin/merchandise': typeof AdminMerchandiseRouteWithChildren
   '/admin/news': typeof AdminNewsRouteWithChildren
+  '/admin/orders': typeof AdminOrdersRouteWithChildren
   '/admin/profile': typeof AdminProfileRoute
   '/admin/releases': typeof AdminReleasesRouteWithChildren
+  '/admin/revenue': typeof AdminRevenueRoute
   '/artist/profile': typeof ArtistProfileRoute
   '/artist/releases': typeof ArtistReleasesRouteWithChildren
   '/artist/revenue': typeof ArtistRevenueRoute
@@ -326,6 +349,7 @@ export interface FileRoutesByTo {
   '/admin/artists/new': typeof AdminArtistsNewRoute
   '/admin/merchandise/new': typeof AdminMerchandiseNewRoute
   '/admin/news/new': typeof AdminNewsNewRoute
+  '/admin/orders/$orderId': typeof AdminOrdersOrderIdRoute
   '/admin/releases/$release': typeof AdminReleasesReleaseRouteWithChildren
   '/admin/releases/new': typeof AdminReleasesNewRoute
   '/artist/releases/$release': typeof ArtistReleasesReleaseRoute
@@ -352,8 +376,10 @@ export interface FileRoutesById {
   '/admin/artists': typeof AdminArtistsRouteWithChildren
   '/admin/merchandise': typeof AdminMerchandiseRouteWithChildren
   '/admin/news': typeof AdminNewsRouteWithChildren
+  '/admin/orders': typeof AdminOrdersRouteWithChildren
   '/admin/profile': typeof AdminProfileRoute
   '/admin/releases': typeof AdminReleasesRouteWithChildren
+  '/admin/revenue': typeof AdminRevenueRoute
   '/artist/profile': typeof ArtistProfileRoute
   '/artist/releases': typeof ArtistReleasesRouteWithChildren
   '/artist/revenue': typeof ArtistRevenueRoute
@@ -369,6 +395,7 @@ export interface FileRoutesById {
   '/admin/artists/new': typeof AdminArtistsNewRoute
   '/admin/merchandise/new': typeof AdminMerchandiseNewRoute
   '/admin/news/new': typeof AdminNewsNewRoute
+  '/admin/orders/$orderId': typeof AdminOrdersOrderIdRoute
   '/admin/releases/$release': typeof AdminReleasesReleaseRouteWithChildren
   '/admin/releases/new': typeof AdminReleasesNewRoute
   '/artist/releases/$release': typeof ArtistReleasesReleaseRoute
@@ -396,8 +423,10 @@ export interface FileRouteTypes {
     | '/admin/artists'
     | '/admin/merchandise'
     | '/admin/news'
+    | '/admin/orders'
     | '/admin/profile'
     | '/admin/releases'
+    | '/admin/revenue'
     | '/artist/profile'
     | '/artist/releases'
     | '/artist/revenue'
@@ -413,6 +442,7 @@ export interface FileRouteTypes {
     | '/admin/artists/new'
     | '/admin/merchandise/new'
     | '/admin/news/new'
+    | '/admin/orders/$orderId'
     | '/admin/releases/$release'
     | '/admin/releases/new'
     | '/artist/releases/$release'
@@ -436,8 +466,10 @@ export interface FileRouteTypes {
     | '/admin/artists'
     | '/admin/merchandise'
     | '/admin/news'
+    | '/admin/orders'
     | '/admin/profile'
     | '/admin/releases'
+    | '/admin/revenue'
     | '/artist/profile'
     | '/artist/releases'
     | '/artist/revenue'
@@ -453,6 +485,7 @@ export interface FileRouteTypes {
     | '/admin/artists/new'
     | '/admin/merchandise/new'
     | '/admin/news/new'
+    | '/admin/orders/$orderId'
     | '/admin/releases/$release'
     | '/admin/releases/new'
     | '/artist/releases/$release'
@@ -478,8 +511,10 @@ export interface FileRouteTypes {
     | '/admin/artists'
     | '/admin/merchandise'
     | '/admin/news'
+    | '/admin/orders'
     | '/admin/profile'
     | '/admin/releases'
+    | '/admin/revenue'
     | '/artist/profile'
     | '/artist/releases'
     | '/artist/revenue'
@@ -495,6 +530,7 @@ export interface FileRouteTypes {
     | '/admin/artists/new'
     | '/admin/merchandise/new'
     | '/admin/news/new'
+    | '/admin/orders/$orderId'
     | '/admin/releases/$release'
     | '/admin/releases/new'
     | '/artist/releases/$release'
@@ -642,6 +678,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminNewsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/orders': {
+      id: '/admin/orders'
+      path: '/orders'
+      fullPath: '/admin/orders'
+      preLoaderRoute: typeof AdminOrdersRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/profile': {
       id: '/admin/profile'
       path: '/profile'
@@ -654,6 +697,13 @@ declare module '@tanstack/react-router' {
       path: '/releases'
       fullPath: '/admin/releases'
       preLoaderRoute: typeof AdminReleasesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/revenue': {
+      id: '/admin/revenue'
+      path: '/revenue'
+      fullPath: '/admin/revenue'
+      preLoaderRoute: typeof AdminRevenueRouteImport
       parentRoute: typeof AdminRoute
     }
     '/artist/': {
@@ -753,6 +803,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/news/new'
       preLoaderRoute: typeof AdminNewsNewRouteImport
       parentRoute: typeof AdminNewsRoute
+    }
+    '/admin/orders/$orderId': {
+      id: '/admin/orders/$orderId'
+      path: '/$orderId'
+      fullPath: '/admin/orders/$orderId'
+      preLoaderRoute: typeof AdminOrdersOrderIdRouteImport
+      parentRoute: typeof AdminOrdersRoute
     }
     '/admin/releases/$release': {
       id: '/admin/releases/$release'
@@ -858,6 +915,18 @@ const AdminNewsRouteWithChildren = AdminNewsRoute._addFileChildren(
   AdminNewsRouteChildren,
 )
 
+interface AdminOrdersRouteChildren {
+  AdminOrdersOrderIdRoute: typeof AdminOrdersOrderIdRoute
+}
+
+const AdminOrdersRouteChildren: AdminOrdersRouteChildren = {
+  AdminOrdersOrderIdRoute: AdminOrdersOrderIdRoute,
+}
+
+const AdminOrdersRouteWithChildren = AdminOrdersRoute._addFileChildren(
+  AdminOrdersRouteChildren,
+)
+
 interface AdminReleasesReleaseRouteChildren {
   AdminReleasesReleaseEditRoute: typeof AdminReleasesReleaseEditRoute
 }
@@ -887,8 +956,10 @@ interface AdminRouteChildren {
   AdminArtistsRoute: typeof AdminArtistsRouteWithChildren
   AdminMerchandiseRoute: typeof AdminMerchandiseRouteWithChildren
   AdminNewsRoute: typeof AdminNewsRouteWithChildren
+  AdminOrdersRoute: typeof AdminOrdersRouteWithChildren
   AdminProfileRoute: typeof AdminProfileRoute
   AdminReleasesRoute: typeof AdminReleasesRouteWithChildren
+  AdminRevenueRoute: typeof AdminRevenueRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
@@ -896,8 +967,10 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminArtistsRoute: AdminArtistsRouteWithChildren,
   AdminMerchandiseRoute: AdminMerchandiseRouteWithChildren,
   AdminNewsRoute: AdminNewsRouteWithChildren,
+  AdminOrdersRoute: AdminOrdersRouteWithChildren,
   AdminProfileRoute: AdminProfileRoute,
   AdminReleasesRoute: AdminReleasesRouteWithChildren,
+  AdminRevenueRoute: AdminRevenueRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 

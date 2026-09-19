@@ -4,7 +4,8 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DashboardPage, SectionCard } from "@/components/dashboard";
-import { createArtist, uploadContentImage } from "@/lib/api";
+import { uploadContentImage } from "@/lib/api";
+import { supabase } from "@/lib/supabase";
 import { requireAuth } from "@/lib/route-access";
 
 export const Route = createFileRoute("/admin/artists/new")({
@@ -30,7 +31,20 @@ function AdminNewArtistPage() {
     mutationFn: async () => {
       if (!imageFile) throw new Error("Choose an artist image before saving.");
       const image = await uploadContentImage("artists", imageFile);
-      return createArtist({ name, email, city, genre, image, bio, statement, spotifyUrl, appleMusicUrl, instagramUrl, status: "Active" });
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) throw new Error("Not authenticated");
+      const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/onboard-artist`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+          apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+        },
+        body: JSON.stringify({ name, email, city, genre, image, bio, statement, spotify_url: spotifyUrl, apple_music_url: appleMusicUrl, instagram_url: instagramUrl }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Could not onboard artist");
+      return data;
     },
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["artists"] }); navigate({ to: "/admin/artists" }); },
   });
@@ -79,10 +93,13 @@ function AdminNewArtistPage() {
             <label className="text-sm font-medium">Artist statement</label>
             <textarea className="min-h-20 w-full rounded-xl border border-border bg-background px-3 py-2 text-sm" placeholder="A quote from the artist..." value={statement} onChange={(e) => setStatement(e.target.value)} />
           </div>
+          {createMutation.isError && <p className="text-sm text-destructive md:col-span-2">{(createMutation.error as Error).message}</p>}
+          {createMutation.isSuccess && <p className="text-sm text-green-600 md:col-span-2">Artist onboarded — credentials sent to {email} for https://artist.sonicbase.ink</p>}
           <div className="space-y-2 md:col-span-2 flex justify-end gap-3 pt-4">
             <Link to="/admin/artists"><Button variant="secondary">Cancel</Button></Link>
             <Button onClick={() => createMutation.mutate()} disabled={!name || !email || !imageFile || createMutation.isPending}>{createMutation.isPending ? "Creating..." : "Create artist"}</Button>
           </div>
+          <p className="text-xs text-muted-foreground md:col-span-2">Artist will receive email with login credentials for <strong>artist.sonicbase.ink</strong></p>
         </div>
       </SectionCard>
     </DashboardPage>
