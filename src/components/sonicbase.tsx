@@ -163,16 +163,7 @@ export function HeroCarousel({ slides = [] }: { slides?: { title: string; subtit
 
   const active = slides[index] ?? slides[0];
 
-  if (count === 0) {
-    return (
-      <section className="relative h-[92vh] min-h-[620px] overflow-hidden bg-primary text-primary-foreground flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="display-title text-[11vw] leading-[0.85] sm:text-[9vw] lg:text-[7rem]">Sonicbase</h1>
-          <p className="mt-3 text-lg font-medium uppercase md:text-2xl">Independent Music, Artist-Led</p>
-        </div>
-      </section>
-    );
-  }
+  if (count === 0) return null;
 
   return (
     <section className="relative h-[92vh] min-h-[620px] overflow-hidden bg-primary text-primary-foreground">
